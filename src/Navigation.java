@@ -3,7 +3,7 @@ import javax.swing.*;
 /**
  * Created by Nicholas on 12/07/2015.
  */
-public class Navagation {
+public class Navigation {
     private JPanel panel1;
     private JPanel Altitude;
     private JPanel Left;
