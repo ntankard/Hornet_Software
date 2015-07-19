@@ -3,16 +3,9 @@
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
-import net.java.games.input.Version;
 import net.java.games.input.Component.Identifier;
 import java.util.ArrayList;
 
-/**
- * 
- * @author endolf 
- * from: http://www.java-gaming.org/index.php/topic,16866.0
- * 
- */
 
 public class JoystickManager {
 
@@ -58,7 +51,7 @@ public class JoystickManager {
         return toReturn;
     }
 
-    public JoystickInstance getIntance(Controller controller)
+    public JoystickInstance getInstance(Controller controller)
     {
         JoystickInstance toReturn = new JoystickInstance();
 

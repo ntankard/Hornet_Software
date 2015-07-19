@@ -1,3 +1,6 @@
+import net.java.games.input.Controller;
+
+import javax.naming.ldap.Control;
 import javax.swing.*;
 import java.util.ArrayList;
 
@@ -7,7 +10,34 @@ import java.util.ArrayList;
 public class Main {
 
     public static void main(String args[]) {
-        Navigation nav = new Navigation();
+
+        final Navigation nav = new Navigation();
+
+        JoystickManager joy;
+        joy = new JoystickManager();
+
+        ArrayList<String> found = joy.getControllersNames();
+        for(int i=0;i<found.size();i++)
+        {
+            nav.addControler(found.get(i));
+        }
+
+        joy.updateControllerList();
+
+        while(true)
+        {
+            Controller con = nav.getSelectedController();
+            joy.getInstance(con);
+            nav.status_updateController(joy.getInstance(con));
+            try {
+                Thread.sleep(25);
+            } catch (InterruptedException ex) {
+            }
+        }
+
+
+
+
 
        // Navigation dialog = new Navigation();
         //dialog.pack();

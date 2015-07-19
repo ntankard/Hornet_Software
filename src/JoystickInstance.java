@@ -7,8 +7,8 @@ import java.util.Map;
  */
 public class JoystickInstance {
 
-    public double xAxisPercentage;
-    public double yAxisPercentage;
+    public int xAxisPercentage;
+    public int yAxisPercentage;
 
     public HashMap<String,Boolean> buttons = new HashMap<>(); //@TODO convert to int
     float hatSwitchPosition;
