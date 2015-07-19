@@ -124,7 +124,7 @@ public class JoystickManager {
 
             }
         }
-        
+
         return toReturn;
     }
 
