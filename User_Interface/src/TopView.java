@@ -6,10 +6,10 @@ import java.util.ArrayList;
 /**
  * Created by Matt on 15/07/2015.
  */
-public class LidarMap extends JPanel {
+public class TopView extends JPanel {
     ArrayList<PointXY> list = new ArrayList<>();
 
-    public LidarMap() {
+    public TopView() {
         setBackground(Color.red);
     }
 

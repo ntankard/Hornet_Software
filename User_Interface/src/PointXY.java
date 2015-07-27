@@ -1,22 +1,23 @@
 //tested and works
 public class PointXY {
 
-    private double x;
-    private double y;
-    private double angle;
-    private double distance;
+    protected double x;
+    protected double y;
+    protected double yaw;
+    protected double distance;
 
 
     public PointXY (String raw) {
-        String[] tokens = raw.split(" ");
-        angle = Double.parseDouble(tokens[0]);
+        String[] tokens;
+        tokens = raw.split(" ");
+        yaw = Double.parseDouble(tokens[0]);
         distance = Double.parseDouble(tokens[1]);
         calculatePoint();
     }
 
-    private void calculatePoint(){
-        x = Math.cos(Math.toRadians(angle)) * distance;
-        y = Math.sin(Math.toRadians(angle)) * distance;
+    protected void calculatePoint(){
+        x = Math.cos(Math.toRadians(yaw)) * distance;
+        y = Math.sin(Math.toRadians(yaw)) * distance;
     }
 
     public int getX(){
