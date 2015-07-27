@@ -1,8 +1,10 @@
+import gnu.io.CommPortIdentifier;
 import net.java.games.input.Controller;
 
 import javax.naming.ldap.Control;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Enumeration;
 
 /**
  * Created by Nicholas on 19/07/2015.
@@ -13,7 +15,8 @@ public class Main {
 
         final Navigation nav = new Navigation();
 
-        JoystickManager joy;
+
+        /*JoystickManager joy;
         joy = new JoystickManager();
 
         ArrayList<String> found = joy.getControllersNames();
@@ -33,7 +36,7 @@ public class Main {
                 Thread.sleep(25);
             } catch (InterruptedException ex) {
             }
-        }
+        }*/
 
 
 

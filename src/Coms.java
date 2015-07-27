@@ -4,7 +4,11 @@ import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
+import gnu.io.CommPortIdentifier;
 
+import java.util.ArrayList;
+
+import java.util.Enumeration;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -12,6 +16,25 @@ import java.util.concurrent.BlockingQueue;
  * Created by Nicholas on 28/07/2015.
  */
 public class Coms {
+
+    static public ArrayList<String> getPorts()
+    {
+        ArrayList<String> toReturn = new ArrayList<String>();
+
+        Enumeration enu_ports  = CommPortIdentifier.getPortIdentifiers();
+
+        while (enu_ports.hasMoreElements()) {
+            CommPortIdentifier port_identifier = (CommPortIdentifier) enu_ports.nextElement();
+
+            if(port_identifier.getPortType() == CommPortIdentifier.PORT_SERIAL)
+            {
+                toReturn.add(port_identifier.getName());
+            }
+        }
+
+        return toReturn;
+    }
+
 
     public void open(String port, int baudRate) throws XBeeException {
 
