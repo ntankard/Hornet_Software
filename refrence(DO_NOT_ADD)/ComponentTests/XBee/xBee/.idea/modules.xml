@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/xBee.iml" filepath="$PROJECT_DIR$/xBee.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../Hornet_Communication/xBee/lib/xbee-api-0.9/xbee-api.iml" filepath="$PROJECT_DIR$/../../../Hornet_Communication/xBee/lib/xbee-api-0.9/xbee-api.iml" />
+    </modules>
+  </component>
+</project>
