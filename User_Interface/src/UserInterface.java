@@ -12,18 +12,6 @@ import java.util.ArrayList;
  */
 public class UserInterface {
 
-    /* TOOO DOOOO:
-
-
-        PUT MORE FUNCTIONALISTY FROM THIS CLASS INTO LIDAR MAP AND FRONT VIEW
-        FOR INSTANCE DRAWABLE POINTS SHOULD BE A MEMBER OF THOSE CLASSES
-     */
-
-    //members used in layout
-    final static boolean shouldFill = true;
-    final static boolean shouldWeightX = true;
-    final static boolean RIGHT_TO_LEFT = false;
-
     public static void main(String [] args) {
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
@@ -34,10 +22,6 @@ public class UserInterface {
     }
 
     public static void addComponentsToPane(Container pane) {
-        if (RIGHT_TO_LEFT) {
-            pane.setComponentOrientation(ComponentOrientation.RIGHT_TO_LEFT);
-        }
-
         //Buttons
         JButton left = new JButton("Left");
         JButton forward = new JButton("Forward");
