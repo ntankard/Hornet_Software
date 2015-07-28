@@ -1,31 +1,53 @@
 import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.ArrayList;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 /**
  * Created by Matt on 15/07/2015.
  */
-public class UserInterface {
+public class UserInterface implements ActionListener {
+
+    private JButton left;
+    private JButton forward;
+    private JButton right;
 
     public static void main(String [] args) {
+        UserInterface u = new UserInterface();
         javax.swing.SwingUtilities.invokeLater(new Runnable() {
             @Override
             public void run() {
-                createAndShowGUI();
+                u.createAndShowGUI();
             }
         });
     }
 
-    public static void addComponentsToPane(Container pane) {
+    @Override
+    public void actionPerformed(ActionEvent e) {
+        String command = e.getActionCommand();
+
+        switch (command) {
+            case "Left":
+                System.out.println("Move Left");
+                break;
+            case "Right":
+                System.out.println("Move Right");
+                break;
+            case "Forward":
+                System.out.println("Move Forward");
+        }
+    }
+
+    public void addComponentsToPane(Container pane) {
         //Buttons
-        JButton left = new JButton("Left");
-        JButton forward = new JButton("Forward");
-        JButton right = new JButton("Right");
+        left = new JButton("Left");
+        forward = new JButton("Forward");
+        right = new JButton("Right");
+        left.addActionListener(this);
+        forward.addActionListener(this);
+        right.addActionListener(this);
+
         //FrontView
         FrontView viewPanel = new FrontView();
         viewPanel.draw();
@@ -52,7 +74,7 @@ public class UserInterface {
         //TopView
     }
 
-    private static void createAndShowGUI() {
+    private void createAndShowGUI() {
         JFrame frame = new JFrame("Use Interface");
         frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 
