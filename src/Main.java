@@ -13,8 +13,15 @@ public class Main {
 
     public static void main(String args[]) {
 
-        final Navigation nav = new Navigation();
+        VirtualHornet  virtualHornet = new VirtualHornet();
 
+        Navigation navigation = new Navigation(virtualHornet);
+        virtualHornet.attachNavigation(navigation);
+
+
+
+    }
+}
 
         /*JoystickManager joy;
         joy = new JoystickManager();
@@ -63,5 +70,5 @@ public class Main {
       //  {
 
       //  }
-    }
-}
+
+

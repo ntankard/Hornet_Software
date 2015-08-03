@@ -18,12 +18,19 @@ public class Navigation extends JFrame {
 
     private ArrayList<Controller> foundControllers;
 
+    private VirtualHornet virtualHornet;
+
    // private JInputJoystickTest joy;
 
-    public Navigation()
+    public Navigation(VirtualHornet theVirtualHornet)
     {
-            // load the form
-            // /* super("Navigation");
+        virtualHornet = theVirtualHornet;
+    }
+
+    public void setup()
+    {
+        // load the form
+        // /* super("Navigation");
         ArrayList<String> comPorts = Coms.getPorts();
 
         for(int i=0;i<comPorts.size();i++)
@@ -31,12 +38,12 @@ public class Navigation extends JFrame {
             SerialPort_Combo.addItem(comPorts.get(i));
         }
 
-            setContentPane(rootPanel);
-            pack();
-            setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-            this.setResizable(true);
-            this.setLocationRelativeTo(null);
-            this.setVisible(true);
+        setContentPane(rootPanel);
+        pack();
+        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        this.setResizable(true);
+        this.setLocationRelativeTo(null);
+        this.setVisible(true);
 
 
         Connect_btn.addMouseListener(new MouseAdapter() {
