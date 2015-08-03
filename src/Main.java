@@ -18,8 +18,7 @@ public class Main {
         Navigation navigation = new Navigation(virtualHornet);
         virtualHornet.attachNavigation(navigation);
 
-
-
+        virtualHornet.start();
     }
 }
 

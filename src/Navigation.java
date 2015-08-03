@@ -3,6 +3,7 @@ import javax.swing.*;
 import net.java.games.input.Controller;
 
 import java.awt.*;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
@@ -15,6 +16,7 @@ public class Navigation extends JFrame {
     private JPanel Comunications;
     private JComboBox SerialPort_Combo;
     private JButton Connect_btn;
+    private JLabel ConnectionStatus_lbl;
 
     private ArrayList<Controller> foundControllers;
 
@@ -25,18 +27,51 @@ public class Navigation extends JFrame {
     public Navigation(VirtualHornet theVirtualHornet)
     {
         virtualHornet = theVirtualHornet;
+        Connect_btn.addMouseListener(new MouseAdapter() {
+            @Override
+            public void mouseClicked(MouseEvent e) {
+                virtualHornet.connect(SerialPort_Combo.getSelectedItem().toString());
+                super.mouseClicked(e);
+            }
+        });
     }
 
-    public void setup()
+    public enum ConnectionState{Disconnected, Connecting, Connected}
+
+    public void setConnectionState(ConnectionState state)
+    {
+        switch(state)
+        {
+            case Disconnected:
+                ConnectionStatus_lbl.setText("Disconnected");
+                ConnectionStatus_lbl.setBackground(Color.RED);
+                break;
+            case Connecting:
+                ConnectionStatus_lbl.setText("Connecting");
+                ConnectionStatus_lbl.setBackground(Color.YELLOW);
+                break;
+            case Connected:
+                ConnectionStatus_lbl.setText("Connected");
+                ConnectionStatus_lbl.setBackground(Color.GREEN);
+                break;
+        }
+    }
+
+
+    public void setComPorts(ArrayList<String> ports)
+    {
+        //@todo erase original content
+        for(int i=0;i<ports.size();i++)
+        {
+            SerialPort_Combo.addItem(ports.get(i));
+        }
+    }
+
+    public void open()
     {
         // load the form
         // /* super("Navigation");
-        ArrayList<String> comPorts = Coms.getPorts();
 
-        for(int i=0;i<comPorts.size();i++)
-        {
-            SerialPort_Combo.addItem(comPorts.get(i));
-        }
 
         setContentPane(rootPanel);
         pack();
@@ -44,18 +79,6 @@ public class Navigation extends JFrame {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
-
-
-        Connect_btn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                SerialPort_Combo.setEditable(false);
-                SerialPort_Combo.setEnabled(false);
-                Connect_btn.setText("Disconnect");
-                System.out.println("clicked");
-                super.mouseClicked(e);
-            }
-        });
     }
 
 }

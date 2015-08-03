@@ -15,7 +15,7 @@ import java.util.concurrent.BlockingQueue;
 /**
  * Created by Nicholas on 28/07/2015.
  */
-public class Coms {
+    public class Coms {
 
     static public ArrayList<String> getPorts()
     {
