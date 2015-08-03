@@ -3,10 +3,23 @@
  */
 public class ComsDecoder {
 
-    public void processMessage(char[] message)
+    private VirtualHornet _virtualHornet;
+
+    public ComsDecoder(VirtualHornet theVirtualHornet)
     {
-        System.out.println(message.toString());
+        _virtualHornet = theVirtualHornet;
     }
 
+    public void processMessage(char[] message)
+    {
+        switch (message[0])
+        {
+            case CONFIG.Coms.PacketCodes.CONNECTION_REQUEST:
+                _virtualHornet.C_connectRequest();
+                break;
+            default:
+                break;
+        }
 
+    }
 }

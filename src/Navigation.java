@@ -31,15 +31,12 @@ public class Navigation extends JFrame {
         Connect_btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                try {
-                    virtualHornet.connect(SerialPort_Combo.getSelectedItem().toString());
-                } catch (XBeeException e1) {
-                    e1.printStackTrace();
-                }
+                virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(),9600);
                 super.mouseClicked(e);
             }
         });
     }
+
 
     public enum ConnectionState{Disconnected, Connecting, Connected}
 
@@ -50,14 +47,17 @@ public class Navigation extends JFrame {
             case Disconnected:
                 ConnectionStatus_lbl.setText("Disconnected");
                 ConnectionStatus_lbl.setBackground(Color.RED);
+                Connect_btn.setText("Connect");
                 break;
             case Connecting:
                 ConnectionStatus_lbl.setText("Connecting");
                 ConnectionStatus_lbl.setBackground(Color.YELLOW);
+                Connect_btn.setText("Cancel");
                 break;
             case Connected:
                 ConnectionStatus_lbl.setText("Connected");
                 ConnectionStatus_lbl.setBackground(Color.GREEN);
+                Connect_btn.setText("Disconnect");
                 break;
         }
     }

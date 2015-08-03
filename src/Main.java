@@ -15,17 +15,19 @@ public class Main {
 
         VirtualHornet  virtualHornet = new VirtualHornet();
 
+        // create the UI
         Navigation navigation = new Navigation(virtualHornet);
         virtualHornet.attachNavigation(navigation);
 
-        virtualHornet.start();
-
-        ComsDecoder comsDecoder = new ComsDecoder();
-
+        // setup the com systems
+        ComsDecoder comsDecoder = new ComsDecoder(virtualHornet);
         Coms coms = new USBSerial(comsDecoder);
+        ComsEncoder comsEncoder = new ComsEncoder(coms);
+        virtualHornet.attachComsEncoder(comsEncoder);
         virtualHornet.attachComs(coms);
 
-
+        // setup all systems
+        virtualHornet.start();
     }
 }
 

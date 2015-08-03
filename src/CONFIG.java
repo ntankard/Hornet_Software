@@ -4,6 +4,12 @@
 public class CONFIG {
 
     public class Coms{
+
+        public class PacketCodes
+        {
+            public static final char CONNECTION_REQUEST = 'a';
+        }
+
         public class USBSerial
         {
             /** Milliseconds to block while waiting for port open */

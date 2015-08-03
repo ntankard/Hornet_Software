@@ -1,15 +1,15 @@
-import com.digi.xbee.api.exceptions.XBeeException;
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
-import jdk.management.resource.ResourceRequestDeniedException;
 
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
+
+
 
 /**
  * Created by Nicholas on 4/08/2015.
@@ -90,7 +90,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
     /**
      * Safely sever the connection to the serial port
      */
-    public void close()
+    public synchronized void close()
     {
         if (_serialPort != null) {
             _serialPort.removeEventListener();
@@ -104,7 +104,8 @@ public class USBSerial extends Coms implements SerialPortEventListener {
     public synchronized void serialEvent(SerialPortEvent oEvent) {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
-                _comsDecoder.processMessage(_input.readLine().toCharArray());
+                String inputLine=_input.readLine();
+                _comsDecoder.processMessage(inputLine.toCharArray());
             } catch (Exception e) {
                 System.err.println(e.toString());   //@TODO this is a problem
             }
