@@ -19,6 +19,13 @@ public class Main {
         virtualHornet.attachNavigation(navigation);
 
         virtualHornet.start();
+
+        ComsDecoder comsDecoder = new ComsDecoder();
+
+        Coms coms = new USBSerial(comsDecoder);
+        virtualHornet.attachComs(coms);
+
+
     }
 }
 

@@ -1,5 +1,6 @@
 import javax.swing.*;
 
+import com.digi.xbee.api.exceptions.XBeeException;
 import net.java.games.input.Controller;
 
 import java.awt.*;
@@ -30,7 +31,11 @@ public class Navigation extends JFrame {
         Connect_btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                virtualHornet.connect(SerialPort_Combo.getSelectedItem().toString());
+                try {
+                    virtualHornet.connect(SerialPort_Combo.getSelectedItem().toString());
+                } catch (XBeeException e1) {
+                    e1.printStackTrace();
+                }
                 super.mouseClicked(e);
             }
         });
