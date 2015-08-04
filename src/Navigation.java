@@ -1,13 +1,12 @@
 import javax.swing.*;
 
-import com.digi.xbee.api.exceptions.XBeeException;
 import net.java.games.input.Controller;
 
 import java.awt.*;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
+import java.util.Vector;
 
 /**
  * Created by Nicholas on 12/07/2015.
@@ -18,15 +17,26 @@ public class Navigation extends JFrame {
     private JComboBox SerialPort_Combo;
     private JButton Connect_btn;
     private JLabel ConnectionStatus_lbl;
+    private JTabbedPane Status;
+    private JList<String> SentMessages_List;
+    private JList ReceivedMessages_List;
+    private JScrollPane SentMessages_Scroll;
+    private JScrollPane ReceivedMessages_Scroll;
 
     private ArrayList<Controller> foundControllers;
 
     private VirtualHornet virtualHornet;
 
+    private Vector<String> sentMessages;
+    private Vector<String> receivedMessages;
+
    // private JInputJoystickTest joy;
 
     public Navigation(VirtualHornet theVirtualHornet)
     {
+        sentMessages = new Vector<>();
+        receivedMessages = new Vector<>();
+
         virtualHornet = theVirtualHornet;
         Connect_btn.addMouseListener(new MouseAdapter() {
             @Override
@@ -70,6 +80,24 @@ public class Navigation extends JFrame {
         {
             SerialPort_Combo.addItem(ports.get(i));
         }
+    }
+
+    public void newSentMessage(String message)
+    {
+        sentMessages.add(message);
+        SentMessages_List.setListData(sentMessages);
+
+        JScrollBar vertical = SentMessages_Scroll.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
+    }
+
+    public void newReceivedMessage(String message)
+    {
+        receivedMessages.add(message);
+        ReceivedMessages_List.setListData(receivedMessages);
+
+        JScrollBar vertical = ReceivedMessages_Scroll.getVerticalScrollBar();
+        vertical.setValue( vertical.getMaximum() );
     }
 
     public void open()

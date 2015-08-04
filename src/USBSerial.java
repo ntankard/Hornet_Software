@@ -108,7 +108,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
                 String inputLine=_input.readLine();
-                _comsDecoder.processMessage(inputLine.toCharArray());
+                _comsDecoder.processMessage(inputLine.getBytes());
             } catch (Exception e) {
                 System.err.println(e.toString());   //@TODO this is a problem
             }

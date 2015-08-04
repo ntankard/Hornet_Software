@@ -1,3 +1,4 @@
+import java.io.UnsupportedEncodingException;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -15,13 +16,16 @@ public class ComsDecoder {
     /** The worker thread that consumes new messages */
     private Consumer _consumer;
 
+    private Navigation _navigation;
+
     /**
      *
      * @param theVirtualHornet
      */
-    public ComsDecoder(VirtualHornet theVirtualHornet)
+    public ComsDecoder(VirtualHornet theVirtualHornet,Navigation theNavigation)
     {
         _virtualHornet = theVirtualHornet;
+        _navigation = theNavigation;
         _consumer = new Consumer(_toConsume,_virtualHornet);
         _consumer.start();
     }
@@ -31,9 +35,14 @@ public class ComsDecoder {
      * Added them to a Queue to be consumed by an external worker thread
      * @param message The message that was recieved
      */
-    public void processMessage(char[] message)
+    public void processMessage(byte[] message)
     {
         _toConsume.add(message);
+        try {
+            _navigation.newReceivedMessage(new String(message, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
 
@@ -43,7 +52,7 @@ public class ComsDecoder {
 class Consumer extends Thread {
 
     /** The queue of messages to consume */
-    private final BlockingQueue _toConsume;
+    private final BlockingQueue<byte[]> _toConsume;
 
     /** The object that manages all incoming messages */
     private final VirtualHornet _virtualHornet;
@@ -66,7 +75,7 @@ class Consumer extends Thread {
 
         while (!Thread.currentThread().isInterrupted()) {
             try {
-                processMessage((char[]) _toConsume.take());
+                processMessage( _toConsume.take());
             } catch (InterruptedException e) {
                 Thread.currentThread().interrupt();
                 return;
@@ -78,7 +87,7 @@ class Consumer extends Thread {
      * Decodes received messages and sends them to the hornet manager
      * @param message The message to decode
      */
-    public void processMessage(char[] message)
+    public void processMessage(byte[] message)
     {
         switch (message[0])
         {

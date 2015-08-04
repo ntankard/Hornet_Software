@@ -1,4 +1,5 @@
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -10,13 +11,15 @@ public class ComsEncoder {
     private Coms _coms;
     private Sender _sender;
     private PriorityBlockingQueue<Message> _messages;
+    private Navigation _navigation;
 
-    public ComsEncoder(Coms theComs)
+    public ComsEncoder(Coms theComs,Navigation theNavigation)
     {
         Comparator<Message> comparator = new MessageComparator();
         _messages = new PriorityBlockingQueue<>(10,comparator);
 
         _coms = theComs;
+        _navigation = theNavigation;
         _sender = new Sender(_messages,_coms);
         _sender.start();
     }
@@ -26,7 +29,17 @@ public class ComsEncoder {
         byte[] theMessage = new byte[1];
         theMessage[0] = 'b';
 
-        _messages.add(new Message(theMessage,0));
+        send(theMessage, 0);
+    }
+
+    public void send(byte[] message,int priority)
+    {
+        _messages.add(new Message(message, priority));
+        try {
+            _navigation.newSentMessage(new String(message, "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
     }
 }
 

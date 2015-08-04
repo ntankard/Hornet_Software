@@ -11,9 +11,9 @@ public class Main {
         virtualHornet.attachNavigation(navigation);
 
         // setup the com systems
-        ComsDecoder comsDecoder = new ComsDecoder(virtualHornet);
+        ComsDecoder comsDecoder = new ComsDecoder(virtualHornet,navigation);
         Coms coms = new USBSerial(comsDecoder);
-        ComsEncoder comsEncoder = new ComsEncoder(coms);
+        ComsEncoder comsEncoder = new ComsEncoder(coms,navigation);
         virtualHornet.attachComsEncoder(comsEncoder);
         virtualHornet.attachComs(coms);
 
