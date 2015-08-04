@@ -122,7 +122,13 @@ public class USBSerial extends Coms implements SerialPortEventListener {
      * @throws IOException Write failed
      */
     public void send(byte[] dataToSend) throws IOException {
-        _output.write(dataToSend);
+        byte[] toSend = new byte[dataToSend.length+1];
+        for(int i=0;i<dataToSend.length;i++)
+        {
+            toSend[i] = dataToSend[i];
+        }
+        toSend[dataToSend.length] = '\n';
+        _output.write(toSend);
     }
 
 }

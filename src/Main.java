@@ -4,15 +4,18 @@ import net.java.games.input.Controller;
 import javax.naming.ldap.Control;
 import javax.swing.*;
 import java.util.ArrayList;
+import java.util.Comparator;
 import java.util.Enumeration;
+import java.util.concurrent.PriorityBlockingQueue;
 
 /**
  * Created by Nicholas on 19/07/2015.
  */
 public class Main {
 
-    public static void main(String args[]) {
 
+
+    public static void main(String args[]) {
         VirtualHornet  virtualHornet = new VirtualHornet();
 
         // create the UI

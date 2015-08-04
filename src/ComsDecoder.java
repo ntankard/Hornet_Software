@@ -14,6 +14,7 @@ public class ComsDecoder {
     {
         _virtualHornet = theVirtualHornet;
         _consumer = new Consumer(_toConsume,_virtualHornet);
+        _consumer.start();
     }
 
     public void processMessage(char[] message)

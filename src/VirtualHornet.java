@@ -73,6 +73,7 @@ public class VirtualHornet {
         {
             _state = State.Connected;
             _navigation.setConnectionState(Navigation.ConnectionState.Connected);
+            _comsEncoder.send_connectionConfirmation();
         }
     }
 
