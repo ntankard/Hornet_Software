@@ -49,8 +49,15 @@ public class UserInterface implements ActionListener {
         right.addActionListener(this);
 
         //FrontView
-        FrontView viewPanel = new FrontView();
-        viewPanel.draw();
+        LidarView frontPanel = new LidarView(0, 90);
+        frontPanel.draw();
+
+        //LeftView
+        LidarView leftPanel = new LidarView(270, 360);
+        leftPanel.draw();
+
+        LidarView rightPanel = new LidarView(90, 180);
+        rightPanel.draw();
 
         JPanel boxPanel = new JPanel();
         boxPanel.setBorder(new TitledBorder("Button Panel"));
@@ -60,7 +67,9 @@ public class UserInterface implements ActionListener {
         boxPanel.add(right);
 
         JPanel centerPanel = new JPanel(new BorderLayout());
-        centerPanel.add(viewPanel, BorderLayout.CENTER);
+        centerPanel.add(frontPanel, BorderLayout.CENTER);
+        centerPanel.add(leftPanel, BorderLayout.WEST);
+        centerPanel.add(rightPanel, BorderLayout.EAST);
         centerPanel.add(boxPanel, BorderLayout.SOUTH);
         centerPanel.setBorder(new TitledBorder("Center Panel"));
         centerPanel.setOpaque(false);

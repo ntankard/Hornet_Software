@@ -6,12 +6,16 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-public class FrontView extends JPanel{
+public class LidarView extends JPanel{
     ArrayList<Point3D> drawablePoints = new ArrayList<>();
-    private int CANVAS_WIDTH = 800;
-    private int CANVAS_HEIGHT = 800;
+    private int minDegree;
+    private int maxDegree;
+    private int CANVAS_HEIGHT = 600;
+    private int CANVAS_WIDTH = 600;
 
-    public FrontView() {
+    public LidarView(int minDeg, int maxDeg) {
+        minDegree = minDeg;
+        maxDegree = maxDeg;
         setBackground(Color.black);
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
     }
@@ -19,6 +23,7 @@ public class FrontView extends JPanel{
     public void paintComponent(Graphics g) {
         super.paintComponent(g); //do what paintComponent does, and i will tell you what to do from now on
         for(int i = drawablePoints.size(); i > 0; i--) {
+            drawablePoints.get(i-1).calculatePoint(minDegree, maxDegree, CANVAS_WIDTH, CANVAS_HEIGHT);
             g.setColor(calculateColor(drawablePoints.get(i - 1).getDistance()));
             g.fillOval(drawablePoints.get(i-1).getYaw(),drawablePoints.get(i-1).getPitch() ,10,10);
             System.out.println("Yaw: " + drawablePoints.get(i-1).getYaw() + " Distance: " + drawablePoints.get(i-1).getDistance() + " Pitch: " + drawablePoints.get(i-1).getPitch());
@@ -42,7 +47,7 @@ public class FrontView extends JPanel{
     public void readData() {
         //THIS WORKS
         // The name of the file to open.
-        String fileName = "test2.txt";
+        String fileName = "leftfrontright.txt";
 
         // This will reference one line at a time
         String line = null;
@@ -62,7 +67,10 @@ public class FrontView extends JPanel{
 
             while((line = bufferedReader.readLine()) != null) {
                 //reads 1 ine at a time then moves to the next
-                drawablePoints.add(new Point3D(line));
+                Point3D point = new Point3D(line);
+                if(point.inRange(minDegree, maxDegree)) {
+                    drawablePoints.add(point);
+                }
             }
             // Always close files.
             bufferedReader.close();

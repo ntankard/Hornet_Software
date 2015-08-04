@@ -1,5 +1,8 @@
 public class Point3D {
 
+    private double yaw;
+    private double distance;
+    private double pitch;
     private double convYaw;
     private double convDistance;
     private double convPitch;
@@ -7,17 +10,16 @@ public class Point3D {
     public Point3D(String raw) {
         String[] tokens;
         tokens = raw.split(" ");
-        double yaw = Double.parseDouble(tokens[0]);
-        double distance = Double.parseDouble(tokens[1]);
-        double pitch = Double.parseDouble(tokens[2]);
-        calculatePoint(yaw, distance, pitch);
+        yaw = Double.parseDouble(tokens[0]);
+        distance = Double.parseDouble(tokens[1]);
+        pitch = Double.parseDouble(tokens[2]);
     }
 
-    public void calculatePoint(double yaw, double distance, double pitch) {
-
-        convYaw = (yaw/45) * 400;
+    public void calculatePoint(int minDegree, int maxDegree, int width, int height) {
+        //might have to be moved to LidarView to get a rotating view
+        convYaw = (yaw - minDegree)/((maxDegree - minDegree)/2) * width/2;
         convDistance = Math.cos(Math.toRadians(pitch)) * distance;
-        convPitch = (-(pitch/30) + 1) * 400;
+        convPitch = (-(pitch/30) + 1) * height/2;
     }
 
     public int getYaw(){
@@ -33,5 +35,12 @@ public class Point3D {
     public int getPitch(){
         int p = (int) Math.round(convPitch);
         return p;
+    }
+
+    public boolean inRange(double minDegree, double maxDegree) {
+        if(yaw >= minDegree && yaw <= maxDegree) {
+            return true;
+        }
+        return false;
     }
 }
