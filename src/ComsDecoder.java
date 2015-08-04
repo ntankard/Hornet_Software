@@ -1,4 +1,7 @@
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
+import java.nio.FloatBuffer;
+import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
 
@@ -89,13 +92,41 @@ class Consumer extends Thread {
      */
     public void processMessage(byte[] message)
     {
+        if(message.length ==0)
+        {
+            return; //@TODO replace with throw
+        }
         switch (message[0])
         {
             case CONFIG.Coms.PacketCodes.CONNECTION_REQUEST:
                 _virtualHornet.C_connectRequest();
                 break;
+            case CONFIG.Coms.PacketCodes.ACCGYRO:
+                if(message.length != 25)
+                {
+                    break;  //@TODO add error handling here
+                }
+                byte[] filteredByteArray = removeCode(message);
+                float[] converted = toFloatArray(filteredByteArray);
+                float[] acc = Arrays.copyOfRange(converted, 0, 3);
+                float[] gyro = Arrays.copyOfRange(converted, 3, 6);
+                _virtualHornet.C_accGyro(acc,gyro);
+                break;
             default:
                 break;
         }
+    }
+
+    private byte[] removeCode(byte[] message)
+    {
+        return Arrays.copyOfRange(message, 1, message.length);
+    }
+
+    private float[] toFloatArray(byte[] message)
+    {
+        final FloatBuffer fb = ByteBuffer.wrap(message).asFloatBuffer();
+        final float[] dst = new float[fb.capacity()];
+        fb.get(dst); // Copy the contents of the FloatBuffer into dst
+        return dst;
     }
 }

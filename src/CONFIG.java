@@ -7,7 +7,8 @@ public class CONFIG {
 
         public class PacketCodes
         {
-            public static final char CONNECTION_REQUEST = 'a';
+            public static final byte CONNECTION_REQUEST = 'a';
+            public static final byte ACCGYRO = 1;
         }
 
         public class USBSerial

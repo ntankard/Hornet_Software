@@ -3,8 +3,7 @@ import javax.swing.*;
 import net.java.games.input.Controller;
 
 import java.awt.*;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
+import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 
@@ -22,6 +21,19 @@ public class Navigation extends JFrame {
     private JList ReceivedMessages_List;
     private JScrollPane SentMessages_Scroll;
     private JScrollPane ReceivedMessages_Scroll;
+    private JPanel Navigation;
+    private JPanel Orientation;
+    private JTextField AccX_Text;
+    private JTextField GyroX_Text;
+    private JTextField AccY_Text;
+    private JTextField GyroY_Text;
+    private JTextField AccZ_Text;
+    private JTextField GyroZ_Text;
+    private JPanel RawValues;
+    private JPanel Indicators;
+    private JPanel X;
+    private JPanel Y;
+    private JPanel Z;
 
     private ArrayList<Controller> foundControllers;
 
@@ -41,8 +53,32 @@ public class Navigation extends JFrame {
         Connect_btn.addMouseListener(new MouseAdapter() {
             @Override
             public void mouseClicked(MouseEvent e) {
-                virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(),9600);
+                virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(), 9600);
                 super.mouseClicked(e);
+            }
+        });
+
+        rootPanel.addComponentListener(new ComponentListener() {
+            @Override
+            public void componentResized(ComponentEvent e) {
+                X.setSize((int)X.getSize().getWidth(),(int)X.getSize().getWidth());
+                Y.setSize((int)Y.getSize().getWidth(),(int)Y.getSize().getWidth());
+                Z.setSize((int)Z.getSize().getWidth(),(int)Z.getSize().getWidth());
+            }
+
+            @Override
+            public void componentMoved(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentShown(ComponentEvent e) {
+
+            }
+
+            @Override
+            public void componentHidden(ComponentEvent e) {
+
             }
         });
     }
@@ -84,6 +120,11 @@ public class Navigation extends JFrame {
 
     public void newSentMessage(String message)
     {
+        if(sentMessages.size() >=10)
+        {
+            sentMessages.remove(0);
+        }
+
         sentMessages.add(message);
         SentMessages_List.setListData(sentMessages);
 
@@ -93,18 +134,33 @@ public class Navigation extends JFrame {
 
     public void newReceivedMessage(String message)
     {
+        if(receivedMessages.size() >=10)
+        {
+            receivedMessages.remove(0);
+        }
+
         receivedMessages.add(message);
         ReceivedMessages_List.setListData(receivedMessages);
 
         JScrollBar vertical = ReceivedMessages_Scroll.getVerticalScrollBar();
-        vertical.setValue( vertical.getMaximum() );
+        vertical.setValue(vertical.getMaximum());
+
+        Graphics test =  Navigation.getGraphics();
+        test.drawLine(0, 0, 100, 100);
+    }
+
+    public void accGyro(float[] acc,float[] gyro) {
+        AccX_Text.setText(Float.toString(acc[0]));
+        AccY_Text.setText(Float.toString(acc[1]));
+        AccZ_Text.setText(Float.toString(acc[2]));
+
+        GyroX_Text.setText(Float.toString(gyro[0]));
+        GyroY_Text.setText(Float.toString(gyro[1]));
+        GyroZ_Text.setText(Float.toString(gyro[2]));
     }
 
     public void open()
     {
-        // load the form
-        // /* super("Navigation");
-
 
         setContentPane(rootPanel);
         pack();
@@ -112,6 +168,10 @@ public class Navigation extends JFrame {
         this.setResizable(true);
         this.setLocationRelativeTo(null);
         this.setVisible(true);
+
+        Graphics g = X.getGraphics();
+
+        g.drawOval(X.getWidth()/2,X.getWidth()/2,X.getWidth(),X.getWidth());
     }
 
 }

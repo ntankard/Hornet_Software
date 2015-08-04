@@ -77,6 +77,11 @@ public class VirtualHornet {
         }
     }
 
+    public void C_accGyro(float[] acc,float[] gyro)
+    {
+        _navigation.accGyro(acc,gyro);
+    }
+
 
 
 
