@@ -18,8 +18,8 @@ public class CONFIG {
     }
 
 
-    public class XBEE
-    {
-        public final int BAUD_RATE = 9600;
-    }
+   // public class XBEE
+   // {
+   //     public final int BAUD_RATE = 9600;
+   // }
 }

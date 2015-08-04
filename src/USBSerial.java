@@ -9,8 +9,6 @@ import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.util.Enumeration;
 
-
-
 /**
  * Created by Nicholas on 4/08/2015.
  */
@@ -31,7 +29,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
 
     /**
      *
-     * @param theComsDecoder The object responsible fointerpretingng messages
+     * @param theComsDecoder The object responsible for interpretingng messages
      */
     public USBSerial(ComsDecoder theComsDecoder)
     {
@@ -96,6 +94,11 @@ public class USBSerial extends Coms implements SerialPortEventListener {
             _serialPort.removeEventListener();
             _serialPort.close();
         }
+    }
+
+    @Override
+    public boolean canSend() {
+        return true;
     }
 
     /**
