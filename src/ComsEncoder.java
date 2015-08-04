@@ -8,7 +8,6 @@ import java.util.concurrent.PriorityBlockingQueue;
 public class ComsEncoder {
 
     private Coms _coms;
-    //private Queue<byte[]>[] _messages;
     private Sender _sender;
     private PriorityBlockingQueue<Message> _messages;
 
@@ -31,17 +30,31 @@ public class ComsEncoder {
     }
 }
 
+/**
+ * Worker thread to send messages
+ */
 class Sender extends Thread {
 
+    /** The messages to send */
     private PriorityBlockingQueue<Message> _messages;
+
+    /** The com object to send through */
     private Coms _coms;
 
+    /**
+     *
+     * @param toSend The Queue of messages to send
+     * @param theComs The com object to send them through
+     */
     Sender(PriorityBlockingQueue<Message> toSend,Coms theComs)
     {
         _messages = toSend;
         _coms = theComs;
     }
 
+    /**
+     * Pulls messages from the queue
+     */
     public void run() {
 
         while (!Thread.currentThread().isInterrupted()) {
@@ -54,6 +67,10 @@ class Sender extends Thread {
         }
     }
 
+    /**
+     * Send a single message
+     * @param theMessage The message to send
+     */
     public void send(byte[] theMessage) {
 
         // wait for the chanel to be clear
@@ -75,6 +92,9 @@ class Sender extends Thread {
     }
 }
 
+/**
+ * A message and its priority used as the object for a PriorityBlockingQueue
+ */
 class Message
 {
     public Message(byte[] theMessage,int thePriority)
@@ -86,6 +106,9 @@ class Message
     byte[] message;
 }
 
+/**
+ * Compares the priories of 2 Messages
+ */
 class MessageComparator implements Comparator<Message>
 {
     @Override
