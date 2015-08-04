@@ -6,10 +6,19 @@ import java.util.concurrent.BlockingQueue;
  */
 public class ComsDecoder {
 
+    /** The object that manages all incoming messages */
     private VirtualHornet _virtualHornet;
+
+    /** The queue of messages to consume */
     private BlockingQueue _toConsume = new ArrayBlockingQueue(100);
+
+    /** The worker thread that consumes new messages */
     private Consumer _consumer;
 
+    /**
+     *
+     * @param theVirtualHornet
+     */
     public ComsDecoder(VirtualHornet theVirtualHornet)
     {
         _virtualHornet = theVirtualHornet;
@@ -17,24 +26,42 @@ public class ComsDecoder {
         _consumer.start();
     }
 
+    /**
+     * Called my coms when new messages are received
+     * Added them to a Queue to be consumed by an external worker thread
+     * @param message The message that was recieved
+     */
     public void processMessage(char[] message)
     {
         _toConsume.add(message);
     }
 }
 
-
+/**
+ * Worker thread to process received messages
+ */
 class Consumer extends Thread {
 
+    /** The queue of messages to consume */
     private final BlockingQueue _toConsume;
+
+    /** The object that manages all incoming messages */
     private final VirtualHornet _virtualHornet;
 
+    /**
+     *
+     * @param toConsume
+     * @param theVirtualHornet
+     */
     Consumer(BlockingQueue toConsume,VirtualHornet theVirtualHornet)
     {
         _toConsume = toConsume;
         _virtualHornet = theVirtualHornet;
     }
 
+    /**
+     * Pulls messages from the Queue
+     */
     public void run() {
 
         while (!Thread.currentThread().isInterrupted()) {
@@ -47,6 +74,10 @@ class Consumer extends Thread {
         }
     }
 
+    /**
+     * Decodes received messages and sends them to the hornet manager
+     * @param message The message to decode
+     */
     public void processMessage(char[] message)
     {
         switch (message[0])
@@ -57,6 +88,5 @@ class Consumer extends Thread {
             default:
                 break;
         }
-
     }
 }
