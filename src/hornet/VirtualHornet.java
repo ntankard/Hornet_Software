@@ -1,4 +1,10 @@
+package hornet;
+
 import com.digi.xbee.api.exceptions.XBeeException;
+
+import hornet.coms.Coms;
+import hornet.coms.ComsEncoder;
+import hornet.gui.Navigation;
 
 /**
  * Created by Nicholas on 2/08/2015.

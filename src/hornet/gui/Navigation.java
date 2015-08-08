@@ -1,3 +1,5 @@
+package hornet.gui;
+
 import javax.swing.*;
 
 import net.java.games.input.Controller;
@@ -6,6 +8,8 @@ import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
+import hornet.VirtualHornet;
+
 
 /**
  * Created by Nicholas on 12/07/2015.

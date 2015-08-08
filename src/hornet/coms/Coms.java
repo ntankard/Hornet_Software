@@ -1,3 +1,5 @@
+package hornet.coms;
+
 import gnu.io.CommPortIdentifier;
 
 import java.io.IOException;

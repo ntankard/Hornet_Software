@@ -1,7 +1,11 @@
+package hornet.coms;
+
+
 import gnu.io.CommPortIdentifier;
 import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
+import hornet.CONFIG;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -62,7 +66,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
 
         try {
             // open serial port, and use class name for the appName.
-            _serialPort = (SerialPort) portId.open(this.getClass().getName(),CONFIG.Coms.USBSerial.TIME_OUT);
+            _serialPort = (SerialPort) portId.open(this.getClass().getName(), CONFIG.Coms.USBSerial.TIME_OUT);
 
             // set port parameters
             _serialPort.setSerialPortParams( baudRate,

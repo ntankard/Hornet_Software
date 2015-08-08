@@ -1,3 +1,9 @@
+package hornet;
+
+import hornet.VirtualHornet;
+import hornet.coms.*;
+import hornet.gui.Navigation;
+
 import java.nio.ByteBuffer;
 
 /**
@@ -6,7 +12,7 @@ import java.nio.ByteBuffer;
 public class Main {
 
     public static void main(String args[]) {
-        VirtualHornet  virtualHornet = new VirtualHornet();
+        VirtualHornet virtualHornet = new VirtualHornet();
 
         // create the UI
         Navigation navigation = new Navigation(virtualHornet);

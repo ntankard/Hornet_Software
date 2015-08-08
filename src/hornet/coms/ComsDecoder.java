@@ -1,9 +1,14 @@
+package hornet.coms;
+
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
 import java.nio.FloatBuffer;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
+//import hornet.VirtualHornet;
+import hornet.*;
+import hornet.gui.*;
 
 /**
  * Created by Nicholas on 4/08/2015.

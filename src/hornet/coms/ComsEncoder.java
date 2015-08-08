@@ -1,7 +1,10 @@
+package hornet.coms;
+
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
+import hornet.gui.Navigation;
 
 /**
  * Created by Nicholas on 4/08/2015.
