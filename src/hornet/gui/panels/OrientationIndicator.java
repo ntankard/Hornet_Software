@@ -1,3 +1,5 @@
+package hornet.gui.panels;
+
 import javax.swing.*;
 import java.awt.*;
 
@@ -36,5 +38,9 @@ public class OrientationIndicator extends JPanel {
         int center = r +_boarder;
 
         g2d.drawLine(center-(int)x,center-(int)y,center+(int)x,center+(int)y);
+    }
+
+    public Dimension getPreferredSize() {
+        return new Dimension(300, 300);
     }
 }

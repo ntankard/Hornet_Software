@@ -2,6 +2,7 @@ package hornet.gui;
 
 import javax.swing.*;
 
+import hornet.gui.panels.OrientationIndicator;
 import net.java.games.input.Controller;
 
 import java.awt.*;
@@ -9,12 +10,12 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import hornet.VirtualHornet;
-
+//import hornet.gui.panels.
 
 /**
  * Created by Nicholas on 12/07/2015.
  */
-public class Navigation extends JFrame {
+public class Navigation  {
     private JPanel rootPanel;
     private JPanel Comunications;
     private JComboBox SerialPort_Combo;
@@ -37,11 +38,12 @@ public class Navigation extends JFrame {
     private JPanel Indicators;
     private JPanel X;
     private JPanel Y;
-    private JPanel Z;
 
-    private ArrayList<Controller> foundControllers;
+   // private ArrayList<Controller> foundControllers;
 
     private VirtualHornet virtualHornet;
+    private JFrame frame;
+
 
     private Vector<String> sentMessages;
     private Vector<String> receivedMessages;
@@ -67,7 +69,6 @@ public class Navigation extends JFrame {
             public void componentResized(ComponentEvent e) {
                 X.setSize((int)X.getSize().getWidth(),(int)X.getSize().getWidth());
                 Y.setSize((int)Y.getSize().getWidth(),(int)Y.getSize().getWidth());
-                Z.setSize((int)Z.getSize().getWidth(),(int)Z.getSize().getWidth());
             }
 
             @Override
@@ -85,6 +86,13 @@ public class Navigation extends JFrame {
 
             }
         });
+    }
+
+    private void createUIComponents() {
+        // TODO: place custom component creation code here
+        X = new OrientationIndicator();
+        //X.setSize(500,500);
+        Y = new OrientationIndicator();
     }
 
 
@@ -149,24 +157,58 @@ public class Navigation extends JFrame {
         JScrollBar vertical = ReceivedMessages_Scroll.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
 
-        Graphics test =  Navigation.getGraphics();
-        test.drawLine(0, 0, 100, 100);
+        //Graphics test =  Navigation.getGraphics();
+        //test.drawLine(0, 0, 100, 100);
     }
 
     public void accGyro(float[] acc,float[] gyro) {
-        AccX_Text.setText(Float.toString(acc[0]));
-        AccY_Text.setText(Float.toString(acc[1]));
+        double g = Math.sqrt(Math.pow(acc[0],2)+Math.pow(acc[1],2)+Math.pow(acc[2],2));
+        float x = (float)Math.toDegrees(Math.asin(acc[0] / g));
+        float y = (float)(Math.toDegrees(Math.asin(acc[1]/g)));
+
+        AccX_Text.setText(Float.toString(x));
+        AccY_Text.setText(Float.toString(y));
         AccZ_Text.setText(Float.toString(acc[2]));
 
         GyroX_Text.setText(Float.toString(gyro[0]));
         GyroY_Text.setText(Float.toString(gyro[1]));
         GyroZ_Text.setText(Float.toString(gyro[2]));
+
+
+
+
+        Math.toDegrees(Math.asin(acc[0]/20));
+       // Math.asin(20.0 / gyro[0])
+
+        double a= Math.toDegrees(Math.asin(acc[0]/20));
+
+        System.out.println(g);
+
+                ((OrientationIndicator) X).setAngle(x);
+        ((OrientationIndicator)Y).setAngle(y);
+        //((OrientationIndicator)Z).setAngle(Math.toDegrees(Math.asin(acc[2]/20)));
+
+        //Z.setSize(frame.getWidth() / 3, frame.getWidth() / 3);
+       // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
+       // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
+
+        //frame.getWidth()/3;
+
+        //((OrientationIndicator)Z).setSize(((OrientationIndicator)Z).getWidth(),((OrientationIndicator)Z).getWidth());
+        frame.repaint();
     }
 
     public void open()
     {
+        frame = new JFrame("<class name>");
+        // Navigation n = new Navigation();
+        frame.setContentPane(rootPanel);
+        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.pack();
+        frame.setVisible(true);
 
-        setContentPane(rootPanel);
+
+        /*setContentPane(rootPanel);
         pack();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         this.setResizable(true);
@@ -175,7 +217,7 @@ public class Navigation extends JFrame {
 
         Graphics g = X.getGraphics();
 
-        g.drawOval(X.getWidth()/2,X.getWidth()/2,X.getWidth(),X.getWidth());
+        g.drawOval(X.getWidth()/2,X.getWidth()/2,X.getWidth(),X.getWidth());*/
     }
 
 }
