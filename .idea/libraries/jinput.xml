@@ -10,6 +10,13 @@
     <JAVADOC />
     <NATIVE>
       <root url="file://$PROJECT_DIR$/lib/native/Windows/win64" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib" />
+      <root url="file://$PROJECT_DIR$/lib" />
     </NATIVE>
     <SOURCES />
   </library>

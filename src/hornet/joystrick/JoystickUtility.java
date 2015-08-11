@@ -1,4 +1,4 @@
-//package jinputjoysticktestv2;
+package hornet.joystrick;
 
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -6,19 +6,18 @@ import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Component.Identifier;
 import java.util.ArrayList;
 
+/**
+ * Basic functions for Joystick integration
+ */
+public class JoystickUtility {
 
-public class JoystickManager {
-
-    private ArrayList<Controller> foundControllers;
-
-    public JoystickManager()
+    /**
+     * Get a list of controllers connected to the computer
+     * @return All controllers linked to the computer
+     */
+    public static ArrayList<Controller> getControllers()
     {
-        updateControllerList();
-    }
-
-    public void updateControllerList()
-    {
-        foundControllers = new ArrayList<>();
+        ArrayList<Controller> foundControllers = new ArrayList<>();
         Controller[] controllers = ControllerEnvironment.getDefaultEnvironment().getControllers();
 
         for(int i = 0; i < controllers.length; i++){
@@ -33,15 +32,22 @@ public class JoystickManager {
                 foundControllers.add(controller);
             }
         }
+
+        return foundControllers;
     }
 
-    public ArrayList<String> getControllersNames()
+    /**
+     * Get a list of the names of controllers connected to the computer
+     * @return The names of all controllers linked to this computer
+     */
+    public static ArrayList<String> getControllersNames()
     {
+        ArrayList<Controller> foundControllers = getControllers();
         ArrayList<String> toReturn = new ArrayList<>();
 
         if(!foundControllers.isEmpty()) {
             for(int i = 0; i < foundControllers.size(); i++) {
-                toReturn.add(foundControllers.get(i).getName() + " - " + foundControllers.get(i).getType().toString() + " type");
+                toReturn.add(foundControllers.get(i).getName());
             }
         }
         else {
@@ -51,7 +57,37 @@ public class JoystickManager {
         return toReturn;
     }
 
-    public JoystickInstance getInstance(Controller controller)
+    /**
+     * Get the controller with a specific name
+     * @param name The name of the controller to get
+     * @return The controller
+     */
+    public static Controller getController(String name)
+    {
+        ArrayList<Controller> foundControllers = getControllers();
+
+        if(foundControllers.size() == 0)
+        {
+            return null;
+        }
+
+        for(int i=0;i<foundControllers.size();i++)
+        {
+            if(foundControllers.get(i).getName() == name)
+            {
+                return foundControllers.get(i);
+            }
+        }
+
+        return null;
+    }
+
+    /**
+     * Get the current state off a specific
+     * @param controller
+     * @return The state of the controller
+     */
+    public static JoystickInstance getInstance(Controller controller)
     {
         JoystickInstance toReturn = new JoystickInstance();
 
@@ -60,6 +96,7 @@ public class JoystickManager {
         int yAxisPercentage = 0;
 
         // Go trough all components of the controller.
+        controller.poll();
         Component[] components = controller.getComponents();
         for(int i=0; i < components.length; i++)
         {
@@ -129,14 +166,11 @@ public class JoystickManager {
      *
      * @return value of axis in percentage.
      */
-    public int getAxisValueInPercentage(float axisValue)
+    public static int getAxisValueInPercentage(float axisValue)
     {
         return (int)(((2 - (1 - axisValue)) * 100) / 2);
     }
 
-
-
-    
 }
 
 

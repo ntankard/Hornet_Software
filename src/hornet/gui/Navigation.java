@@ -2,14 +2,15 @@ package hornet.gui;
 
 import javax.swing.*;
 
+import hornet.gui.panels.JoystickPos;
 import hornet.gui.panels.OrientationIndicator;
-import net.java.games.input.Controller;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import hornet.VirtualHornet;
+import hornet.joystrick.JoystickUtility;
 //import hornet.gui.panels.
 
 /**
@@ -38,62 +39,68 @@ public class Navigation  {
     private JPanel Indicators;
     private JPanel X;
     private JPanel Y;
+    private JComboBox Joystick_Combo;
+    private JPanel Joystick_Panel;
+    private JProgressBar Rotation_Bar;
+    private JProgressBar Throttle_Bar;
 
-   // private ArrayList<Controller> foundControllers;
+    // private ArrayList<Controller> foundControllers;
 
-    private VirtualHornet virtualHornet;
-    private JFrame frame;
-
-
-    private Vector<String> sentMessages;
-    private Vector<String> receivedMessages;
+    private VirtualHornet _virtualHornet;
+    private JFrame _frame;
+    private Vector<String> _sentMessages;
+    private Vector<String> _receivedMessages;
 
    // private JInputJoystickTest joy;
 
+    // -----------------------------------------------------------------------------------------------------------------
+    // ################################################# SETUP #########################################################
+    // -----------------------------------------------------------------------------------------------------------------
+
     public Navigation(VirtualHornet theVirtualHornet)
     {
-        sentMessages = new Vector<>();
-        receivedMessages = new Vector<>();
+        _sentMessages = new Vector<>();
+        _receivedMessages = new Vector<>();
 
-        virtualHornet = theVirtualHornet;
-        Connect_btn.addMouseListener(new MouseAdapter() {
-            @Override
-            public void mouseClicked(MouseEvent e) {
-                virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(), 9600);
-                super.mouseClicked(e);
-            }
-        });
+        _virtualHornet = theVirtualHornet;
 
-        rootPanel.addComponentListener(new ComponentListener() {
-            @Override
-            public void componentResized(ComponentEvent e) {
-                X.setSize((int)X.getSize().getWidth(),(int)X.getSize().getWidth());
-                Y.setSize((int)Y.getSize().getWidth(),(int)Y.getSize().getWidth());
-            }
+        Connect_btn.addMouseListener(new Connect_btn_click());
 
-            @Override
-            public void componentMoved(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentShown(ComponentEvent e) {
-
-            }
-
-            @Override
-            public void componentHidden(ComponentEvent e) {
-
-            }
-        });
+        setConnectionState(ConnectionState.Disconnected);
     }
 
     private void createUIComponents() {
-        // TODO: place custom component creation code here
         X = new OrientationIndicator();
-        //X.setSize(500,500);
         Y = new OrientationIndicator();
+        Joystick_Panel = new JoystickPos();
     }
+
+    public void open()
+    {
+        _frame = new JFrame("Hornet");
+        // Navigation n = new Navigation();
+        _frame.setContentPane(rootPanel);
+        _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        _frame.pack();
+        _frame.setVisible(true);
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ############################################### UI EVENT ########################################################
+    // -----------------------------------------------------------------------------------------------------------------
+
+    class Connect_btn_click extends MouseAdapter
+    {
+        @Override
+        public void mouseClicked(MouseEvent e) {
+            _virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(), 9600);
+            super.mouseClicked(e);
+        }
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ############################################ EXTERNAL EVENTS ####################################################
+    // -----------------------------------------------------------------------------------------------------------------
 
 
     public enum ConnectionState{Disconnected, Connecting, Connected}
@@ -120,7 +127,6 @@ public class Navigation  {
         }
     }
 
-
     public void setComPorts(ArrayList<String> ports)
     {
         //@todo erase original content
@@ -132,13 +138,13 @@ public class Navigation  {
 
     public void newSentMessage(String message)
     {
-        if(sentMessages.size() >=10)
+        if(_sentMessages.size() >=10)
         {
-            sentMessages.remove(0);
+            _sentMessages.remove(0);
         }
 
-        sentMessages.add(message);
-        SentMessages_List.setListData(sentMessages);
+        _sentMessages.add(message);
+        SentMessages_List.setListData(_sentMessages);
 
         JScrollBar vertical = SentMessages_Scroll.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
@@ -146,13 +152,13 @@ public class Navigation  {
 
     public void newReceivedMessage(String message)
     {
-        if(receivedMessages.size() >=10)
+        if(_receivedMessages.size() >=10)
         {
-            receivedMessages.remove(0);
+            _receivedMessages.remove(0);
         }
 
-        receivedMessages.add(message);
-        ReceivedMessages_List.setListData(receivedMessages);
+        _receivedMessages.add(message);
+        ReceivedMessages_List.setListData(_receivedMessages);
 
         JScrollBar vertical = ReceivedMessages_Scroll.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
@@ -178,47 +184,62 @@ public class Navigation  {
 
 
         Math.toDegrees(Math.asin(acc[0]/20));
-       // Math.asin(20.0 / gyro[0])
+        // Math.asin(20.0 / gyro[0])
 
         double a= Math.toDegrees(Math.asin(acc[0]/20));
 
         System.out.println(g);
 
-                ((OrientationIndicator) X).setAngle(x);
+        ((OrientationIndicator) X).setAngle(x);
         ((OrientationIndicator)Y).setAngle(y);
         //((OrientationIndicator)Z).setAngle(Math.toDegrees(Math.asin(acc[2]/20)));
 
         //Z.setSize(frame.getWidth() / 3, frame.getWidth() / 3);
-       // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
-       // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
+        // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
+        // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
 
         //frame.getWidth()/3;
 
         //((OrientationIndicator)Z).setSize(((OrientationIndicator)Z).getWidth(),((OrientationIndicator)Z).getWidth());
-        frame.repaint();
+        _frame.repaint();
     }
 
-    public void open()
+    public void updateJoystickList()
     {
-        frame = new JFrame("<class name>");
-        // Navigation n = new Navigation();
-        frame.setContentPane(rootPanel);
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.pack();
-        frame.setVisible(true);
+        ArrayList<String> joy = JoystickUtility.getControllersNames();
 
+        if(joy.size() == 0)
+        {
+            return;
+        }
 
-        /*setContentPane(rootPanel);
-        pack();
-        setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setResizable(true);
-        this.setLocationRelativeTo(null);
-        this.setVisible(true);
+        //@todo erase original content
+        for(int i=0;i<joy.size();i++)
+        {
+            Joystick_Combo.addItem(joy.get(i));
+        }
 
-        Graphics g = X.getGraphics();
+        Joystick_Combo.setSelectedIndex(0);
 
-        g.drawOval(X.getWidth()/2,X.getWidth()/2,X.getWidth(),X.getWidth());*/
+        _virtualHornet.UI_joystickConnected((String)Joystick_Combo.getSelectedItem());
     }
+
+    public void updateJoystickXY(int x,int y)
+    {
+        ((JoystickPos)Joystick_Panel).setPos(x, y);
+        _frame.repaint();
+    }
+
+    public void updateJoystickRotation(int r)
+    {
+        Rotation_Bar.setValue(r);
+    }
+
+    public void updateJoystickThrottle(int r)
+    {
+        Throttle_Bar.setValue(r);
+    }
+
 
 }
 

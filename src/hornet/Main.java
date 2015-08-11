@@ -3,6 +3,7 @@ package hornet;
 import hornet.VirtualHornet;
 import hornet.coms.*;
 import hornet.gui.Navigation;
+import hornet.joystrick.JoystickManager;
 
 import java.nio.ByteBuffer;
 
@@ -24,6 +25,10 @@ public class Main {
         ComsEncoder comsEncoder = new ComsEncoder(coms,navigation);
         virtualHornet.attachComsEncoder(comsEncoder);
         virtualHornet.attachComs(coms);
+
+        // create the Joystick
+        JoystickManager joystickManager = new JoystickManager(virtualHornet);
+        virtualHornet.attachJoystickManager(joystickManager);
 
         // setup all systems
         virtualHornet.start();

@@ -5,6 +5,7 @@ import com.digi.xbee.api.exceptions.XBeeException;
 import hornet.coms.Coms;
 import hornet.coms.ComsEncoder;
 import hornet.gui.Navigation;
+import hornet.joystrick.JoystickManager;
 
 /**
  * Created by Nicholas on 2/08/2015.
@@ -19,6 +20,8 @@ public class VirtualHornet {
 
     /** The UI */
     private Navigation _navigation;
+
+    private JoystickManager _joystickManager;
 
     /** The state of the entire system */
     enum State{Init,Idle,Connect,Connected}
@@ -39,6 +42,7 @@ public class VirtualHornet {
     public void attachNavigation(Navigation theNav){ _navigation = theNav; }
     public void attachComs(Coms theComs){_coms = theComs;}
     public void attachComsEncoder(ComsEncoder theComsEncoder){_comsEncoder = theComsEncoder;}
+    public void attachJoystickManager(JoystickManager theJoystickManager){_joystickManager = theJoystickManager;}
 
     /**
      * Start the system (equivalent to a constructor, call after all componets are attached)
@@ -46,6 +50,7 @@ public class VirtualHornet {
     public void start()
     {
         _navigation.setComPorts(Coms.getPorts());
+        _navigation.updateJoystickList();
         _navigation.open();
 
         _state =State.Idle;
@@ -70,6 +75,11 @@ public class VirtualHornet {
          }
     }
 
+    public void UI_joystickConnected(String theJoystick)
+    {
+        _joystickManager.connect(theJoystick);
+    }
+
     /**
      * A message has been received from the drone requesting to open a connection
      */
@@ -88,7 +98,19 @@ public class VirtualHornet {
         _navigation.accGyro(acc,gyro);
     }
 
+    public void J_newXY(int xPer, int yPer)
+    {
+        _navigation.updateJoystickXY(xPer, yPer);
+    }
 
+    public void J_newRotation(int r)
+    {
+        _navigation.updateJoystickRotation(r);
+    }
 
+    public void J_newThrottle(int t)
+    {
+        _navigation.updateJoystickThrottle(t);
+    }
 
 }

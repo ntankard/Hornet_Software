@@ -1,3 +1,5 @@
+package hornet.joystrick;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
@@ -12,6 +14,7 @@ public class JoystickInstance {
 
     public HashMap<String,Boolean> buttons = new HashMap<>(); //@TODO convert to int
     float hatSwitchPosition;
+
 
     public HashMap<String,Integer> otherAxis = new HashMap<>();
 }
