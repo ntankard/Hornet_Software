@@ -15,7 +15,6 @@ package hornet.gui.panels;
         public UltrasonicUI() {
             setPreferredSize(new Dimension(500, 500));
             setBorder(new TitledBorder("Ultrasonic"));
-            setBackground(Color.white);
         }
 
         public void paintComponent(Graphics g) {
@@ -33,7 +32,6 @@ package hornet.gui.panels;
             g.setColor(Color.blue);
             g.fillRect(x - width / 2, 450-distIndicator, width, distIndicator);
 
-            repaint();
         }
 
         public void setDistance(int dist){
@@ -41,5 +39,3 @@ package hornet.gui.panels;
         }
 
     }
-
-}

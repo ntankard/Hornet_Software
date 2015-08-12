@@ -10,6 +10,7 @@ import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import hornet.VirtualHornet;
+import hornet.gui.panels.UltrasonicUI;
 import hornet.joystrick.JoystickUtility;
 //import hornet.gui.panels.
 
@@ -43,6 +44,7 @@ public class Navigation  {
     private JPanel Joystick_Panel;
     private JProgressBar Rotation_Bar;
     private JProgressBar Throttle_Bar;
+    private JPanel Altitude_Panel;
 
     // private ArrayList<Controller> foundControllers;
 
@@ -73,6 +75,7 @@ public class Navigation  {
         X = new OrientationIndicator();
         Y = new OrientationIndicator();
         Joystick_Panel = new JoystickPos();
+        Altitude_Panel = new UltrasonicUI();
     }
 
     public void open()
@@ -240,6 +243,11 @@ public class Navigation  {
         Throttle_Bar.setValue(r);
     }
 
+    public void updateAltitude(int a)
+    {
+        ((UltrasonicUI)Altitude_Panel).setDistance(a);
+        _frame.repaint();
+    }
 
 }
 
