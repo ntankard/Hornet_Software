@@ -52,7 +52,7 @@ public class JoystickUtility {
             }
         }
         else {
-            toReturn.add("No controller found!");
+            //toReturn.add("No controller found!");
         }
 
         return toReturn;
@@ -146,7 +146,7 @@ public class JoystickUtility {
                 }
 
                 // Other axis
-                toUpdate.setOtherAxis(component.getName(),axisValueInPercentage);
+                toUpdate.setOtherAxis(component.getName(), axisValueInPercentage);
 
             }
         }
@@ -168,6 +168,7 @@ public class JoystickUtility {
 
         // Go trough all components of the controller.
         controller.poll();
+
         Component[] components = controller.getComponents();
         for(int i=0; i < components.length; i++)
         {

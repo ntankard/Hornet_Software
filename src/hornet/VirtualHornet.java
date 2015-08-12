@@ -15,15 +15,16 @@ public class VirtualHornet {
     /** The system that manages low level communications */
     private Coms _coms;
 
-    /** The system taht encodes messages into spendable packets */
+    /** The system that encodes messages into spendable packets */
     private ComsEncoder _comsEncoder;
 
     /** The UI */
     private Navigation _navigation;
 
+    /** THe Joystick Manager */
     private JoystickManager _joystickManager;
 
-    /** The state of the entire system */
+    /** The state of the software system */
     enum State{Init,Idle,Connect,Connected}
     private State _state;
 
@@ -37,7 +38,7 @@ public class VirtualHornet {
     }
 
     /**
-     * Attach all components that need to be constructed externaly
+     * Attach all components that need to be constructed externally
      */
     public void attachNavigation(Navigation theNav){ _navigation = theNav; }
     public void attachComs(Coms theComs){_coms = theComs;}
@@ -45,15 +46,17 @@ public class VirtualHornet {
     public void attachJoystickManager(JoystickManager theJoystickManager){_joystickManager = theJoystickManager;}
 
     /**
-     * Start the system (equivalent to a constructor, call after all componets are attached)
+     * Start the system (equivalent to a constructor, call after all components are attached)
      */
     public void start()
     {
-        _navigation.setComPorts(Coms.getPorts());
-        _navigation.updateJoystickList();
         _navigation.open();
+        _navigation.setComPorts(Coms.getPorts());
 
         _state =State.Idle;
+
+        _navigation.updateJoystickList();
+
     }
 
     /**
@@ -100,17 +103,26 @@ public class VirtualHornet {
 
     public void J_newXY(int xPer, int yPer)
     {
-        _navigation.updateJoystickXY(xPer, yPer);
+        if(_state != State.Init) {
+            _navigation.updateJoystickXY(xPer, yPer);
+        }
     }
 
     public void J_newRotation(int r)
     {
-        _navigation.updateJoystickRotation(r);
+
+        if(_state != State.Init)
+        {
+            _navigation.updateJoystickRotation(r);
+        }
     }
 
     public void J_newThrottle(int t)
     {
-        _navigation.updateJoystickThrottle(t);
+        if(_state != State.Init)
+        {
+            _navigation.updateJoystickThrottle(t);
+        }
     }
 
 }

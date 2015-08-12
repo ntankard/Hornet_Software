@@ -52,8 +52,19 @@ public class JoystickManager {
             _monitor.interrupt();
             while (_monitor.isAlive()) {
             }
+            _controller = null;
         }
     }
+
+    /*public void forceUpdate()
+    {
+        if(_controller!= null) {
+            JoystickInstance current = JoystickUtility.generateInstance(_controller);
+            _virtualHornet.J_newXY(current.getX(), current.getY());
+            _virtualHornet.J_newThrottle(current.getOtherAxis().get("Slider"));
+            _virtualHornet.J_newRotation(current.getOtherAxis().get("Z Rotation"));
+        }
+    }*/
 }
 
 class JoystickMonitor extends Thread {
@@ -108,20 +119,22 @@ class JoystickMonitor extends Thread {
             current = _b;
         }
 
-        if(current.isEqualXY(past))
+        if(!current.isEqualXY(past))
         {
             _virtualHornet.J_newXY(current.getX(), current.getY());
         }
 
-        if(current.isEqualOtherAxis(past, "Slider"))
+        if(!current.isEqualOtherAxis(past, "Slider"))
         {
             _virtualHornet.J_newThrottle(current.getOtherAxis().get("Slider"));
         }
 
-        if(current.isEqualOtherAxis(past,"Z Rotation"))
+        if(!current.isEqualOtherAxis(past,"Z Rotation"))
         {
             _virtualHornet.J_newRotation(current.getOtherAxis().get("Z Rotation"));
         }
+
+        isA = !isA;
 
     }
 }
