@@ -5,6 +5,7 @@ import net.java.games.input.Controller;
 import net.java.games.input.ControllerEnvironment;
 import net.java.games.input.Component.Identifier;
 import java.util.ArrayList;
+import java.util.HashMap;
 
 /**
  * Basic functions for Joystick integration
@@ -82,18 +83,14 @@ public class JoystickUtility {
         return null;
     }
 
-    /**
-     * Get the current state off a specific
-     * @param controller
-     * @return The state of the controller
-     */
-    public static JoystickInstance getInstance(Controller controller)
+    public static void getInstance(Controller controller, JoystickInstance toUpdate)
     {
-        JoystickInstance toReturn = new JoystickInstance();
-
         // X axis and Y axis
         int xAxisPercentage = 0;
         int yAxisPercentage = 0;
+        HashMap<String,Boolean> buttons = new HashMap<>(); //@TODO convert to int
+        float hatSwitchPosition =0;
+        HashMap<String,Integer> otherAxis = new HashMap<>();
 
         // Go trough all components of the controller.
         controller.poll();
@@ -115,7 +112,7 @@ public class JoystickUtility {
                 String buttonIndex;
                 buttonIndex = component.getIdentifier().toString(); //@TODO convert to int
 
-                toReturn.buttons.put(buttonIndex, isItPressed);
+                toUpdate.setButton(buttonIndex, isItPressed);
 
                 // We know that this component was button so we can skip to next component.
                 continue;
@@ -123,8 +120,8 @@ public class JoystickUtility {
 
             // Hat switch
             if(componentIdentifier == Component.Identifier.Axis.POV){
-                float hatSwitchPosition = component.getPollData();
-                toReturn.hatSwitchPosition=hatSwitchPosition;
+                hatSwitchPosition = component.getPollData();
+                toUpdate.setHatSwitchPosition(hatSwitchPosition);
 
                 // We know that this component was hat switch so we can skip to next component.
                 continue;
@@ -138,24 +135,95 @@ public class JoystickUtility {
                 // X axis
                 if(componentIdentifier == Component.Identifier.Axis.X){
                     xAxisPercentage = axisValueInPercentage;
-                    toReturn.xAxisPercentage = xAxisPercentage;
+                    toUpdate.setX(xAxisPercentage);
                     continue; // Go to next component.
                 }
                 // Y axis
                 if(componentIdentifier == Component.Identifier.Axis.Y){
                     yAxisPercentage = axisValueInPercentage;
-                    toReturn.yAxisPercentage = yAxisPercentage;
+                    toUpdate.setY(yAxisPercentage);
                     continue; // Go to next component.
                 }
 
                 // Other axis
-                toReturn.otherAxis.put(component.getName(),axisValueInPercentage);
+                toUpdate.setOtherAxis(component.getName(),axisValueInPercentage);
+
+            }
+        }
+    }
+
+    /**
+     * Get the current state off a specific
+     * @param controller
+     * @return The state of the controller
+     */
+    public static JoystickInstance generateInstance(Controller controller)
+    {
+        // X axis and Y axis
+        int xAxisPercentage = 0;
+        int yAxisPercentage = 0;
+        HashMap<String,Boolean> buttons = new HashMap<>(); //@TODO convert to int
+        float hatSwitchPosition =0;
+        HashMap<String,Integer> otherAxis = new HashMap<>();
+
+        // Go trough all components of the controller.
+        controller.poll();
+        Component[] components = controller.getComponents();
+        for(int i=0; i < components.length; i++)
+        {
+            Component component = components[i];
+            Identifier componentIdentifier = component.getIdentifier();
+
+            // Buttons
+            //if(component.getName().contains("Button")){ // If the language is not english, this won't work.
+            if(componentIdentifier.getName().matches("^[0-9]*$")){ // If the component identifier name contains only numbers, then this is a button.
+                // Is button pressed?
+                boolean isItPressed = true;
+                if(component.getPollData() == 0.0f)
+                    isItPressed = false;
+
+                // Button index
+                String buttonIndex;
+                buttonIndex = component.getIdentifier().toString(); //@TODO convert to int
+
+                buttons.put(buttonIndex, isItPressed);
+
+                // We know that this component was button so we can skip to next component.
+                continue;
+            }
+
+            // Hat switch
+            if(componentIdentifier == Component.Identifier.Axis.POV){
+                hatSwitchPosition = component.getPollData();
+
+                // We know that this component was hat switch so we can skip to next component.
+                continue;
+            }
+
+            // Axes
+            if(component.isAnalog()){
+                float axisValue = component.getPollData();
+                int axisValueInPercentage = getAxisValueInPercentage(axisValue);
+
+                // X axis
+                if(componentIdentifier == Component.Identifier.Axis.X){
+                    xAxisPercentage = axisValueInPercentage;
+                    continue; // Go to next component.
+                }
+                // Y axis
+                if(componentIdentifier == Component.Identifier.Axis.Y){
+                    yAxisPercentage = axisValueInPercentage;
+                    continue; // Go to next component.
+                }
+
+                // Other axis
+                otherAxis.put(component.getName(),axisValueInPercentage);
 
 
             }
         }
 
-        return toReturn;
+        return new JoystickInstance(xAxisPercentage,yAxisPercentage,buttons,hatSwitchPosition,otherAxis);
     }
 
     /**

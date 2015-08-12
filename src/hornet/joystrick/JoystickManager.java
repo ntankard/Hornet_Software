@@ -54,20 +54,29 @@ public class JoystickManager {
             }
         }
     }
-
 }
 
 class JoystickMonitor extends Thread {
 
     private Controller _controller;
-    private JoystickInstance _past;
+    private JoystickInstance _a;
+    private JoystickInstance _b;
+    private boolean isA;
     private VirtualHornet _virtualHornet;
 
     JoystickMonitor(VirtualHornet theVirtualHornet, Controller theController)
     {
         _virtualHornet = theVirtualHornet;
         _controller = theController;
-        _past = JoystickUtility.getInstance(_controller);
+
+
+        _a = JoystickUtility.generateInstance(_controller);
+        _b = JoystickUtility.generateInstance(_controller);   //@TODO verify that this has created 2 identical kinds of instances
+        isA = false;
+
+        _virtualHornet.J_newXY(_a.getX(), _a.getY());
+        _virtualHornet.J_newThrottle(_a.getOtherAxis().get("Slider"));
+        _virtualHornet.J_newRotation(_a.getOtherAxis().get("Z Rotation"));
     }
 
     public void run() {
@@ -83,25 +92,36 @@ class JoystickMonitor extends Thread {
 
     void read()
     {
-        JoystickInstance current = JoystickUtility.getInstance(_controller);
+        JoystickInstance past;
+        JoystickInstance current;
 
-        if(current.xAxisPercentage != _past.xAxisPercentage || current.yAxisPercentage != _past.yAxisPercentage)
+        if(isA)
         {
-            _virtualHornet.J_newXY(current.xAxisPercentage, current.yAxisPercentage);
+            JoystickUtility.getInstance(_controller,_a);
+            past = _b;
+            current = _a;
+        }
+        else
+        {
+            JoystickUtility.getInstance(_controller,_b);
+            past = _a;
+            current = _b;
         }
 
-        if(current.otherAxis.get("Slider") != _past.otherAxis.get("Slider"))
+        if(current.isEqualXY(past))
         {
-            _virtualHornet.J_newThrottle(current.otherAxis.get("Slider"));
+            _virtualHornet.J_newXY(current.getX(), current.getY());
         }
 
-        if(current.otherAxis.get("Z Rotation") != _past.otherAxis.get("Z Rotation"))
+        if(current.isEqualOtherAxis(past, "Slider"))
         {
-            _virtualHornet.J_newRotation(current.otherAxis.get("Z Rotation"));
+            _virtualHornet.J_newThrottle(current.getOtherAxis().get("Slider"));
         }
 
+        if(current.isEqualOtherAxis(past,"Z Rotation"))
+        {
+            _virtualHornet.J_newRotation(current.getOtherAxis().get("Z Rotation"));
+        }
 
-
-        _past = current;
     }
 }
