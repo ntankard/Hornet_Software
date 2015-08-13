@@ -45,7 +45,7 @@ public class ComsEncoder {
 
     public void send_throttle(int t)
     {
-        byte[] theMessage = new byte[1];
+        byte[] theMessage = new byte[2];
         theMessage[0] = 't';
         theMessage[1] = (byte)t;
 

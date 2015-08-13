@@ -138,7 +138,7 @@ public class VirtualHornet {
                 _navigation.turnJoyStickReady();
             }
 
-            if(_state == State.Connect && _joyReady)
+            if(_state == State.Connected && _joyReady)
             {
                 _comsEncoder.send_throttle(t);
             }
