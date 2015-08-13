@@ -2,6 +2,7 @@ package hornet.gui;
 
 import javax.swing.*;
 
+import hornet.gui.panels.Indicator;
 import hornet.gui.panels.JoystickPos;
 import hornet.gui.panels.OrientationIndicator;
 
@@ -45,6 +46,10 @@ public class Navigation  {
     private JProgressBar Rotation_Bar;
     private JProgressBar Throttle_Bar;
     private JPanel Altitude_Panel;
+    private JPanel CriticalStatus;
+    private JPanel CommectionStatus;
+    private JPanel JoyStickConnected;
+    private JPanel JoyStickReady;
 
     // private ArrayList<Controller> foundControllers;
 
@@ -76,6 +81,9 @@ public class Navigation  {
         Y = new OrientationIndicator();
         Joystick_Panel = new JoystickPos();
         Altitude_Panel = new UltrasonicUI();
+        CommectionStatus = new Indicator("Coms");
+        JoyStickConnected = new Indicator("JS Connect");
+        JoyStickReady = new Indicator("JS Ready");
     }
 
     public void open()
@@ -86,6 +94,8 @@ public class Navigation  {
         _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         _frame.pack();
         _frame.setVisible(true);
+
+        _frame.repaint();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -116,16 +126,19 @@ public class Navigation  {
                 ConnectionStatus_lbl.setText("Disconnected");
                 ConnectionStatus_lbl.setBackground(Color.RED);
                 Connect_btn.setText("Connect");
+                ((Indicator)CommectionStatus).turnOff();
                 break;
             case Connecting:
                 ConnectionStatus_lbl.setText("Connecting");
                 ConnectionStatus_lbl.setBackground(Color.YELLOW);
                 Connect_btn.setText("Cancel");
+                ((Indicator)CommectionStatus).turnOff();
                 break;
             case Connected:
                 ConnectionStatus_lbl.setText("Connected");
                 ConnectionStatus_lbl.setBackground(Color.GREEN);
                 Connect_btn.setText("Disconnect");
+                ((Indicator)CommectionStatus).turnOn();
                 break;
         }
     }
@@ -191,8 +204,6 @@ public class Navigation  {
 
         double a= Math.toDegrees(Math.asin(acc[0]/20));
 
-        System.out.println(g);
-
         ((OrientationIndicator) X).setAngle(x);
         ((OrientationIndicator)Y).setAngle(y);
         //((OrientationIndicator)Z).setAngle(Math.toDegrees(Math.asin(acc[2]/20)));
@@ -224,7 +235,7 @@ public class Navigation  {
 
         Joystick_Combo.setSelectedIndex(0);
 
-        _virtualHornet.UI_joystickConnected((String)Joystick_Combo.getSelectedItem());
+        _virtualHornet.UI_joystickConnected((String) Joystick_Combo.getSelectedItem());
     }
 
     public void updateJoystickXY(int x,int y)
@@ -246,6 +257,18 @@ public class Navigation  {
     public void updateAltitude(int a)
     {
         ((UltrasonicUI)Altitude_Panel).setDistance(a);
+        _frame.repaint();
+    }
+
+    public void turnJoyStickConnectedOn()
+    {
+        ((Indicator)JoyStickConnected).turnOn();
+        _frame.repaint();
+    }
+
+    public void turnJoyStickReady()
+    {
+        ((Indicator)JoyStickReady).turnOn();
         _frame.repaint();
     }
 

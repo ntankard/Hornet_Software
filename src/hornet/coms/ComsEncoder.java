@@ -35,6 +35,24 @@ public class ComsEncoder {
         send(theMessage, 0);
     }
 
+    public void send_reset()
+    {
+        byte[] theMessage = new byte[1];
+        theMessage[0] = 'r';
+
+        send(theMessage, 0);
+    }
+
+    public void send_throttle(int t)
+    {
+        byte[] theMessage = new byte[1];
+        theMessage[0] = 't';
+        theMessage[1] = (byte)t;
+
+        send(theMessage, 1);
+    }
+
+
     public void send(byte[] message,int priority)
     {
         _messages.add(new Message(message, priority));
