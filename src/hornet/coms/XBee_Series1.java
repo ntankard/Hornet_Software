@@ -1,9 +1,12 @@
+package hornet.coms;
+
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;
 import com.digi.xbee.api.exceptions.XBeeException;
 import com.digi.xbee.api.listeners.IDataReceiveListener;
 import com.digi.xbee.api.models.XBee64BitAddress;
 import com.digi.xbee.api.models.XBeeMessage;
+import hornet.VirtualHornet;
 
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -13,9 +16,9 @@ import java.util.concurrent.BlockingQueue;
  */
 public class XBee_Series1 extends Coms {
 
-    public XBee_Series1(VirtualHornet vh)
+    public XBee_Series1(ComsDecoder theComsDecoder)
     {
-        _virtualHornet = vh;
+        _comsDecoder = theComsDecoder;
     }
 
     public boolean open(String port, int baudRate)
@@ -31,7 +34,7 @@ public class XBee_Series1 extends Coms {
 
         // setup the thread to send data
         _toSend = new ArrayBlockingQueue(100);
-        _sender = new Sender(_toSend,_xbee);
+        _sender = new XBSender(_toSend,_xbee);
         _sender.start();
 
         //setup the thread to read data
@@ -40,8 +43,7 @@ public class XBee_Series1 extends Coms {
             public void dataReceived(XBeeMessage xBeeMessage) {
                 if(xBeeMessage!= null)
                 {
-                    //@TODO notify somone
-                    System.out.println(xBeeMessage.getDataString());
+                    _comsDecoder.processMessage(xBeeMessage.getData());
                 }
             }
         });
@@ -57,23 +59,28 @@ public class XBee_Series1 extends Coms {
         _xbee.close();
     }
 
+    public boolean canSend()
+    {
+        return (_toSend.size() >=90);
+    }
+
     public void send(byte[] dataToSend)
     {
         _toSend.add(dataToSend);
     }
 
     private XBeeDevice _xbee;
-    private Sender _sender;
+    private XBSender _sender;
     private BlockingQueue _toSend = new ArrayBlockingQueue(100);
 }
 
-class Sender extends Thread {
+class XBSender extends Thread {
 
     private final BlockingQueue _toSend;
     private final XBeeDevice _xbee;
     private final RemoteXBeeDevice _drone;
 
-    Sender(BlockingQueue toSend,XBeeDevice xbee)
+    XBSender(BlockingQueue toSend,XBeeDevice xbee)
     {
         _toSend = toSend;
         _xbee = xbee;
