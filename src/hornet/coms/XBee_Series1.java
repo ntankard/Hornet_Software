@@ -61,7 +61,7 @@ public class XBee_Series1 extends Coms {
 
     public boolean canSend()
     {
-        return (_toSend.size() >=90);
+        return !  (_toSend.size() >=90);
     }
 
     public void send(byte[] dataToSend)
