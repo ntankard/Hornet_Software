@@ -28,6 +28,8 @@ public class VirtualHornet {
     enum State{Init,Idle,Connect,Connected}
     private State _state;
 
+    private boolean _joyReady = false;
+
     /**
      * Default constructor
      * Dose nothing because components are not added yet
@@ -80,7 +82,11 @@ public class VirtualHornet {
 
     public void UI_joystickConnected(String theJoystick)
     {
-        _joystickManager.connect(theJoystick);
+        if(_joystickManager.connect(theJoystick))
+        {
+            _navigation.turnJoyStickConnectedOn();
+            _joyReady = false;
+        }
     }
 
     /**
@@ -99,6 +105,10 @@ public class VirtualHornet {
     public void C_accGyro(float[] acc,float[] gyro)
     {
         _navigation.accGyro(acc,gyro);
+        if(_state == State.Connect)
+        {
+            _comsEncoder.send_reset();
+        }
     }
 
     public void J_newXY(int xPer, int yPer)
@@ -122,6 +132,16 @@ public class VirtualHornet {
         if(_state != State.Init)
         {
             _navigation.updateJoystickThrottle(t);
+            if(t == 100)
+            {
+                _joyReady = true;
+                _navigation.turnJoyStickReady();
+            }
+
+            if(_state == State.Connected && _joyReady)
+            {
+                _comsEncoder.send_throttle(t);
+            }
         }
     }
 
