@@ -104,4 +104,15 @@ public class JoystickInstance {
         return true;
     }
 
+    public boolean isEqualButton(JoystickInstance j, String key)
+    {
+        if(_buttons.get(key) != j._buttons.get(key))
+        {
+            return false;
+        }
+        return true;
+    }
+
+
+
 }

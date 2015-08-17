@@ -126,13 +126,23 @@ class JoystickMonitor extends Thread {
 
         if(!current.isEqualOtherAxis(past, "Slider"))
         {
-            _virtualHornet.J_newThrottle(current.getOtherAxis().get("Slider"));
+            _virtualHornet.J_newThrottle(100-current.getOtherAxis().get("Slider"));
         }
 
         if(!current.isEqualOtherAxis(past,"Z Rotation"))
         {
             _virtualHornet.J_newRotation(current.getOtherAxis().get("Z Rotation"));
         }
+
+        if(!current.isEqualButton(past, "4"))
+        {
+            if(current.getButtons().get("4"))
+            {
+                _virtualHornet.J_armDisarm();
+                System.out.println("YES");
+            }
+        }
+
 
         isA = !isA;
 

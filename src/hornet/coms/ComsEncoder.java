@@ -43,6 +43,14 @@ public class ComsEncoder {
         send(theMessage, 0);
     }
 
+    public void send_armDisarm()
+    {
+        byte[] theMessage = new byte[1];
+        theMessage[0] = 'd';
+
+        send(theMessage, 0);
+    }
+
     public void send_throttle(int t)
     {
         byte[] theMessage = new byte[2];

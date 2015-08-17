@@ -132,7 +132,7 @@ public class VirtualHornet {
         if(_state != State.Init)
         {
             _navigation.updateJoystickThrottle(t);
-            if(t == 100)
+            if(t == 0)
             {
                 _joyReady = true;
                 _navigation.turnJoyStickReady();
@@ -142,6 +142,14 @@ public class VirtualHornet {
             {
                 _comsEncoder.send_throttle(t);
             }
+        }
+    }
+
+    public void J_armDisarm()
+    {
+        if(_state == State.Connected && _joyReady)
+        {
+            _comsEncoder.send_armDisarm();
         }
     }
 

@@ -21,8 +21,8 @@ public class Main {
 
         // setup the com systems
         ComsDecoder comsDecoder = new ComsDecoder(virtualHornet,navigation);
-        //Coms coms = new USBSerial(comsDecoder);
-        Coms coms = new XBee_Series1(comsDecoder);
+        Coms coms = new USBSerial(comsDecoder);
+        //Coms coms = new XBee_Series1(comsDecoder);
 
         ComsEncoder comsEncoder = new ComsEncoder(coms,navigation);
         virtualHornet.attachComsEncoder(comsEncoder);
