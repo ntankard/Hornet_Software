@@ -1,3 +1,5 @@
+package hornet.gui.panels;
+
 public class Point3D {
 
     private double yaw;

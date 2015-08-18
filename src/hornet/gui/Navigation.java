@@ -2,16 +2,13 @@ package hornet.gui;
 
 import javax.swing.*;
 
-import hornet.gui.panels.Indicator;
-import hornet.gui.panels.JoystickPos;
-import hornet.gui.panels.OrientationIndicator;
+import hornet.gui.panels.*;
 
 import java.awt.*;
 import java.awt.event.*;
 import java.util.ArrayList;
 import java.util.Vector;
 import hornet.VirtualHornet;
-import hornet.gui.panels.UltrasonicUI;
 import hornet.joystrick.JoystickUtility;
 //import hornet.gui.panels.
 
@@ -50,6 +47,9 @@ public class Navigation  {
     private JPanel CommectionStatus;
     private JPanel JoyStickConnected;
     private JPanel JoyStickReady;
+    private LidarView FrontView_Panel;
+    private JPanel Views;
+    private TopView TopView_Panel;
 
     // private ArrayList<Controller> foundControllers;
 
@@ -58,7 +58,16 @@ public class Navigation  {
     private Vector<String> _sentMessages;
     private Vector<String> _receivedMessages;
 
-   // private JInputJoystickTest joy;
+
+    public TopView getTopView() {
+        return TopView_Panel;
+    }
+
+    public LidarView getFrontView() {
+        return FrontView_Panel;
+    } //JUST USED FOR TESTING
+
+    // private JInputJoystickTest joy;
 
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
@@ -84,6 +93,8 @@ public class Navigation  {
         CommectionStatus = new Indicator("Coms");
         JoyStickConnected = new Indicator("JS Connect");
         JoyStickReady = new Indicator("JS Ready");
+        FrontView_Panel = new LidarView(0, 90);
+        TopView_Panel = new TopView();
     }
 
     public void open()

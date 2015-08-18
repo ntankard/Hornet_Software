@@ -1,3 +1,5 @@
+package hornet.gui.panels;
+
 //tested and works
 public class PointXY {
 
@@ -12,12 +14,12 @@ public class PointXY {
         tokens = raw.split(" ");
         yaw = Double.parseDouble(tokens[0]);
         distance = Double.parseDouble(tokens[1]);
-        calculatePoint();
     }
 
-    protected void calculatePoint(){
-        x = Math.cos(Math.toRadians(yaw)) * distance;
-        y = Math.sin(Math.toRadians(yaw)) * distance;
+    protected void calculatePoint(int width, int height){
+        int fieldOfViewDistance = 1500; //this will be what we deem to be the range that we can see/would like to view
+        x = (((Math.cos(Math.toRadians(yaw)) * distance)+(width))/fieldOfViewDistance)*width;
+        y = (((Math.sin(Math.toRadians(yaw)) * distance)+(height))/fieldOfViewDistance)*height;
     }
 
     public int getX(){

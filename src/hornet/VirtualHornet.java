@@ -59,6 +59,10 @@ public class VirtualHornet {
 
         _navigation.updateJoystickList();
 
+        //JUST USED FOR TESTING
+        //@TODO implement the coms for lidar data get them to draw
+        _navigation.getFrontView().draw();
+        _navigation.getTopView().draw();
     }
 
     /**

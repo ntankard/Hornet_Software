@@ -1,3 +1,5 @@
+package hornet.gui.panels;
+
 import javax.swing.*;
 import java.awt.*;
 import java.io.BufferedReader;
@@ -26,7 +28,6 @@ public class LidarView extends JPanel{
             drawablePoints.get(i-1).calculatePoint(minDegree, maxDegree, CANVAS_WIDTH, CANVAS_HEIGHT);
             g.setColor(calculateColor(drawablePoints.get(i - 1).getDistance()));
             g.fillOval(drawablePoints.get(i-1).getYaw(),drawablePoints.get(i-1).getPitch() ,10,10);
-            System.out.println("Yaw: " + drawablePoints.get(i-1).getYaw() + " Distance: " + drawablePoints.get(i-1).getDistance() + " Pitch: " + drawablePoints.get(i-1).getPitch());
         }
     }
 
