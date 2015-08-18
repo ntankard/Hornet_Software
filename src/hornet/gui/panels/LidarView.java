@@ -1,6 +1,7 @@
 package hornet.gui.panels;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;

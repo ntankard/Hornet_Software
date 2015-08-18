@@ -1,6 +1,7 @@
 package hornet.gui.panels;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -20,7 +21,7 @@ public class TopView extends JPanel {
 
     public TopView() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
-        setBackground(Color.red);
+        setBackground(Color.white);
     }
 
     public void paintComponent(Graphics g) {
