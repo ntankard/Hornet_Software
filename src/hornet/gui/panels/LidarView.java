@@ -13,8 +13,8 @@ public class LidarView extends JPanel{
     ArrayList<Point3D> drawablePoints = new ArrayList<>();
     private int minDegree;
     private int maxDegree;
-    private int CANVAS_HEIGHT = 600;
-    private int CANVAS_WIDTH = 600;
+    private int CANVAS_HEIGHT = 100;
+    private int CANVAS_WIDTH = 100;
 
     public LidarView(int minDeg, int maxDeg) {
         minDegree = minDeg;

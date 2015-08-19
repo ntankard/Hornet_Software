@@ -16,8 +16,8 @@ import java.util.ArrayList;
 public class TopView extends JPanel {
     ArrayList<PointXY> drawablePoints = new ArrayList<>();
 
-    private int CANVAS_HEIGHT = 600;
-    private int CANVAS_WIDTH = 600;
+    private int CANVAS_HEIGHT = 100;
+    private int CANVAS_WIDTH = 100;
 
     public TopView() {
         setPreferredSize(new Dimension(CANVAS_WIDTH, CANVAS_HEIGHT));
