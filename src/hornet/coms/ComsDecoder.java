@@ -122,7 +122,7 @@ class Consumer extends Thread {
                 _virtualHornet.C_accGyro(acc,gyro);
                 break;
             case CONFIG.Coms.PacketCodes.LIDAR:     //When a LIDAR packet is received
-                if (message.length != 17)           //Check that the size of the packet is correct
+                if (message.length != 13)           //Check that the size of the packet is correct
                 //Currently assumed to be 1 ID byte and 4 bytes for each of the 4 floats
                 {
                     break;  //@TODO add error handling here
@@ -131,10 +131,21 @@ class Consumer extends Thread {
                 converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
                 float yaw = converted[0];                       //Get the yaw from sent packet
                 float distance = converted[1];                  //Get the distance from sent packet
-                float pitch = converted [3];                    //Get the pitch from sent packet
+                float pitch = converted [2];                    //Get the pitch from sent packet
                 _virtualHornet.L_newLidar(yaw, distance, pitch);//Pass yaw, distance and pitch to the virtual Horent to be
                 //used by it's Lidar panel
                 break;
+            case CONFIG.Coms.PacketCodes.PITCH_ROLL:
+                if (message.length != 9)           //Check that the size of the packet is correct
+                {
+                    break;  //@TODO add error handling here
+                }
+                filteredByteArray = removeCode(message);        //Get rid of the identification byte
+                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
+                float accPitch = converted[0];
+                float gyroRoll = converted[1];
+                _virtualHornet.C_pitchRoll(accPitch, gyroRoll);
+
             default:
                 break;
         }

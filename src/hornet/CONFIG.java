@@ -10,8 +10,9 @@ public class CONFIG {
         public class PacketCodes
         {
             public static final byte CONNECTION_REQUEST = 'a';
-            public static final byte ACCGYRO = 1;
+            public static final byte ACCGYRO = 'g';
             public static final byte LIDAR = 'l'; //Setting l as the identification byte for a LIDAR data packet
+            public static final byte PITCH_ROLL = 'p';
         }
 
         public class USBSerial

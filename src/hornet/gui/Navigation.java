@@ -195,28 +195,15 @@ public class Navigation  {
     }
 
     public void accGyro(float[] acc,float[] gyro) {
-        double g = Math.sqrt(Math.pow(acc[0],2)+Math.pow(acc[1],2)+Math.pow(acc[2],2));
-        float x = (float)Math.toDegrees(Math.asin(acc[0] / g));
-        float y = (float)(Math.toDegrees(Math.asin(acc[1]/g)));
 
-        AccX_Text.setText(Float.toString(x));
-        AccY_Text.setText(Float.toString(y));
+        AccX_Text.setText(Float.toString(acc[0]));
+        AccY_Text.setText(Float.toString(acc[1]));
         AccZ_Text.setText(Float.toString(acc[2]));
 
         GyroX_Text.setText(Float.toString(gyro[0]));
         GyroY_Text.setText(Float.toString(gyro[1]));
         GyroZ_Text.setText(Float.toString(gyro[2]));
 
-
-
-
-        Math.toDegrees(Math.asin(acc[0]/20));
-        // Math.asin(20.0 / gyro[0])
-
-        double a= Math.toDegrees(Math.asin(acc[0]/20));
-
-        ((OrientationIndicator) X).setAngle(x);
-        ((OrientationIndicator)Y).setAngle(y);
         //((OrientationIndicator)Z).setAngle(Math.toDegrees(Math.asin(acc[2]/20)));
 
         //Z.setSize(frame.getWidth() / 3, frame.getWidth() / 3);
@@ -227,6 +214,15 @@ public class Navigation  {
 
         //((OrientationIndicator)Z).setSize(((OrientationIndicator)Z).getWidth(),((OrientationIndicator)Z).getWidth());
         _frame.repaint();
+    }
+
+    public void pitchRoll(float pitch,float roll) {
+
+        double degPitch = (double)pitch;
+        double degRoll = (double)roll;
+        ((OrientationIndicator)X).setAngle(degRoll);
+        ((OrientationIndicator)Y).setAngle(degPitch);
+
     }
 
     public void updateJoystickList()

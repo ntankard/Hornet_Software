@@ -115,6 +115,15 @@ public class VirtualHornet {
         }
     }
 
+    public void C_pitchRoll(float pitch,float roll)
+    {
+        _navigation.pitchRoll(pitch,roll);
+        if(_state == State.Connect)
+        {
+            _comsEncoder.send_reset();
+        }
+    }
+
     public void J_newXY(int xPer, int yPer)
     {
         if(_state != State.Init) {
