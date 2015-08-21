@@ -28,6 +28,11 @@ public class VirtualHornet {
     enum State{Init,Idle,Connect,Connected}
     private State _state;
 
+    /** LIDAR */
+    private boolean _EOS1 = false;
+    private float _pitch;
+    private float _roll;
+
     private boolean _joyReady = false;
 
     /**
@@ -117,7 +122,7 @@ public class VirtualHornet {
 
     public void C_pitchRoll(float pitch,float roll)
     {
-        _navigation.pitchRoll(pitch,roll);
+        _navigation.pitchRoll(pitch, roll);
         if(_state == State.Connect)
         {
             _comsEncoder.send_reset();
@@ -166,9 +171,31 @@ public class VirtualHornet {
         }
     }
 
-    public void L_newLidar(float yaw, float distance, float pitch)
+    public void L_newLidarPoint(float angle, float distance)
     {
         // _navigation.newLidar(yaw, distance, pitch);     //Pass the newly received Lidar data to the UI to be drawn
     }
 
-}
+    public void L_newLidarEOS1(float pitch, float roll)
+    {
+        if(_EOS1 == false) {
+            _pitch = pitch;
+            _roll = roll;
+            _EOS1 = true;
+        }
+        else {
+        //@TODO throw error
+        }
+    }
+
+    public void L_newLidarEOS2(float yaw)
+    {
+        if(_EOS1 == true) {
+
+            //@TODO
+        }
+            else {
+                //@TODO throw error
+            }
+        }
+    }

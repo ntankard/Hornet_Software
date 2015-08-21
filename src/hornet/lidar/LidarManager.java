@@ -9,6 +9,7 @@ public class LidarManager {
     ArrayList<Point> _sweep = new ArrayList<Point>();
     ArrayList<Point> _pendingSweep = new ArrayList<Point>();
     Float _lastRotation = 380f;
+    ArrayList<SweepPoint> _sweepPoints = new ArrayList<>();
 
     public void processData(Float angle, Float distance, Float rotation)
     {
@@ -32,4 +33,24 @@ public class LidarManager {
 
     }
 
+    public void addPoint(float angle, float distance)
+    {
+        _sweepPoints.add(new SweepPoint(angle,distance));
+    }
+
+    public void addEOSweep(float pitch, float roll, float yaw)
+    {
+        ArrayList<XYPoint> XYPoints = new ArrayList<>();
+
+        for (int i =0; i<_sweepPoints.size(); i++) {
+
+            XYPoints.add(new XYPoint(_sweepPoints.get(i),6000, yaw));
+        }
+
+        //@TODO add call to nav system
+    }
+
+
 }
+
+

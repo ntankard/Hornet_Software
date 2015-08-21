@@ -119,22 +119,9 @@ class Consumer extends Thread {
                 converted = toFloatArray(filteredByteArray);
                 float[] acc = Arrays.copyOfRange(converted, 0, 3);
                 float[] gyro = Arrays.copyOfRange(converted, 3, 6);
-                _virtualHornet.C_accGyro(acc,gyro);
+                _virtualHornet.C_accGyro(acc, gyro);
                 break;
-            case CONFIG.Coms.PacketCodes.LIDAR:     //When a LIDAR packet is received
-                if (message.length != 13)           //Check that the size of the packet is correct
-                //Currently assumed to be 1 ID byte and 4 bytes for each of the 4 floats
-                {
-                    break;  //@TODO add error handling here
-                }
-                filteredByteArray = removeCode(message);        //Get rid of the identification byte
-                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
-                float yaw = converted[0];                       //Get the yaw from sent packet
-                float distance = converted[1];                  //Get the distance from sent packet
-                float pitch = converted [2];                    //Get the pitch from sent packet
-                _virtualHornet.L_newLidar(yaw, distance, pitch);//Pass yaw, distance and pitch to the virtual Horent to be
-                //used by it's Lidar panel
-                break;
+
             case CONFIG.Coms.PacketCodes.PITCH_ROLL:
                 if (message.length != 9)           //Check that the size of the packet is correct
                 {
@@ -145,6 +132,48 @@ class Consumer extends Thread {
                 float accPitch = converted[0];
                 float gyroRoll = converted[1];
                 _virtualHornet.C_pitchRoll(accPitch, gyroRoll);
+
+            case CONFIG.Coms.PacketCodes.LIDAR_POINT:     //When a LIDAR packet is received
+                if (message.length != 9)           //Check that the size of the packet is correct
+                //Currently assumed to be 1 ID byte and 4 bytes for each of the 2 floats
+                {
+                    break;  //@TODO add error handling here
+                }
+                filteredByteArray = removeCode(message);        //Get rid of the identification byte
+                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
+                float angle = converted[0];                       //Get the angle from sent packet
+                float distance = converted[1];                  //Get the distance from sent packet
+                _virtualHornet.L_newLidarPoint(angle, distance);//Pass angle and distance to the virtual Hornet to be
+                //used by it's Lidar panel
+                break;
+
+            case CONFIG.Coms.PacketCodes.LIDAR_EOS1:     //When a LIDAR packet is received
+                if (message.length != 9)           //Check that the size of the packet is correct
+                //Currently assumed to be 1 ID byte and 4 bytes for each of the 2 floats
+                {
+                    break;  //@TODO add error handling here
+                }
+                filteredByteArray = removeCode(message);        //Get rid of the identification byte
+                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
+                float pitch = converted[0];                       //Get the pitch from sent packet
+                float roll = converted[1];                  //Get the roll from sent packet
+                _virtualHornet.L_newLidarEOS1(pitch, roll);//Pass pitch and roll to the virtual Hornet to be
+                //used by it's Lidar panel
+                break;
+
+            case CONFIG.Coms.PacketCodes.LIDAR_EOS2:     //When a LIDAR packet is received
+                if (message.length != 9)           //Check that the size of the packet is correct
+                //Currently assumed to be 1 ID byte and 4 bytes for each of the 2 floats
+                {
+                    break;  //@TODO add error handling here
+                }
+                filteredByteArray = removeCode(message);        //Get rid of the identification byte
+                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
+                float yaw = converted[0];                       //Get the pitch from sent packet
+
+                _virtualHornet.L_newLidarEOS2(yaw);//Pass yaw to the virtual Hornet to be
+                //used by it's Lidar panel
+                break;
 
             default:
                 break;
