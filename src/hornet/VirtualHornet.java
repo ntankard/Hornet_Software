@@ -6,6 +6,10 @@ import hornet.coms.Coms;
 import hornet.coms.ComsEncoder;
 import hornet.gui.Navigation;
 import hornet.joystrick.JoystickManager;
+import hornet.lidar.LidarManager;
+import hornet.lidar.XYPoint;
+
+import java.util.ArrayList;
 
 /**
  * Created by Nicholas on 2/08/2015.
@@ -32,6 +36,7 @@ public class VirtualHornet {
     private boolean _EOS1 = false;
     private float _pitch;
     private float _roll;
+    private LidarManager _lidar;
 
     private boolean _joyReady = false;
 
@@ -51,6 +56,7 @@ public class VirtualHornet {
     public void attachComs(Coms theComs){_coms = theComs;}
     public void attachComsEncoder(ComsEncoder theComsEncoder){_comsEncoder = theComsEncoder;}
     public void attachJoystickManager(JoystickManager theJoystickManager){_joystickManager = theJoystickManager;}
+    public void attachLidar(LidarManager theLidarManager){_lidar = theLidarManager;}
 
     /**
      * Start the system (equivalent to a constructor, call after all components are attached)
@@ -64,11 +70,7 @@ public class VirtualHornet {
 
         _navigation.updateJoystickList();
 
-        //JUST USED FOR TESTING
-        //@TODO implement the coms for lidar data get them to draw
-        _navigation.getFrontView().draw();
-        _navigation.getTopView().draw();
-    }
+   }
 
     /**
      * The user is attempting to connect to the drone
@@ -173,7 +175,8 @@ public class VirtualHornet {
 
     public void L_newLidarPoint(float angle, float distance)
     {
-        // _navigation.newLidar(yaw, distance, pitch);     //Pass the newly received Lidar data to the UI to be drawn
+        //_navigation.newLidar(yaw, distance, pitch);     //Pass the newly received Lidar data to the UI to be drawn
+        _lidar.addPoint(angle,distance);
     }
 
     public void L_newLidarEOS1(float pitch, float roll)
@@ -192,10 +195,17 @@ public class VirtualHornet {
     {
         if(_EOS1 == true) {
 
-            //@TODO
+            _EOS1 = false;
+            _lidar.addEOSweep(_pitch,_roll, yaw);
+
         }
             else {
                 //@TODO throw error
             }
         }
+
+    public void getSweepPoints(ArrayList<XYPoint> sweepPoints)
+    {
+        _navigation.updateLidarTopView(sweepPoints);
     }
+}

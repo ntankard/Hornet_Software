@@ -10,6 +10,7 @@ import java.util.ArrayList;
 import java.util.Vector;
 import hornet.VirtualHornet;
 import hornet.joystrick.JoystickUtility;
+import hornet.lidar.XYPoint;
 //import hornet.gui.panels.
 
 /**
@@ -47,9 +48,9 @@ public class Navigation  {
     private JPanel CommectionStatus;
     private JPanel JoyStickConnected;
     private JPanel JoyStickReady;
-    private LidarView FrontView_Panel;
     private JPanel Views;
-    private TopView TopView_Panel;
+    private JPanel TopView;
+
 
     // private ArrayList<Controller> foundControllers;
 
@@ -58,14 +59,6 @@ public class Navigation  {
     private Vector<String> _sentMessages;
     private Vector<String> _receivedMessages;
 
-
-    public TopView getTopView() {
-        return TopView_Panel;
-    }
-
-    public LidarView getFrontView() {
-        return FrontView_Panel;
-    } //JUST USED FOR TESTING
 
     // private JInputJoystickTest joy;
 
@@ -93,8 +86,7 @@ public class Navigation  {
         CommectionStatus = new Indicator("Coms");
         JoyStickConnected = new Indicator("JS Connect");
         JoyStickReady = new Indicator("JS Ready");
-        FrontView_Panel = new LidarView(0, 90);
-        TopView_Panel = new TopView();
+        TopView = new LidarTopViewUI();
     }
 
     public void open()
@@ -276,6 +268,12 @@ public class Navigation  {
     public void turnJoyStickReady()
     {
         ((Indicator)JoyStickReady).turnOn();
+        _frame.repaint();
+    }
+
+    public void updateLidarTopView(ArrayList<XYPoint> sweepPoints)
+    {
+        ((LidarTopViewUI)TopView).plotPoint(sweepPoints);
         _frame.repaint();
     }
 

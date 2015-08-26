@@ -1,5 +1,7 @@
 package hornet.lidar;
 
+import hornet.VirtualHornet;
+
 import java.util.ArrayList;
 
 /**
@@ -10,6 +12,12 @@ public class LidarManager {
     ArrayList<Point> _pendingSweep = new ArrayList<Point>();
     Float _lastRotation = 380f;
     ArrayList<SweepPoint> _sweepPoints = new ArrayList<>();
+    VirtualHornet _virtualHornet;
+
+    public  LidarManager(VirtualHornet theVirtualHornet)
+    {
+        _virtualHornet = theVirtualHornet;
+    }
 
     public void processData(Float angle, Float distance, Float rotation)
     {
@@ -47,9 +55,8 @@ public class LidarManager {
             XYPoints.add(new XYPoint(_sweepPoints.get(i),6000, yaw));
         }
 
-        //@TODO add call to nav system
+        _virtualHornet.getSweepPoints(XYPoints);
     }
-
 
 }
 

@@ -4,6 +4,7 @@ import hornet.VirtualHornet;
 import hornet.coms.*;
 import hornet.gui.Navigation;
 import hornet.joystrick.JoystickManager;
+import hornet.lidar.LidarManager;
 
 import java.nio.ByteBuffer;
 
@@ -31,6 +32,10 @@ public class Main {
         // create the Joystick
         JoystickManager joystickManager = new JoystickManager(virtualHornet);
         virtualHornet.attachJoystickManager(joystickManager);
+
+        // create the Lidar
+        LidarManager lidarManager = new LidarManager(virtualHornet);
+        virtualHornet.attachLidar(lidarManager);
 
         // setup all systems
         virtualHornet.start();
