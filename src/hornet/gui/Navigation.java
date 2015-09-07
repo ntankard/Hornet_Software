@@ -186,7 +186,7 @@ public class Navigation  {
         //test.drawLine(0, 0, 100, 100);
     }
 
-    public void accGyro(float[] acc,float[] gyro) {
+    public void accGyro(short[] acc,short[] gyro) {
 
         AccX_Text.setText(Float.toString(acc[0]));
         AccY_Text.setText(Float.toString(acc[1]));

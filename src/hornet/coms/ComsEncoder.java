@@ -31,7 +31,6 @@ public class ComsEncoder {
     {
         byte[] theMessage = new byte[1];
         theMessage[0] = 'b';
-
         send(theMessage, 0);
     }
 

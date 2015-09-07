@@ -10,7 +10,7 @@ public class OrientationIndicator extends JPanel {
 
     public void setAngle(double theAngle)
     {
-        _angle = Math.toRadians(theAngle+90);
+        _angle = theAngle + (Math.PI/2);//Math.toRadians(theAngle+90);
     }
 
     @Override

@@ -2,7 +2,9 @@ package hornet.coms;
 
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
+import java.nio.ShortBuffer;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -104,33 +106,36 @@ class Consumer extends Thread {
 
         byte[] filteredByteArray;   //created here instead of inside a case statement
         float[] converted;          //so that they can be used by all case statements
-
+        short[] sConverted;
         switch (message[0])
         {
             case CONFIG.Coms.PacketCodes.CONNECTION_REQUEST:
                 _virtualHornet.C_connectRequest();
                 break;
             case CONFIG.Coms.PacketCodes.ACCGYRO:
-                if(message.length != 25)
+               // System.out.println(message.length);
+                if(message.length != 13)
                 {
                     break;  //@TODO add error handling here
                 }
+
                 filteredByteArray = removeCode(message);
-                converted = toFloatArray(filteredByteArray);
-                float[] acc = Arrays.copyOfRange(converted, 0, 3);
-                float[] gyro = Arrays.copyOfRange(converted, 3, 6);
+                sConverted = toShortArray(filteredByteArray);
+                short[] acc = Arrays.copyOfRange(sConverted, 0, 3);
+               // System.out.println(acc[0]);
+                short[] gyro = Arrays.copyOfRange(sConverted, 3, 6);
                 _virtualHornet.C_accGyro(acc, gyro);
                 break;
 
             case CONFIG.Coms.PacketCodes.PITCH_ROLL:
-                if (message.length != 9)           //Check that the size of the packet is correct
+                if (message.length != 5)           //Check that the size of the packet is correct
                 {
                     break;  //@TODO add error handling here
                 }
                 filteredByteArray = removeCode(message);        //Get rid of the identification byte
-                converted = toFloatArray(filteredByteArray);    //Change from bytes to floats so packet can be used
-                float accPitch = converted[0];
-                float gyroRoll = converted[1];
+                sConverted = toShortArray(filteredByteArray);    //Change from bytes to floats so packet can be used
+                float accPitch = (float)sConverted[0]/10000.0f;
+                float gyroRoll = (float)sConverted[1]/10000.0f;
                 _virtualHornet.C_pitchRoll(accPitch, gyroRoll);
 
             case CONFIG.Coms.PacketCodes.LIDAR_POINT:     //When a LIDAR packet is received
@@ -187,8 +192,42 @@ class Consumer extends Thread {
 
     private float[] toFloatArray(byte[] message)
     {
+        int floats = message.length/4;
+        byte[] buffer = new byte[4];
+        for(int i=0;i<floats;i++)
+        {
+            buffer[0] = message[0+(4*i)];
+            buffer[1] = message[1+(4*i)];
+            buffer[2] = message[2+(4*i)];
+            buffer[3] = message[3+(4*i)];
+
+            message[0+(4*i)] = buffer[3];
+            message[1+(4*i)] = buffer[2];
+            message[2+(4*i)] = buffer[1];
+            message[3+(4*i)] = buffer[0];
+        }
+
         final FloatBuffer fb = ByteBuffer.wrap(message).asFloatBuffer();
         final float[] dst = new float[fb.capacity()];
+        fb.get(dst); // Copy the contents of the FloatBuffer into dst
+        return dst;
+    }
+
+    private short[] toShortArray(byte[] message)
+    {
+        int floats = message.length/2;
+        byte[] buffer = new byte[2];
+        for(int i=0;i<floats;i++)
+        {
+            buffer[0] = message[0+(2*i)];
+            buffer[1] = message[1+(2*i)];
+
+            message[0+(2*i)] = buffer[1];
+            message[1+(2*i)] = buffer[0];
+        }
+
+        final ShortBuffer fb = ByteBuffer.wrap(message).asShortBuffer();
+        final short[] dst = new short[fb.capacity()];
         fb.get(dst); // Copy the contents of the FloatBuffer into dst
         return dst;
     }

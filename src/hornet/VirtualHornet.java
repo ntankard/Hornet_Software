@@ -110,10 +110,11 @@ public class VirtualHornet {
             _state = State.Connected;
             _navigation.setConnectionState(Navigation.ConnectionState.Connected);
             _comsEncoder.send_connectionConfirmation();
+            _comsEncoder.send_connectionConfirmation();
         }
     }
 
-    public void C_accGyro(float[] acc,float[] gyro)
+    public void C_accGyro(short[] acc,short[] gyro)
     {
         _navigation.accGyro(acc,gyro);
         if(_state == State.Connect)
