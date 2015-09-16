@@ -1,12 +1,21 @@
 package hornet.gui.panels;
 
 import javax.swing.*;
+import javax.swing.border.TitledBorder;
 import java.awt.*;
 
 public class OrientationIndicator extends JPanel {
 
+
+
+
     private double _angle = 0;
     private int _boarder = 10;
+
+    public OrientationIndicator(String name)
+    {
+        setBorder(new TitledBorder(name));
+    }
 
     public void setAngle(double theAngle)
     {

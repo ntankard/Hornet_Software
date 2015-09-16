@@ -132,6 +132,15 @@ public class VirtualHornet {
         }
     }
 
+    public void C_gyro(short[] gyro)
+    {
+        _navigation.gyro(gyro);
+        if(_state == State.Connect)
+        {
+          //  _comsEncoder.send_reset();
+        }
+    }
+
     public void J_newXY(int xPer, int yPer)
     {
         if(_state != State.Init) {
@@ -207,6 +216,6 @@ public class VirtualHornet {
 
     public void getSweepPoints(ArrayList<XYPoint> sweepPoints)
     {
-        _navigation.updateLidarTopView(sweepPoints);
+       // _navigation.updateLidarTopView(sweepPoints);
     }
 }

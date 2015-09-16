@@ -15,6 +15,7 @@ public class CONFIG {
             public static final byte LIDAR_POINT = 'l';//Setting l as the identification byte for a LIDAR data packet
             public static final byte LIDAR_EOS1 = 'e';
             public static final byte LIDAR_EOS2 = 'f';
+            public static final byte GYRO = 'y';
         }
 
         public class USBSerial

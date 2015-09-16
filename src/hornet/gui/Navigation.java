@@ -37,8 +37,6 @@ public class Navigation  {
     private JTextField GyroZ_Text;
     private JPanel RawValues;
     private JPanel Indicators;
-    private JPanel X;
-    private JPanel Y;
     private JComboBox Joystick_Combo;
     private JPanel Joystick_Panel;
     private JProgressBar Rotation_Bar;
@@ -48,7 +46,9 @@ public class Navigation  {
     private JPanel CommectionStatus;
     private JPanel JoyStickConnected;
     private JPanel JoyStickReady;
-    private JPanel Views;
+    private JPanel Roll;
+    private JPanel Yaw;
+    private JPanel Pitch;
     private JPanel TopView;
 
 
@@ -79,14 +79,14 @@ public class Navigation  {
     }
 
     private void createUIComponents() {
-        X = new OrientationIndicator();
-        Y = new OrientationIndicator();
+        Roll = new OrientationIndicator("Roll");
+        Yaw = new OrientationIndicator("Yaw");
+        Pitch = new OrientationIndicator("Pitch");
         Joystick_Panel = new JoystickPos();
         Altitude_Panel = new UltrasonicUI();
         CommectionStatus = new Indicator("Coms");
         JoyStickConnected = new Indicator("JS Connect");
         JoyStickReady = new Indicator("JS Ready");
-        TopView = new LidarTopViewUI();
     }
 
     public void open()
@@ -208,12 +208,23 @@ public class Navigation  {
         _frame.repaint();
     }
 
+    public void gyro(short[] gyro)
+    {
+        double x = (double)gyro[0]/10000.0;
+        double y = (double)gyro[1]/10000.0;
+        double z = (double)gyro[2]/10000.0;
+        ((OrientationIndicator) Yaw).setAngle(x);
+        ((OrientationIndicator)Pitch).setAngle(y);
+        ((OrientationIndicator)Roll).setAngle(z);
+        _frame.repaint();
+    }
+
     public void pitchRoll(float pitch,float roll) {
 
         double degPitch = (double)pitch;
         double degRoll = (double)roll;
-        ((OrientationIndicator)X).setAngle(degRoll);
-        ((OrientationIndicator)Y).setAngle(degPitch);
+        ((OrientationIndicator) Yaw).setAngle(degRoll);
+        ((OrientationIndicator)Pitch).setAngle(degPitch);
 
     }
 
@@ -237,8 +248,7 @@ public class Navigation  {
         _virtualHornet.UI_joystickConnected((String) Joystick_Combo.getSelectedItem());
     }
 
-    public void updateJoystickXY(int x,int y)
-    {
+    public void updateJoystickXY(int x,int y) {
         ((JoystickPos)Joystick_Panel).setPos(x, y);
         _frame.repaint();
     }
@@ -253,8 +263,7 @@ public class Navigation  {
         Throttle_Bar.setValue(r);
     }
 
-    public void updateAltitude(int a)
-    {
+    public void updateAltitude(int a) {
         ((UltrasonicUI)Altitude_Panel).setDistance(a);
         _frame.repaint();
     }
@@ -271,11 +280,11 @@ public class Navigation  {
         _frame.repaint();
     }
 
-    public void updateLidarTopView(ArrayList<XYPoint> sweepPoints)
+   /* public void updateLidarTopView(ArrayList<XYPoint> sweepPoints)
     {
         ((LidarTopViewUI)TopView).plotPoint(sweepPoints);
         _frame.repaint();
-    }
+    }*/
 
 }
 

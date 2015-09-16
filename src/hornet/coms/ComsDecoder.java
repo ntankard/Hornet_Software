@@ -112,7 +112,21 @@ class Consumer extends Thread {
             case CONFIG.Coms.PacketCodes.CONNECTION_REQUEST:
                 _virtualHornet.C_connectRequest();
                 break;
-            case CONFIG.Coms.PacketCodes.ACCGYRO:
+
+            case CONFIG.Coms.PacketCodes.GYRO:
+                if(message.length != 7)
+                {
+                    break;  //@TODO add error handling here
+                }
+                filteredByteArray = removeCode(message);
+                sConverted = toShortArray(filteredByteArray);
+                //short[] gyro = Arrays.copyOfRange(sConverted, 0, 3);
+                System.out.print(sConverted[0] + " ");
+                System.out.print(sConverted[1] + " ");
+                System.out.println(sConverted[2]);
+                _virtualHornet.C_gyro(sConverted);
+                break;
+            /*case CONFIG.Coms.PacketCodes.ACCGYRO:
                // System.out.println(message.length);
                 if(message.length != 13)
                 {
@@ -178,7 +192,7 @@ class Consumer extends Thread {
 
                 _virtualHornet.L_newLidarEOS2(yaw);//Pass yaw to the virtual Hornet to be
                 //used by it's Lidar panel
-                break;
+                break;*/
 
             default:
                 break;
