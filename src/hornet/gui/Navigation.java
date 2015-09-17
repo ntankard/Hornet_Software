@@ -1,66 +1,34 @@
 package hornet.gui;
 
 import javax.swing.*;
+import java.util.ArrayList;
+
+import hornet.CONFIG;
+import hornet.VirtualHornet;
 
 import hornet.gui.panels.*;
+import hornet.gui.rootPanels.RP_ComSettings;
+import hornet.gui.rootPanels.RP_Coms;
+import hornet.gui.rootPanels.RP_JoyStick;
+import hornet.gui.rootPanels.RP_Orientation;
 
-import java.awt.*;
-import java.awt.event.*;
-import java.util.ArrayList;
-import java.util.Vector;
-import hornet.VirtualHornet;
-import hornet.joystrick.JoystickUtility;
-import hornet.lidar.XYPoint;
-//import hornet.gui.panels.
 
 /**
  * Created by Nicholas on 12/07/2015.
  */
 public class Navigation  {
-    private JPanel rootPanel;
-    private JPanel Comunications;
-    private JComboBox SerialPort_Combo;
-    private JButton Connect_btn;
-    private JLabel ConnectionStatus_lbl;
-    private JTabbedPane Status;
-    private JList<String> SentMessages_List;
-    private JList ReceivedMessages_List;
-    private JScrollPane SentMessages_Scroll;
-    private JScrollPane ReceivedMessages_Scroll;
-    private JPanel Navigation;
-    private JPanel Orientation;
-    private JTextField AccX_Text;
-    private JTextField GyroX_Text;
-    private JTextField AccY_Text;
-    private JTextField GyroY_Text;
-    private JTextField AccZ_Text;
-    private JTextField GyroZ_Text;
-    private JPanel RawValues;
-    private JPanel Indicators;
-    private JComboBox Joystick_Combo;
-    private JPanel Joystick_Panel;
-    private JProgressBar Rotation_Bar;
-    private JProgressBar Throttle_Bar;
-    private JPanel Altitude_Panel;
-    private JPanel CriticalStatus;
-    private JPanel CommectionStatus;
-    private JPanel JoyStickConnected;
-    private JPanel JoyStickReady;
-    private JPanel Roll;
-    private JPanel Yaw;
-    private JPanel Pitch;
-    private JPanel TopView;
 
-
-    // private ArrayList<Controller> foundControllers;
-
-    private VirtualHornet _virtualHornet;
     private JFrame _frame;
-    private Vector<String> _sentMessages;
-    private Vector<String> _receivedMessages;
-
-
-    // private JInputJoystickTest joy;
+        private JPanel rootPanel;
+            private JPanel Comunications;
+                private RP_ComSettings ComSettings_Panel;
+            private JTabbedPane Status;
+                private RP_Coms Coms_Panel;
+                private RP_JoyStick Joystick_Panel;
+            private JPanel Navigation;
+                private RP_Orientation Gyro_Panel;
+            private JPanel DroneState;
+                private P_DroneState DroneState_Panel;
 
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
@@ -68,31 +36,20 @@ public class Navigation  {
 
     public Navigation(VirtualHornet theVirtualHornet)
     {
-        _sentMessages = new Vector<>();
-        _receivedMessages = new Vector<>();
+        // distribute the virtual hornet
+        Joystick_Panel.setVirtualHornet(theVirtualHornet);
+        ComSettings_Panel.setVirtualHornet(theVirtualHornet);
 
-        _virtualHornet = theVirtualHornet;
-
-        Connect_btn.addMouseListener(new Connect_btn_click());
-
-        setConnectionState(ConnectionState.Disconnected);
     }
 
     private void createUIComponents() {
-        Roll = new OrientationIndicator("Roll");
-        Yaw = new OrientationIndicator("Yaw");
-        Pitch = new OrientationIndicator("Pitch");
-        Joystick_Panel = new JoystickPos();
-        Altitude_Panel = new UltrasonicUI();
-        CommectionStatus = new Indicator("Coms");
-        JoyStickConnected = new Indicator("JS Connect");
-        JoyStickReady = new Indicator("JS Ready");
+
     }
 
     public void open()
     {
         _frame = new JFrame("Hornet");
-        // Navigation n = new Navigation();
+
         _frame.setContentPane(rootPanel);
         _frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         _frame.pack();
@@ -101,190 +58,58 @@ public class Navigation  {
         _frame.repaint();
     }
 
-    // -----------------------------------------------------------------------------------------------------------------
-    // ############################################### UI EVENT ########################################################
-    // -----------------------------------------------------------------------------------------------------------------
-
-    class Connect_btn_click extends MouseAdapter
+    public void start()
     {
-        @Override
-        public void mouseClicked(MouseEvent e) {
-            _virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(), 9600);
-            super.mouseClicked(e);
-        }
+        Joystick_Panel.updateJoystickList();
     }
 
     // -----------------------------------------------------------------------------------------------------------------
-    // ############################################ EXTERNAL EVENTS ####################################################
+    // ########################################### STANDARD MESSAGES ###################################################
     // -----------------------------------------------------------------------------------------------------------------
 
-
-    public enum ConnectionState{Disconnected, Connecting, Connected}
-
-    public void setConnectionState(ConnectionState state)
+    public void newDebugData(String message)
     {
-        switch(state)
+        Coms_Panel.addDebugMessage(message);
+    }
+
+    public void newData(byte key,short[] data)
+    {
+        Coms_Panel.addData(key, data);
+
+        switch (key)
         {
-            case Disconnected:
-                ConnectionStatus_lbl.setText("Disconnected");
-                ConnectionStatus_lbl.setBackground(Color.RED);
-                Connect_btn.setText("Connect");
-                ((Indicator)CommectionStatus).turnOff();
+            case CONFIG.Coms.PacketCodes.GYRO:
+                Gyro_Panel.newSettings(data);
                 break;
-            case Connecting:
-                ConnectionStatus_lbl.setText("Connecting");
-                ConnectionStatus_lbl.setBackground(Color.YELLOW);
-                Connect_btn.setText("Cancel");
-                ((Indicator)CommectionStatus).turnOff();
+            case CONFIG.Coms.PacketCodes.JOY_THROTTLE:
+                Joystick_Panel.updateJoystickThrottle(data[0]);
                 break;
-            case Connected:
-                ConnectionStatus_lbl.setText("Connected");
-                ConnectionStatus_lbl.setBackground(Color.GREEN);
-                Connect_btn.setText("Disconnect");
-                ((Indicator)CommectionStatus).turnOn();
+            case CONFIG.Coms.PacketCodes.JOY_Z:
+                Joystick_Panel.updateJoystickRotation(data[0]);
+                break;
+            case CONFIG.Coms.PacketCodes.JOY_XY:
+                Joystick_Panel.updateJoystickXY(data[0],data[1]);
+                break;
+            case CONFIG.Coms.PacketCodes.STATUS:
+                DroneState_Panel.setState(data[0]);
                 break;
         }
+        _frame.repaint();
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ############################################# SPECIAL EVENTS ####################################################
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public void setConnectionState(RP_ComSettings.ConnectionState state)
+    {
+        ComSettings_Panel.setConnectionState(state);
     }
 
     public void setComPorts(ArrayList<String> ports)
     {
-        //@todo erase original content
-        for(int i=0;i<ports.size();i++)
-        {
-            SerialPort_Combo.addItem(ports.get(i));
-        }
+        ComSettings_Panel.setComPorts(ports);
     }
-
-    public void newSentMessage(String message)
-    {
-        if(_sentMessages.size() >=10)
-        {
-            _sentMessages.remove(0);
-        }
-
-        _sentMessages.add(message);
-        SentMessages_List.setListData(_sentMessages);
-
-        JScrollBar vertical = SentMessages_Scroll.getVerticalScrollBar();
-        vertical.setValue(vertical.getMaximum());
-    }
-
-    public void newReceivedMessage(String message)
-    {
-        if(_receivedMessages.size() >=10)
-        {
-            _receivedMessages.remove(0);
-        }
-
-        _receivedMessages.add(message);
-        ReceivedMessages_List.setListData(_receivedMessages);
-
-        JScrollBar vertical = ReceivedMessages_Scroll.getVerticalScrollBar();
-        vertical.setValue(vertical.getMaximum());
-
-        //Graphics test =  Navigation.getGraphics();
-        //test.drawLine(0, 0, 100, 100);
-    }
-
-    public void accGyro(short[] acc,short[] gyro) {
-
-        AccX_Text.setText(Float.toString(acc[0]));
-        AccY_Text.setText(Float.toString(acc[1]));
-        AccZ_Text.setText(Float.toString(acc[2]));
-
-        GyroX_Text.setText(Float.toString(gyro[0]));
-        GyroY_Text.setText(Float.toString(gyro[1]));
-        GyroZ_Text.setText(Float.toString(gyro[2]));
-
-        //((OrientationIndicator)Z).setAngle(Math.toDegrees(Math.asin(acc[2]/20)));
-
-        //Z.setSize(frame.getWidth() / 3, frame.getWidth() / 3);
-        // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
-        // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
-
-        //frame.getWidth()/3;
-
-        //((OrientationIndicator)Z).setSize(((OrientationIndicator)Z).getWidth(),((OrientationIndicator)Z).getWidth());
-        _frame.repaint();
-    }
-
-    public void gyro(short[] gyro)
-    {
-        double x = (double)gyro[0]/10000.0;
-        double y = (double)gyro[1]/10000.0;
-        double z = (double)gyro[2]/10000.0;
-        ((OrientationIndicator) Yaw).setAngle(x);
-        ((OrientationIndicator)Pitch).setAngle(y);
-        ((OrientationIndicator)Roll).setAngle(z);
-        _frame.repaint();
-    }
-
-    public void pitchRoll(float pitch,float roll) {
-
-        double degPitch = (double)pitch;
-        double degRoll = (double)roll;
-        ((OrientationIndicator) Yaw).setAngle(degRoll);
-        ((OrientationIndicator)Pitch).setAngle(degPitch);
-
-    }
-
-    public void updateJoystickList()
-    {
-        ArrayList<String> joy = JoystickUtility.getControllersNames();
-
-        if(joy.size() == 0)
-        {
-            return;
-        }
-
-        //@todo erase original content
-        for(int i=0;i<joy.size();i++)
-        {
-            Joystick_Combo.addItem(joy.get(i));
-        }
-
-        Joystick_Combo.setSelectedIndex(0);
-
-        _virtualHornet.UI_joystickConnected((String) Joystick_Combo.getSelectedItem());
-    }
-
-    public void updateJoystickXY(int x,int y) {
-        ((JoystickPos)Joystick_Panel).setPos(x, y);
-        _frame.repaint();
-    }
-
-    public void updateJoystickRotation(int r)
-    {
-        Rotation_Bar.setValue(r);
-    }
-
-    public void updateJoystickThrottle(int r)
-    {
-        Throttle_Bar.setValue(r);
-    }
-
-    public void updateAltitude(int a) {
-        ((UltrasonicUI)Altitude_Panel).setDistance(a);
-        _frame.repaint();
-    }
-
-    public void turnJoyStickConnectedOn()
-    {
-        ((Indicator)JoyStickConnected).turnOn();
-        _frame.repaint();
-    }
-
-    public void turnJoyStickReady()
-    {
-        ((Indicator)JoyStickReady).turnOn();
-        _frame.repaint();
-    }
-
-   /* public void updateLidarTopView(ArrayList<XYPoint> sweepPoints)
-    {
-        ((LidarTopViewUI)TopView).plotPoint(sweepPoints);
-        _frame.repaint();
-    }*/
 
 }
 
@@ -485,4 +310,89 @@ public void status_updateController(JoystickInstance joy)
 
 
         }
+ */
+
+
+/*
+    public void updateAltitude(int a) {
+        ((UltrasonicUI)Altitude_Panel).setDistance(a);
+        _frame.repaint();
+    }
+ */
+
+
+
+/*
+  public void newSentMessage(String message)
+    {
+        if(_sentMessages.size() >=10)
+        {
+            _sentMessages.remove(0);
+        }
+
+        _sentMessages.add(message);
+        SentMessages_List.setListData(_sentMessages);
+
+        JScrollBar vertical = SentMessages_Scroll.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
+    }
+
+    public void newReceivedMessage(String message)
+    {
+        if(_receivedMessages.size() >=10)
+        {
+            _receivedMessages.remove(0);
+        }
+
+        _receivedMessages.add(message);
+        ReceivedMessages_List.setListData(_receivedMessages);
+
+        JScrollBar vertical = ReceivedMessages_Scroll.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
+
+        //Graphics test =  Navigation.getGraphics();
+        //test.drawLine(0, 0, 100, 100);
+    }
+
+    public void accGyro(short[] acc,short[] gyro) {
+
+
+
+        //((P_OrientationIndicator)Z).setAngle(Math.toDegrees(Math.asin(acc[2]/20)));
+
+        //Z.setSize(frame.getWidth() / 3, frame.getWidth() / 3);
+        // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
+        // X.setSize(frame.getWidth()/3,frame.getWidth()/3);
+
+        //frame.getWidth()/3;
+
+        //((P_OrientationIndicator)Z).setSize(((P_OrientationIndicator)Z).getWidth(),((P_OrientationIndicator)Z).getWidth());
+        _frame.repaint();
+    }
+ */
+
+
+/*
+    public void updateJoystickList()
+    {
+        Joystick_Panel.updateJoystickList();
+    }
+
+    public void updateJoystickXY(int x,int y) {
+        Joystick_Panel.updateJoystickXY(x, y);
+        _frame.repaint();
+    }
+
+    public void updateJoystickRotation(int r)
+    {
+        Joystick_Panel.updateJoystickRotation(r);
+        _frame.repaint();
+    }
+
+    public void updateJoystickThrottle(int r)
+    {
+        Joystick_Panel.updateJoystickThrottle(r);
+        _frame.repaint();
+    }
+
  */

@@ -16,9 +16,16 @@ import java.util.concurrent.BlockingQueue;
  */
 public class XBee_Series1 extends Coms {
 
+    private boolean _isConnected = false;
+
     public XBee_Series1(ComsDecoder theComsDecoder)
     {
         _comsDecoder = theComsDecoder;
+    }
+
+    public boolean isConnected()
+    {
+        return _isConnected;
     }
 
     public boolean open(String port, int baudRate)
@@ -48,11 +55,14 @@ public class XBee_Series1 extends Coms {
             }
         });
 
+        _isConnected = true;
         return true;
     }
 
     public void close()
     {
+        _isConnected = false;
+
         _sender.interrupt();
         while(_sender.isAlive()){}
 

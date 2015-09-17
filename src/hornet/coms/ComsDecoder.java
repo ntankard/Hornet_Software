@@ -5,6 +5,7 @@ import java.nio.ByteBuffer;
 import java.nio.ByteOrder;
 import java.nio.FloatBuffer;
 import java.nio.ShortBuffer;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.BlockingQueue;
@@ -26,16 +27,13 @@ public class ComsDecoder {
     /** The worker thread that consumes new messages */
     private Consumer _consumer;
 
-    private Navigation _navigation;
-
     /**
      *
      * @param theVirtualHornet
      */
-    public ComsDecoder(VirtualHornet theVirtualHornet,Navigation theNavigation)
+    public ComsDecoder(VirtualHornet theVirtualHornet)
     {
         _virtualHornet = theVirtualHornet;
-        _navigation = theNavigation;
         _consumer = new Consumer(_toConsume,_virtualHornet);
         _consumer.start();
     }
@@ -48,11 +46,6 @@ public class ComsDecoder {
     public void processMessage(byte[] message)
     {
         _toConsume.add(message);
-        try {
-            _navigation.newReceivedMessage(new String(message, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }
     }
 }
 
@@ -99,14 +92,83 @@ class Consumer extends Thread {
      */
     public void processMessage(byte[] message)
     {
+        // check for total error
         if(message.length ==0)
         {
             return; //@TODO replace with throw
         }
 
-        byte[] filteredByteArray;   //created here instead of inside a case statement
-        float[] converted;          //so that they can be used by all case statements
-        short[] sConverted;
+        if(message[0] == CONFIG.Coms.PacketCodes.DEBUG)
+        {
+            String str = new String(message, StandardCharsets.UTF_8);
+            _virtualHornet.C_debugInfo(str);
+            return;
+        }
+
+        // check for known packet
+        if (CONFIG.Coms.PacketCodes.SizeMap.get(message[0]) == null)
+        {
+            String str = new String(message, StandardCharsets.UTF_8);
+            _virtualHornet.C_debugInfo(str);
+            return; //@TODO replace with throw
+        }
+
+        // check for correct size
+        if (CONFIG.Coms.PacketCodes.SizeMap.get(message[0]).get_size() != (message.length))
+        {
+            return; //@TODO replace with throw
+        }
+
+        // get the packet
+        if(message.length == 1)
+        {
+            _virtualHornet.C_message(message[0]);
+        }
+        else
+        {
+            byte key = message[0];
+            byte[] filteredByteArray;   //created here instead of inside a case statement
+            short[] sConverted;
+            filteredByteArray = removeCode(message);
+            sConverted = toShortArray(filteredByteArray);
+            _virtualHornet.C_data(key,sConverted);
+        }
+    }
+
+    private byte[] removeCode(byte[] message)
+    {
+        return Arrays.copyOfRange(message, 1, message.length);
+    }
+
+    private short[] toShortArray(byte[] message)
+    {
+        int floats = message.length/2;
+        byte[] buffer = new byte[2];
+        for(int i=0;i<floats;i++)
+        {
+            buffer[0] = message[0+(2*i)];
+            buffer[1] = message[1+(2*i)];
+
+            message[0+(2*i)] = buffer[1];
+            message[1+(2*i)] = buffer[0];
+        }
+
+        final ShortBuffer fb = ByteBuffer.wrap(message).asShortBuffer();
+        final short[] dst = new short[fb.capacity()];
+        fb.get(dst); // Copy the contents of the FloatBuffer into dst
+        return dst;
+    }
+}
+
+
+
+
+
+
+
+
+      /*  float[] converted;          //so that they can be used by all case statements
+
         switch (message[0])
         {
             case CONFIG.Coms.PacketCodes.CONNECTION_REQUEST:
@@ -118,14 +180,13 @@ class Consumer extends Thread {
                 {
                     break;  //@TODO add error handling here
                 }
-                filteredByteArray = removeCode(message);
-                sConverted = toShortArray(filteredByteArray);
+
                 //short[] gyro = Arrays.copyOfRange(sConverted, 0, 3);
                 System.out.print(sConverted[0] + " ");
                 System.out.print(sConverted[1] + " ");
                 System.out.println(sConverted[2]);
                 _virtualHornet.C_gyro(sConverted);
-                break;
+                break;*/
             /*case CONFIG.Coms.PacketCodes.ACCGYRO:
                // System.out.println(message.length);
                 if(message.length != 13)
@@ -194,55 +255,6 @@ class Consumer extends Thread {
                 //used by it's Lidar panel
                 break;*/
 
-            default:
-                break;
-        }
-    }
-
-    private byte[] removeCode(byte[] message)
-    {
-        return Arrays.copyOfRange(message, 1, message.length);
-    }
-
-    private float[] toFloatArray(byte[] message)
-    {
-        int floats = message.length/4;
-        byte[] buffer = new byte[4];
-        for(int i=0;i<floats;i++)
-        {
-            buffer[0] = message[0+(4*i)];
-            buffer[1] = message[1+(4*i)];
-            buffer[2] = message[2+(4*i)];
-            buffer[3] = message[3+(4*i)];
-
-            message[0+(4*i)] = buffer[3];
-            message[1+(4*i)] = buffer[2];
-            message[2+(4*i)] = buffer[1];
-            message[3+(4*i)] = buffer[0];
-        }
-
-        final FloatBuffer fb = ByteBuffer.wrap(message).asFloatBuffer();
-        final float[] dst = new float[fb.capacity()];
-        fb.get(dst); // Copy the contents of the FloatBuffer into dst
-        return dst;
-    }
-
-    private short[] toShortArray(byte[] message)
-    {
-        int floats = message.length/2;
-        byte[] buffer = new byte[2];
-        for(int i=0;i<floats;i++)
-        {
-            buffer[0] = message[0+(2*i)];
-            buffer[1] = message[1+(2*i)];
-
-            message[0+(2*i)] = buffer[1];
-            message[1+(2*i)] = buffer[0];
-        }
-
-        final ShortBuffer fb = ByteBuffer.wrap(message).asShortBuffer();
-        final short[] dst = new short[fb.capacity()];
-        fb.get(dst); // Copy the contents of the FloatBuffer into dst
-        return dst;
-    }
-}
+//  default:
+//      break;
+// }

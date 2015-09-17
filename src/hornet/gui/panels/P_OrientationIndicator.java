@@ -4,15 +4,12 @@ import javax.swing.*;
 import javax.swing.border.TitledBorder;
 import java.awt.*;
 
-public class OrientationIndicator extends JPanel {
-
-
-
+public class P_OrientationIndicator extends JPanel {
 
     private double _angle = 0;
     private int _boarder = 10;
 
-    public OrientationIndicator(String name)
+    public P_OrientationIndicator(String name)
     {
         setBorder(new TitledBorder(name));
     }

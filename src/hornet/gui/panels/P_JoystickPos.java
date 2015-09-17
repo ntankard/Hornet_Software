@@ -3,9 +3,8 @@ package hornet.gui.panels;
 import javax.swing.*;
 import java.awt.*;
 
-public class JoystickPos extends JPanel {
+public class P_JoystickPos extends JPanel {
 
-    private double _angle = 0;
     private int _boarder = 10;
 
     private int _xPos;
@@ -15,11 +14,6 @@ public class JoystickPos extends JPanel {
     {
         _xPos=x;
         _yPos=y;
-    }
-
-    public void setAngle(double theAngle)
-    {
-        _angle = Math.toRadians(theAngle+90);
     }
 
     @Override
@@ -46,12 +40,6 @@ public class JoystickPos extends JPanel {
         double y = center + (double)(r)*((double)(_yPos-50))/50;
 
         g2d.drawOval((int)x-5,(int)y-5,10,10);
-
-        //get the line info
-
-
-
-       // g2d.drawLine(center-(int)x,center-(int)y,center+(int)x,center+(int)y);
     }
 
     public Dimension getPreferredSize() {

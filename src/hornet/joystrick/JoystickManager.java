@@ -19,11 +19,9 @@ import java.util.concurrent.BlockingQueue;
  */
 public class JoystickManager {
 
-   // private boolean _isConnected;
     private JoystickMonitor _monitor;
     private Controller _controller;
     private VirtualHornet _virtualHornet;
-    //private JoystickManager _manager;
 
     public JoystickManager(VirtualHornet theVirtualHornet)
     {
@@ -46,6 +44,15 @@ public class JoystickManager {
         return true;
     }
 
+    public boolean isConnected()
+    {
+        if(_controller == null)
+        {
+            return false;
+        }
+        return true;
+    }
+
     public void disconnect()
     {
         if(_monitor != null) {
@@ -55,16 +62,6 @@ public class JoystickManager {
             _controller = null;
         }
     }
-
-    /*public void forceUpdate()
-    {
-        if(_controller!= null) {
-            JoystickInstance current = JoystickUtility.generateInstance(_controller);
-            _virtualHornet.J_newXY(current.getX(), current.getY());
-            _virtualHornet.J_newThrottle(current.getOtherAxis().get("Slider"));
-            _virtualHornet.J_newRotation(current.getOtherAxis().get("Z Rotation"));
-        }
-    }*/
 }
 
 class JoystickMonitor extends Thread {
@@ -80,14 +77,24 @@ class JoystickMonitor extends Thread {
         _virtualHornet = theVirtualHornet;
         _controller = theController;
 
-
         _a = JoystickUtility.generateInstance(_controller);
         _b = JoystickUtility.generateInstance(_controller);   //@TODO verify that this has created 2 identical kinds of instances
         isA = false;
 
-        _virtualHornet.J_newXY(_a.getX(), _a.getY());
-        _virtualHornet.J_newThrottle(_a.getOtherAxis().get("Slider"));
-        _virtualHornet.J_newRotation(_a.getOtherAxis().get("Z Rotation"));
+        short[] toSend;
+
+        toSend = new short[2];
+        toSend[0] = (short)_a.getX();
+        toSend[1] = (short)_a.getY();
+        _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_XY,toSend);
+
+        toSend = new short[1];
+        toSend[0] = (short)(int)(_a.getOtherAxis().get("Slider"));
+        _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_THROTTLE,toSend);
+
+        toSend = new short[1];
+        toSend[0] = (short)(int)(_a.getOtherAxis().get("Z Rotation"));
+        _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
     }
 
     public void run() {
@@ -121,17 +128,24 @@ class JoystickMonitor extends Thread {
 
         if(!current.isEqualXY(past))
         {
-            _virtualHornet.J_newXY(current.getX(), current.getY());
+            short[] toSend = new short[2];
+            toSend[0] = (short)current.getX();
+            toSend[1] = (short)current.getY();
+            _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_XY, toSend);
         }
 
         if(!current.isEqualOtherAxis(past, "Slider"))
         {
-            _virtualHornet.J_newThrottle(100-current.getOtherAxis().get("Slider"));
+            short[] toSend = new short[1];
+            toSend[0] = (short)(int)(100-current.getOtherAxis().get("Slider"));
+            _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_THROTTLE, toSend);
         }
 
         if(!current.isEqualOtherAxis(past,"Z Rotation"))
         {
-            _virtualHornet.J_newRotation(current.getOtherAxis().get("Z Rotation"));
+            short[] toSend = new short[1];
+            toSend[0] = (short)(int)(current.getOtherAxis().get("Z Rotation"));
+            _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
         }
 
         if(!current.isEqualButton(past, "4"))

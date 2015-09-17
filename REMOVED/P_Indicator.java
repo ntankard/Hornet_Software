@@ -6,12 +6,12 @@ import java.awt.*;
 /**
  * Created by Nicholas on 14/08/2015.
  */
-public class Indicator extends JPanel {
+public class P_Indicator extends JPanel {
 
     private String _message;
     private boolean _isEnabled;
 
-    public Indicator(String message)
+    public P_Indicator(String message)
     {
         _message = message;
         _isEnabled = false;

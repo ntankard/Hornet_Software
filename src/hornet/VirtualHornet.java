@@ -1,15 +1,11 @@
 package hornet;
 
-import com.digi.xbee.api.exceptions.XBeeException;
-
 import hornet.coms.Coms;
 import hornet.coms.ComsEncoder;
 import hornet.gui.Navigation;
+import hornet.gui.rootPanels.RP_ComSettings;
 import hornet.joystrick.JoystickManager;
-import hornet.lidar.LidarManager;
-import hornet.lidar.XYPoint;
 
-import java.util.ArrayList;
 
 /**
  * Created by Nicholas on 2/08/2015.
@@ -29,16 +25,14 @@ public class VirtualHornet {
     private JoystickManager _joystickManager;
 
     /** The state of the software system */
-    enum State{Init,Idle,Connect,Connected}
-    private State _state;
-
-    /** LIDAR */
-    private boolean _EOS1 = false;
-    private float _pitch;
-    private float _roll;
-    private LidarManager _lidar;
+    //enum State{Init,Idle,Connect,Connected}
+    //private State _state;
 
     private boolean _joyReady = false;
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ################################################# SETUP #########################################################
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * Default constructor
@@ -46,7 +40,7 @@ public class VirtualHornet {
      */
     public VirtualHornet()
     {
-        _state =State.Init;
+       // _state =State.Init;
     }
 
     /**
@@ -56,7 +50,6 @@ public class VirtualHornet {
     public void attachComs(Coms theComs){_coms = theComs;}
     public void attachComsEncoder(ComsEncoder theComsEncoder){_comsEncoder = theComsEncoder;}
     public void attachJoystickManager(JoystickManager theJoystickManager){_joystickManager = theJoystickManager;}
-    public void attachLidar(LidarManager theLidarManager){_lidar = theLidarManager;}
 
     /**
      * Start the system (equivalent to a constructor, call after all components are attached)
@@ -66,44 +59,157 @@ public class VirtualHornet {
         _navigation.open();
         _navigation.setComPorts(Coms.getPorts());
 
-        _state =State.Idle;
-
-        _navigation.updateJoystickList();
+        //_state =State.Idle;
+        _navigation.start();
+       // _navigation.updateJoystickList();
 
    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ################################################# COMS ##########################################################
+    // -----------------------------------------------------------------------------------------------------------------
+
+    public void C_debugInfo(String message)
+    {
+        _navigation.newDebugData(message);
+    }
+
+    public void C_data(byte key,short[] data)
+    {
+        _navigation.newData(key,data);
+
+        if(CONFIG.Coms.PacketCodes.SizeMap.get(key).is_toHornet())
+        {
+            _comsEncoder.send_data(key,data);
+        }
+
+        switch(key)
+        {
+            case CONFIG.Coms.PacketCodes.STATUS:
+                _navigation.setConnectionState(RP_ComSettings.ConnectionState.Connected);
+                break;
+        }
+
+       /* if(key == 121)
+        {
+            _navigation.gyro(data);
+        }*/
+    }
+
+    public void C_message(byte key)
+    {
+
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ############################################## UI EVENTS ########################################################
+    // -----------------------------------------------------------------------------------------------------------------
 
     /**
      * The user is attempting to connect to the drone
      * @param comPort The com port to use to connect to the drone
      */
     public void UI_connect(String comPort,int baudRate ){
-        if(_state == State.Idle) {
-            _navigation.setConnectionState(Navigation.ConnectionState.Connecting);
+
+        if(!_coms.isConnected())
+        {
+            _navigation.setConnectionState(RP_ComSettings.ConnectionState.Connecting);
+            if(!_coms.open(comPort,baudRate))
+            {
+                _navigation.setConnectionState(RP_ComSettings.ConnectionState.Disconnected);
+            }
+        }
+
+
+       /* if(_state == State.Idle) {
+            _navigation.setConnectionState(RP_ComSettings.ConnectionState.Connecting);
             _state =  State.Connect;
             if(!_coms.open(comPort,baudRate))
             {
-                _navigation.setConnectionState(Navigation.ConnectionState.Disconnected);
+                _navigation.setConnectionState(RP_ComSettings.ConnectionState.Disconnected);
                 //@TODO add failure notification
             }
          }else
          {
              //@toDO throw
-         }
+         }*/
+    }
+
+    public void UI_disconnect()
+    {
+        _coms.close();
+        _navigation.setConnectionState(RP_ComSettings.ConnectionState.Disconnected);
     }
 
     public void UI_joystickConnected(String theJoystick)
     {
         if(_joystickManager.connect(theJoystick))
         {
-            _navigation.turnJoyStickConnectedOn();
+           // _navigation.turnJoyStickConnectedOn();
             _joyReady = false;
         }
     }
 
-    /**
-     * A message has been received from the drone requesting to open a connection
-     */
-    public void C_connectRequest()
+    public void UI_refreshSerialPort()
+    {
+
+    }
+
+    // -----------------------------------------------------------------------------------------------------------------
+    // ########################################### JOYSTICKS EVENTS ####################################################
+    // -----------------------------------------------------------------------------------------------------------------
+
+    /*public void J_newXY(int xPer, int yPer)
+    {
+        if(_state != State.Init) {
+          //  _navigation.updateJoystickXY(xPer, yPer);
+        }
+    }
+
+    public void J_newRotation(int r)
+    {
+
+        if(_state != State.Init)
+        {
+          //  _navigation.updateJoystickRotation(r);
+        }
+    }
+
+    public void J_newThrottle(int t)
+    {
+        if(_state != State.Init)
+        {
+           // _navigation.updateJoystickThrottle(t);
+            if(t == 0)
+            {
+                _joyReady = true;
+                _navigation.turnJoyStickReady();
+            }
+
+            if(_state == State.Connected && _joyReady)
+            {
+                //_comsEncoder.send_throttle(t);
+            }
+        }
+    }*/
+
+    public void J_armDisarm()
+    {
+       /* if(_state == State.Connected && _joyReady)
+        {
+            _comsEncoder.send_armDisarm();
+        }*/
+    }
+
+}
+
+
+
+
+/**
+ * A message has been received from the drone requesting to open a connection
+ */
+    /*public void C_connectRequest()
     {
         if(_state == State.Connect)
         {
@@ -139,51 +245,16 @@ public class VirtualHornet {
         {
           //  _comsEncoder.send_reset();
         }
-    }
+    }*/
 
-    public void J_newXY(int xPer, int yPer)
-    {
-        if(_state != State.Init) {
-            _navigation.updateJoystickXY(xPer, yPer);
-        }
-    }
 
-    public void J_newRotation(int r)
-    {
 
-        if(_state != State.Init)
-        {
-            _navigation.updateJoystickRotation(r);
-        }
-    }
 
-    public void J_newThrottle(int t)
-    {
-        if(_state != State.Init)
-        {
-            _navigation.updateJoystickThrottle(t);
-            if(t == 0)
-            {
-                _joyReady = true;
-                _navigation.turnJoyStickReady();
-            }
 
-            if(_state == State.Connected && _joyReady)
-            {
-                _comsEncoder.send_throttle(t);
-            }
-        }
-    }
 
-    public void J_armDisarm()
-    {
-        if(_state == State.Connected && _joyReady)
-        {
-            _comsEncoder.send_armDisarm();
-        }
-    }
 
-    public void L_newLidarPoint(float angle, float distance)
+
+    /*public void L_newLidarPoint(float angle, float distance)
     {
         //_navigation.newLidar(yaw, distance, pitch);     //Pass the newly received Lidar data to the UI to be drawn
         _lidar.addPoint(angle,distance);
@@ -217,5 +288,4 @@ public class VirtualHornet {
     public void getSweepPoints(ArrayList<XYPoint> sweepPoints)
     {
        // _navigation.updateLidarTopView(sweepPoints);
-    }
-}
+    }*/

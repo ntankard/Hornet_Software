@@ -29,7 +29,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
     private OutputStream _output;
 
     /** The serial port in use */
-    private SerialPort _serialPort;
+    private SerialPort _serialPort = null;
 
     /**
      *
@@ -97,11 +97,28 @@ public class USBSerial extends Coms implements SerialPortEventListener {
         if (_serialPort != null) {
             _serialPort.removeEventListener();
             _serialPort.close();
+            _serialPort = null;
         }
     }
 
     @Override
     public boolean canSend() {
+        return isConnected();
+    }
+
+    public boolean isConnected()
+    {
+        if(_serialPort == null)
+        {
+            return false;
+        }
+        try {
+            _serialPort.getInputStream();
+        }catch (Exception e)
+        {
+            return false;
+        }
+
         return true;
     }
 

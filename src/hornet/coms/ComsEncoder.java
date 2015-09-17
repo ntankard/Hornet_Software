@@ -4,6 +4,8 @@ import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
+
+import hornet.CONFIG;
 import hornet.gui.Navigation;
 
 /**
@@ -50,24 +52,32 @@ public class ComsEncoder {
         send(theMessage, 0);
     }
 
-    public void send_throttle(int t)
+    public void send_data(byte key,short[] data)
     {
-        byte[] theMessage = new byte[2];
-        theMessage[0] = 't';
-        theMessage[1] = (byte)t;
+        byte[] theMessage = new byte[(data.length*2)+1];
+        theMessage[0] = key;
 
-        send(theMessage, 1);
+        for(int i=0;i<data.length;i++)
+        {
+            theMessage[(i*2)+1] = (byte)(data[i] & 0xff);
+            theMessage[(i*2)+1] = (byte)((data[i] >> 8) & 0xff);
+        }
+
+        send(theMessage, CONFIG.Coms.PacketCodes.SizeMap.get(key).get_comPriority());
     }
 
 
     public void send(byte[] message,int priority)
     {
-        _messages.add(new Message(message, priority));
-        try {
+        if(_coms.isConnected())
+        {
+            _messages.add(new Message(message, priority));
+        }
+       /* try {
             _navigation.newSentMessage(new String(message, "UTF-8"));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
-        }
+        }*/
     }
 }
 

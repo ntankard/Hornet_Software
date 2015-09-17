@@ -59,6 +59,8 @@ abstract public class Coms {
      */
     abstract public void send(byte[] dataToSend) throws IOException;
 
+    abstract public boolean isConnected();
+
     /** The object responsible for decoding incoming communications */
     protected ComsDecoder _comsDecoder;
 }
