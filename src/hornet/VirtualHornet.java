@@ -195,6 +195,13 @@ public class VirtualHornet {
 
     public void J_armDisarm()
     {
+        if(_joystickManager.isConnected())
+        {
+            if(_joystickManager.isSafe()) {
+                _comsEncoder.send_command(CONFIG.Coms.PacketCodes.ARM_DISARM);
+            }
+        }
+
        /* if(_state == State.Connected && _joyReady)
         {
             _comsEncoder.send_armDisarm();

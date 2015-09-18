@@ -60,10 +60,18 @@ public class ComsEncoder {
         for(int i=0;i<data.length;i++)
         {
             theMessage[(i*2)+1] = (byte)(data[i] & 0xff);
-            theMessage[(i*2)+1] = (byte)((data[i] >> 8) & 0xff);
+            theMessage[(i*2)+2] = (byte)((data[i] << 8) & 0xff);
         }
 
         send(theMessage, CONFIG.Coms.PacketCodes.SizeMap.get(key).get_comPriority());
+    }
+
+    public void send_command(byte command)
+    {
+        byte[] theMessage = new byte[1];
+        theMessage[0] = command;
+
+        send(theMessage, 0);
     }
 
 

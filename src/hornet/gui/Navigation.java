@@ -7,10 +7,7 @@ import hornet.CONFIG;
 import hornet.VirtualHornet;
 
 import hornet.gui.panels.*;
-import hornet.gui.rootPanels.RP_ComSettings;
-import hornet.gui.rootPanels.RP_Coms;
-import hornet.gui.rootPanels.RP_JoyStick;
-import hornet.gui.rootPanels.RP_Orientation;
+import hornet.gui.rootPanels.*;
 
 
 /**
@@ -29,6 +26,7 @@ public class Navigation  {
                 private RP_Orientation Gyro_Panel;
             private JPanel DroneState;
                 private P_DroneState DroneState_Panel;
+    private RP_EngineStatus EngineStatus_Panel;
 
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
@@ -92,6 +90,9 @@ public class Navigation  {
                 break;
             case CONFIG.Coms.PacketCodes.STATUS:
                 DroneState_Panel.setState(data[0]);
+                break;
+            case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
+                EngineStatus_Panel.setStatus(data);
                 break;
         }
         _frame.repaint();

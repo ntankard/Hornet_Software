@@ -19,6 +19,8 @@ public class CONFIG {
             public static final byte JOY_THROTTLE = 't';
             public static final byte JOY_Z = 'z';
             public static final byte STATUS = 's';
+            public static final byte MOTOR_STATUS = 'm';
+            public static final byte ARM_DISARM = 'd';
 
             public static final int CONTROL_PRI =1;
 
@@ -29,7 +31,9 @@ public class CONFIG {
                 SizeMap.put(JOY_XY,new PacketInfo(5,true,CONTROL_PRI));
                 SizeMap.put(JOY_THROTTLE,new PacketInfo(3,true,CONTROL_PRI));
                 SizeMap.put(JOY_Z,new PacketInfo(3,true,CONTROL_PRI));
-                SizeMap.put(STATUS,new PacketInfo(3,true,-1));
+                SizeMap.put(STATUS,new PacketInfo(3,false,-1));
+                SizeMap.put(MOTOR_STATUS,new PacketInfo(9,false,-1));
+                SizeMap.put(ARM_DISARM,new PacketInfo(1,true,0));
             }
         }
 

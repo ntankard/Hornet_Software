@@ -62,6 +62,14 @@ public class JoystickManager {
             _controller = null;
         }
     }
+
+    public boolean isSafe()
+    {
+        if(_monitor != null) {
+            return _monitor.isSafe();
+        }
+        return false;
+    }
 }
 
 class JoystickMonitor extends Thread {
@@ -129,8 +137,8 @@ class JoystickMonitor extends Thread {
         if(!current.isEqualXY(past))
         {
             short[] toSend = new short[2];
-            toSend[0] = (short)current.getX();
-            toSend[1] = (short)current.getY();
+            toSend[0] = (short)(current.getX());
+            toSend[1] = (short)(current.getY());
             _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_XY, toSend);
         }
 
@@ -144,7 +152,7 @@ class JoystickMonitor extends Thread {
         if(!current.isEqualOtherAxis(past,"Z Rotation"))
         {
             short[] toSend = new short[1];
-            toSend[0] = (short)(int)(current.getOtherAxis().get("Z Rotation"));
+            toSend[0] = (short)((int)(current.getOtherAxis().get("Z Rotation")));
             _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
         }
 
@@ -153,12 +161,31 @@ class JoystickMonitor extends Thread {
             if(current.getButtons().get("4"))
             {
                 _virtualHornet.J_armDisarm();
-                System.out.println("YES");
             }
         }
 
 
         isA = !isA;
 
+    }
+
+    public boolean isSafe()
+    {
+        JoystickInstance current;
+
+        if(isA)
+        {
+            current = _b;
+        }
+        else
+        {
+            current = _a;
+        }
+
+        if((100-current.getOtherAxis().get("Slider")) == 0)
+        {
+            return true;
+        }
+        return false;
     }
 }
