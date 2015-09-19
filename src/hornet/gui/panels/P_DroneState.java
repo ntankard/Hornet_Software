@@ -16,6 +16,7 @@ public class P_DroneState {
         private JPanel Land_Panel;
         private JPanel Emergency_Panel;
         private JPanel Crash_Panel;
+    private JTextField Loops_Text;
 
     private JPanel[] _panels = new JPanel[8];
 
@@ -34,6 +35,8 @@ public class P_DroneState {
         {
             _panels[i].setBackground(Color.GRAY);
         }
+
+        Loops_Text.setText("0");
     }
 
     public void setState(int state)
@@ -44,5 +47,10 @@ public class P_DroneState {
         }
 
         _panels[state].setBackground(Color.GREEN);
+    }
+
+    public void setLoopCount(int c)
+    {
+        Loops_Text.setText(Integer.toString(c));
     }
 }

@@ -90,6 +90,7 @@ public class Navigation  {
                 break;
             case CONFIG.Coms.PacketCodes.STATUS:
                 DroneState_Panel.setState(data[0]);
+                DroneState_Panel.setLoopCount(data[1]);
                 break;
             case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
                 EngineStatus_Panel.setStatus(data);
