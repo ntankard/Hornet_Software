@@ -25,8 +25,8 @@ public class RP_Orientation {
         double x = (double)gyro[0]/10000.0;
         double y = (double)gyro[1]/10000.0;
         double z = (double)gyro[2]/10000.0;
-        ((P_OrientationIndicator) Yaw_Panel).setAngle(x);
+        ((P_OrientationIndicator)Roll_Panel).setAngle(x);
         ((P_OrientationIndicator)Pitch_Panel).setAngle(y);
-        ((P_OrientationIndicator)Roll_Panel).setAngle(z);
+        ((P_OrientationIndicator)Yaw_Panel).setAngle(z);
     }
 }

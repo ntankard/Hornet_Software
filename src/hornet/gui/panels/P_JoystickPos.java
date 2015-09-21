@@ -12,8 +12,8 @@ public class P_JoystickPos extends JPanel {
 
     public void setPos(int x, int y)
     {
-        _xPos=x;
-        _yPos=y;
+        _xPos=(x+100)/2;
+        _yPos=(y+100)/2;
     }
 
     @Override

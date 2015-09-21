@@ -2,6 +2,7 @@ package hornet.coms;
 
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
+import java.nio.ByteBuffer;
 import java.util.Comparator;
 import java.util.concurrent.PriorityBlockingQueue;
 
@@ -57,10 +58,15 @@ public class ComsEncoder {
         byte[] theMessage = new byte[(data.length*2)+1];
         theMessage[0] = key;
 
+        ByteBuffer bb = ByteBuffer.allocate(data.length * 2);
+        bb.asShortBuffer().put(data);
+        byte[] b= bb.array();
+
+        byte[] buffer = new byte[2];
         for(int i=0;i<data.length;i++)
         {
-            theMessage[(i*2)+1] = (byte)(data[i] & 0xff);
-            theMessage[(i*2)+2] = (byte)((data[i] << 8) & 0xff);
+            theMessage[(i*2)+1] = b[(i*2)+1];
+            theMessage[(i*2)+2] = b[(i*2)];
         }
 
         send(theMessage, CONFIG.Coms.PacketCodes.SizeMap.get(key).get_comPriority());
