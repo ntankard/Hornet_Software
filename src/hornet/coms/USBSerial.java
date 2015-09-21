@@ -149,7 +149,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
             toSend[i] = dataToSend[i];
         }
         toSend[dataToSend.length] = '\n';
-        _output.write(toSend);
+            _output.write(toSend);
     }
 
 }
