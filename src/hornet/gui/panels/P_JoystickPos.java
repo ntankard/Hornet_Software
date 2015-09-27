@@ -7,13 +7,13 @@ public class P_JoystickPos extends JPanel {
 
     private int _boarder = 10;
 
-    private int _xPos;
-    private int _yPos;
+    private int _xPos = 50;
+    private int _yPos = 50;
 
     public void setPos(int x, int y)
     {
-        _xPos=(x+100)/2;
-        _yPos=(y+100)/2;
+        _xPos=x;
+        _yPos=y;
     }
 
     @Override

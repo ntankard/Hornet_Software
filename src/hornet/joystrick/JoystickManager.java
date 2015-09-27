@@ -148,18 +148,9 @@ class JoystickMonitor extends Thread {
         if(!current.isEqualXY(past))
         {
             short[] toSend = new short[2];
-            toSend[0] = (short)((current.getX()*2)-100);
-            toSend[1] = (short)-((current.getY()*2)-100);
+            toSend[0] = (short)(current.getX());
+            toSend[1] = (short)(current.getY());
 
-            // fillter to prevent noise
-            if(toSend[0] > -4 && toSend[0] <4)
-            {
-                toSend[0] = 0;
-            }
-            if(toSend[1] > -4 && toSend[1] <4)
-            {
-                toSend[1] = 0;
-            }
             _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_XY, toSend);
         }
 
