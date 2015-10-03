@@ -116,6 +116,7 @@ public class USBSerial extends Coms implements SerialPortEventListener {
             _serialPort.getInputStream();
         }catch (Exception e)
         {
+            System.out.println("Here 6");
             return false;
         }
 
@@ -131,11 +132,13 @@ public class USBSerial extends Coms implements SerialPortEventListener {
                 String inputLine=_input.readLine();
                 _comsDecoder.processMessage(inputLine.getBytes());
             } catch (Exception e) {
-                System.err.println(e.toString());   //@TODO this is a problem
+                // this dose happen ocasionaly but its not known why
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
+
+    private int _sendCount =0;
 
     /**
      * Sends a single packet
@@ -143,13 +146,40 @@ public class USBSerial extends Coms implements SerialPortEventListener {
      * @throws IOException Write failed
      */
     public void send(byte[] dataToSend) throws IOException {
-        byte[] toSend = new byte[dataToSend.length+1];
+        byte[] toSend = new byte[dataToSend.length+4];
+
+        // add the packet
         for(int i=0;i<dataToSend.length;i++)
         {
-            toSend[i] = dataToSend[i];
+            toSend[i+2] = dataToSend[i];
         }
-        toSend[dataToSend.length] = '\n';
-            _output.write(toSend);
+
+        // add header
+        toSend[0] = (byte)dataToSend.length;
+        toSend[1] = (byte)_sendCount;
+        _sendCount++;
+        _sendCount = _sendCount &0xff;
+
+        // add footer
+        toSend[dataToSend.length+3] = '\n';
+        toSend[dataToSend.length+2] = (byte)getCheckSum(toSend);
+
+
+
+        _output.write(toSend);
+    }
+
+    private int getCheckSum(byte[] message)
+    {
+        int toAdd;
+        int check = 0;
+        for(int i=0;i<message.length-2;i++)
+        {
+            toAdd = ((int)(message[i]&0xFF));
+            check += ((toAdd * (i+1)) & 0xFF);
+        }
+
+        return check & 0xff;
     }
 
 }

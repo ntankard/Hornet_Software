@@ -1,6 +1,7 @@
 package hornet.gui.rootPanels;
 
 import javax.swing.*;
+import java.nio.charset.StandardCharsets;
 import java.util.Vector;
 
 /**
@@ -19,8 +20,24 @@ public class RP_Coms {
     private Vector<String> _debugMessages = new Vector<>();
     private Vector<String> _dataMessages = new Vector<>();
 
-    public void addDebugMessage(String message)
+    public void addDebugMessage(byte[] message)
     {
+        String str = new String(message, StandardCharsets.UTF_8);
+       /*
+        String str = "";
+
+        for(int i=0;i<message.length;i++)
+        {
+            int toConvert = 0xff&message[i];
+            str+=String.format("0x%2s", Integer.toHexString(toConvert)).replace(' ', '0');
+            str+=" ";
+        }
+
+        str+="C:";
+        str+=String.format("0x%2s", Integer.toHexString(getCheckSum(message))).replace(' ', '0');
+        */
+
+        //String str String.format("0x%8s", Integer.toHexString(n)).replace(' ', '0');
         // prevent the buffers from exploding @TODO magic number
         if(_debugMessages.size() >=10)
         {
@@ -28,7 +45,7 @@ public class RP_Coms {
         }
 
         // add the new message
-        _debugMessages.add(message);
+        _debugMessages.add(str);
         Debug_List.setListData(_debugMessages);
 
         // set the scroll to the bottom
@@ -63,5 +80,18 @@ public class RP_Coms {
         // set the scroll to the bottom
         JScrollBar vertical = Data_Scroll.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
+    }
+
+    private int getCheckSum(byte[] message)
+    {
+        int toAdd;
+        int check = 0;
+        for(int i=0;i<message.length-1;i++)
+        {
+            toAdd = ((int)(message[i]&0xFF));
+            check += ((toAdd * (i+1)) & 0xFF);
+        }
+
+        return check & 0xff;
     }
 }

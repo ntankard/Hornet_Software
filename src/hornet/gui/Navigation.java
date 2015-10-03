@@ -65,7 +65,7 @@ public class Navigation  {
     // ########################################### STANDARD MESSAGES ###################################################
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void newDebugData(String message)
+    public void newDebugData(byte[] message)
     {
         Coms_Panel.addDebugMessage(message);
     }

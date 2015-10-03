@@ -69,7 +69,7 @@ public class VirtualHornet {
     // ################################################# COMS ##########################################################
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void C_debugInfo(String message)
+    public void C_debugInfo(byte[] message)
     {
         _navigation.newDebugData(message);
     }

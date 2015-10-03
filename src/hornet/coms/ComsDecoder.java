@@ -80,11 +80,16 @@ class Consumer extends Thread {
             try {
                 processMessage( _toConsume.take());
             } catch (InterruptedException e) {
+                System.out.println("Here 4");
                 Thread.currentThread().interrupt();
                 return;
             }
         }
     }
+
+    //private int _E_firstCount =0;
+    private int _E_errorCount =0;
+    private int _E_lastCount =0;
 
     /**
      * Decodes received messages and sends them to the hornet manager
@@ -98,35 +103,56 @@ class Consumer extends Thread {
             return; //@TODO replace with throw
         }
 
-        if(message[0] == CONFIG.Coms.PacketCodes.DEBUG)
+        // validate packet length
+        if(message.length != message[0]+ 3)
         {
-            String str = new String(message, StandardCharsets.UTF_8);
-            _virtualHornet.C_debugInfo(str);
+            _virtualHornet.C_debugInfo(message);
+            return;
+        }
+
+        // validate checksum
+        if(getCheckSum(message) != (message[message.length-1] & 0xff))
+        {
+            _virtualHornet.C_debugInfo(message);
             return;
         }
 
         // check for known packet
-        if (CONFIG.Coms.PacketCodes.SizeMap.get(message[0]) == null)
+        if (CONFIG.Coms.PacketCodes.SizeMap.get(message[2]) == null)
         {
-            String str = new String(message, StandardCharsets.UTF_8);
-            _virtualHornet.C_debugInfo(str);
+            _virtualHornet.C_debugInfo(message);
             return; //@TODO replace with throw
         }
 
         // check for correct size
-        if (CONFIG.Coms.PacketCodes.SizeMap.get(message[0]).get_size() != (message.length))
+        if (CONFIG.Coms.PacketCodes.SizeMap.get(message[2]).get_size() != (message.length)-3)
         {
             return; //@TODO replace with throw
         }
 
-        // get the packet
-        if(message.length == 1)
+        // monitor packet loss
+        int packetCount = message[1]&0xff;
+        //System.out.println(packetCount);
+        if(_E_lastCount != packetCount +1)
         {
-            _virtualHornet.C_message(message[0]);
+            _E_errorCount += ((packetCount - _E_lastCount)-1)&0xff;
+        }
+        if(packetCount < _E_lastCount)
+        {
+            // rollover reset
+            System.out.println(_E_errorCount);
+            _E_errorCount = packetCount;
+        }
+        _E_lastCount = packetCount;
+
+        // get the packet
+        if(message.length == 4)
+        {
+            _virtualHornet.C_message(message[1]);
         }
         else
         {
-            byte key = message[0];
+            byte key = message[2];
             byte[] filteredByteArray;   //created here instead of inside a case statement
             short[] sConverted;
             filteredByteArray = removeCode(message);
@@ -137,7 +163,7 @@ class Consumer extends Thread {
 
     private byte[] removeCode(byte[] message)
     {
-        return Arrays.copyOfRange(message, 1, message.length);
+        return Arrays.copyOfRange(message, 3, message.length-1);
     }
 
     private short[] toShortArray(byte[] message)
@@ -157,6 +183,19 @@ class Consumer extends Thread {
         final short[] dst = new short[fb.capacity()];
         fb.get(dst); // Copy the contents of the FloatBuffer into dst
         return dst;
+    }
+
+    private int getCheckSum(byte[] message)
+    {
+        int toAdd;
+        int check = 0;
+        for(int i=0;i<message.length-1;i++)
+        {
+            toAdd = ((int)(message[i]&0xFF));
+            check += ((toAdd * (i+1)) & 0xFF);
+        }
+
+        return check & 0xff;
     }
 }
 

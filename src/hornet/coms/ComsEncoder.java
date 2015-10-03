@@ -126,6 +126,7 @@ class Sender extends Thread {
             try {
                 send(_messages.take().message);
             } catch (InterruptedException e) {
+                System.out.println("Here");
                 Thread.currentThread().interrupt();
                 return;
             }
@@ -144,6 +145,7 @@ class Sender extends Thread {
             try {
                 wait(10);
             } catch (InterruptedException e) {
+                System.out.println("Here 2");
                 e.printStackTrace();
             }
         }
@@ -152,6 +154,7 @@ class Sender extends Thread {
         try {
             _coms.send(theMessage);
         } catch (IOException e) {
+            System.out.println("Here 3");
             e.printStackTrace();
         }
     }
