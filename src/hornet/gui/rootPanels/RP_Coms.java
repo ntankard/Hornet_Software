@@ -22,8 +22,8 @@ public class RP_Coms {
 
     public void addDebugMessage(byte[] message)
     {
-        String str = new String(message, StandardCharsets.UTF_8);
-       /*
+        //String str = new String(message, StandardCharsets.UTF_8);
+      // /*
         String str = "";
 
         for(int i=0;i<message.length;i++)
@@ -35,7 +35,7 @@ public class RP_Coms {
 
         str+="C:";
         str+=String.format("0x%2s", Integer.toHexString(getCheckSum(message))).replace(' ', '0');
-        */
+      //  */
 
         //String str String.format("0x%8s", Integer.toHexString(n)).replace(' ', '0');
         // prevent the buffers from exploding @TODO magic number

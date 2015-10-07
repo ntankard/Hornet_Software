@@ -116,7 +116,6 @@ public class USBSerial extends Coms implements SerialPortEventListener {
             _serialPort.getInputStream();
         }catch (Exception e)
         {
-            System.out.println("Here 6");
             return false;
         }
 
