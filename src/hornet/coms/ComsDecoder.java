@@ -97,21 +97,9 @@ class Consumer extends Thread {
      */
     public void processMessage(byte[] message)
     {
-        // check for total error
-        if(message.length ==0)
-        {
-            return; //@TODO replace with throw
-        }
+        ComPacket toTest = new ComPacket(message);
 
-        // validate packet length
-        if(message.length != message[0]+ 3)
-        {
-            _virtualHornet.C_debugInfo(message);
-            return;
-        }
-
-        // validate checksum
-        if(getCheckSum(message) != (message[message.length-1] & 0xff))
+        if(!toTest.isValid())
         {
             _virtualHornet.C_debugInfo(message);
             return;
@@ -157,6 +145,12 @@ class Consumer extends Thread {
             short[] sConverted;
             filteredByteArray = removeCode(message);
             sConverted = toShortArray(filteredByteArray);
+
+            if(toTest.isValid())
+            {
+
+            }
+
             _virtualHornet.C_data(key,sConverted);
         }
     }

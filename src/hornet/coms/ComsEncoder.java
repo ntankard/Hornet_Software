@@ -139,14 +139,14 @@ class Sender extends Thread {
     public void send(byte[] theMessage) {
 
         // wait for the chanel to be clear
-        while(!_coms.canSend())
+       /* while(!_coms.canSend())
         {
             try {
                 wait(10);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
-        }
+        }*/
 
         //send the message
         try {
