@@ -148,50 +148,12 @@ public class Coms implements SerialPortEventListener {
         return true;
     }
 
-    /**
-     * Sends a single packet
-     * @param dataToSend The packet to send
-     * @throws IOException Write failed
-     */
-    public void send(byte[] dataToSend) throws IOException {
-        byte[] toSend = new byte[dataToSend.length+4];
 
-        // add the packet
-        for(int i=0;i<dataToSend.length;i++)
-        {
-            toSend[i+2] = dataToSend[i];
-        }
-
-        // add header
-        toSend[0] = (byte)dataToSend.length;
-        toSend[1] = (byte)_sendCount;
+    public void send(DataPacket toSend) throws IOException {
+        ComPacket thePacket = new ComPacket(toSend,_sendCount);
         _sendCount++;
         _sendCount = _sendCount &0xff;
-
-        // add footer
-        toSend[dataToSend.length+3] = '\n';
-        toSend[dataToSend.length+2] = (byte)getCheckSum(toSend);
-
-        // send the data
-        _output.write(toSend);
-    }
-
-    /**
-     * Generate a checksum of the message to send
-     * @param message the message to calculate
-     * @return The checksum of the message
-     */
-    private int getCheckSum(byte[] message)
-    {
-        int toAdd;
-        int check = 0;
-        for(int i=0;i<message.length-2;i++)
-        {
-            toAdd = ((int)(message[i]&0xFF));
-            check += ((toAdd * (i+1)) & 0xFF);
-        }
-
-        return check & 0xff;
+        _output.write(thePacket.getBytes());
     }
 
     /**

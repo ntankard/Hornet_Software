@@ -3,7 +3,10 @@ package hornet.coms;
 import java.io.IOException;
 import java.io.UnsupportedEncodingException;
 import java.nio.ByteBuffer;
+import java.util.ArrayList;
 import java.util.Comparator;
+import java.util.List;
+import java.util.concurrent.ArrayBlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 
 import hornet.CONFIG;
@@ -16,82 +19,20 @@ public class ComsEncoder {
 
     private Coms _coms;
     private Sender _sender;
-    private PriorityBlockingQueue<Message> _messages;
-    private Navigation _navigation;
+    private ArrayBlockingQueue<DataPacket> _toUpdate;
 
-    public ComsEncoder(Coms theComs,Navigation theNavigation)
+    public ComsEncoder(Coms theComs)
     {
-        Comparator<Message> comparator = new MessageComparator();
-        _messages = new PriorityBlockingQueue<>(10,comparator);
+        _toUpdate = new ArrayBlockingQueue<>(10);
 
         _coms = theComs;
-        _navigation = theNavigation;
-        _sender = new Sender(_messages,_coms);
+        _sender = new Sender(_toUpdate,_coms);
         _sender.start();
     }
 
-    public void send_connectionConfirmation()
+    public void send_data(DataPacket toSend)
     {
-        byte[] theMessage = new byte[1];
-        theMessage[0] = 'b';
-        send(theMessage, 0);
-    }
-
-    public void send_reset()
-    {
-        byte[] theMessage = new byte[1];
-        theMessage[0] = 'r';
-
-        send(theMessage, 0);
-    }
-
-    public void send_armDisarm()
-    {
-        byte[] theMessage = new byte[1];
-        theMessage[0] = 'd';
-
-        send(theMessage, 0);
-    }
-
-    public void send_data(byte key,short[] data)
-    {
-        byte[] theMessage = new byte[(data.length*2)+1];
-        theMessage[0] = key;
-
-        ByteBuffer bb = ByteBuffer.allocate(data.length * 2);
-        bb.asShortBuffer().put(data);
-        byte[] b= bb.array();
-
-        byte[] buffer = new byte[2];
-        for(int i=0;i<data.length;i++)
-        {
-            theMessage[(i*2)+1] = b[(i*2)+1];
-            theMessage[(i*2)+2] = b[(i*2)];
-        }
-
-        send(theMessage, CONFIG.Coms.PacketCodes.SizeMap.get(key).get_comPriority());
-    }
-
-    public void send_command(byte command)
-    {
-        byte[] theMessage = new byte[1];
-        theMessage[0] = command;
-
-        send(theMessage, 0);
-    }
-
-
-    public void send(byte[] message,int priority)
-    {
-        if(_coms.isConnected())
-        {
-            _messages.add(new Message(message, priority));
-        }
-       /* try {
-            _navigation.newSentMessage(new String(message, "UTF-8"));
-        } catch (UnsupportedEncodingException e) {
-            e.printStackTrace();
-        }*/
+        _toUpdate.add(toSend);
     }
 }
 
@@ -100,21 +41,26 @@ public class ComsEncoder {
  */
 class Sender extends Thread {
 
-    /** The messages to send */
-    private PriorityBlockingQueue<Message> _messages;
+    /**
+     * The messages to send
+     */
+    private ArrayBlockingQueue<DataPacket> _toAdd;
 
-    /** The com object to send through */
+    private ArrayList<DataPacket> _buffer;
+
+    /**
+     * The com object to send through
+     */
     private Coms _coms;
 
     /**
-     *
-     * @param toSend The Queue of messages to send
+     * @param toSend  The Queue of messages to send
      * @param theComs The com object to send them through
      */
-    Sender(PriorityBlockingQueue<Message> toSend,Coms theComs)
-    {
-        _messages = toSend;
+    Sender(ArrayBlockingQueue<DataPacket> toSend, Coms theComs) {
+        _toAdd = toSend;
         _coms = theComs;
+        _buffer = new ArrayList<>();
     }
 
     /**
@@ -123,70 +69,37 @@ class Sender extends Thread {
     public void run() {
 
         while (!Thread.currentThread().isInterrupted()) {
-            try {
-                send(_messages.take().message);
-            } catch (InterruptedException e) {
-                Thread.currentThread().interrupt();
-                return;
+
+            // transfer pending messages into the buffer
+            while (!_toAdd.isEmpty()) {
+                DataPacket toAdd = _toAdd.remove();
+                boolean found = false;
+
+                for (int i = 0; i < _buffer.size(); i++) {
+                    if (_buffer.get(i).get_ID() == toAdd.get_ID()) {
+                        _buffer.get(i).set_packet(toAdd.getBytes());
+                        found = true;
+                        break;
+                    }
+                }
+
+                if (!found) {
+                    _buffer.add(toAdd);
+                }
+            }
+
+            // send the packets
+            for (int i = 0; i < _buffer.size(); i++) {
+                try {
+                    _coms.send(_buffer.get(i));
+                    wait(1);
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                    return;
+                }
             }
         }
     }
 
-    /**
-     * Send a single message
-     * @param theMessage The message to send
-     */
-    public void send(byte[] theMessage) {
-
-        // wait for the chanel to be clear
-       /* while(!_coms.canSend())
-        {
-            try {
-                wait(10);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-        }*/
-
-        //send the message
-        try {
-            _coms.send(theMessage);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-    }
 }
 
-/**
- * A message and its priority used as the object for a PriorityBlockingQueue
- */
-class Message
-{
-    public Message(byte[] theMessage,int thePriority)
-    {
-        priority=thePriority;
-        message = theMessage;
-    }
-    int priority;
-    byte[] message;
-}
-
-/**
- * Compares the priories of 2 Messages
- */
-class MessageComparator implements Comparator<Message>
-{
-    @Override
-    public int compare(Message x, Message y)
-    {
-        if (x.priority < y.priority)
-        {
-            return -1;
-        }
-        if (x.priority > y.priority)
-        {
-            return 1;
-        }
-        return 0;
-    }
-}

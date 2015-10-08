@@ -15,9 +15,64 @@ public class ComPacket {
 
     private int _checksum;
 
+    public DataPacket get_packet() {
+        return _packet;
+    }
+
+    public void set_packet(DataPacket _packet) {
+        this._packet = _packet;
+    }
+
+    public int get_sendCount() {
+        return _sendCount;
+    }
+
+    public void set_sendCount(int _sendCount) {
+        this._sendCount = _sendCount;
+    }
+
+    public int get_length() {
+        return _length;
+    }
+
+    public void set_length(int _length) {
+        this._length = _length;
+    }
+
+    public int get_checksum() {
+        return _checksum;
+    }
+
+    public void set_checksum(int _checksum) {
+        this._checksum = _checksum;
+    }
+
     public ComPacket(DataPacket _packet, int _sendCount) {
         this._packet = _packet;
         this._sendCount = _sendCount;
+        _length = _packet.length();
+        _checksum = getCheckSum();
+    }
+
+    public byte[] getBytes()
+    {
+        byte[] toSend = new byte[_length+4];
+
+        // add the packet
+        for(int i=0;i<_packet.length();i++)
+        {
+            toSend[i+2] = _packet.get_packet()[i];
+        }
+
+        // add header
+        toSend[0] = (byte)_length;
+        toSend[1] = (byte)_sendCount;
+
+        // add footer
+        toSend[_length+3] = '\n';
+        toSend[_length+2] = (byte)_checksum;
+
+        return toSend;
     }
 
     public ComPacket(byte[] message)
