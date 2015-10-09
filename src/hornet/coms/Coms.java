@@ -6,6 +6,7 @@ import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import hornet.CONFIG;
 
+import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,7 +36,7 @@ public class Coms implements SerialPortEventListener {
     private ComsDecoder _comsDecoder;
 
     /** The number of bytes already sent (used for packet validation in the firmware) */
-    private int _sendCount =0;
+   // private int _sendCount =0;
 
     /**
      * Default constructor
@@ -148,14 +149,17 @@ public class Coms implements SerialPortEventListener {
         return true;
     }
 
+    public void send(byte[] toSend) throws IOException {
+        _output.write(toSend);
+    }
 
-    public void send(DataPacket toSend) throws IOException {
+    /*public void send(DataPacket toSend) throws IOException {
         ComPacket thePacket = new ComPacket(toSend,_sendCount);
         _sendCount++;
         _sendCount = _sendCount &0xff;
-        _output.write(thePacket.getBytes());
+        _output.write(thePacket.getPacket());
     }
-
+*/
     /**
      * Handle an event on the serial port. Read the data and decode it.
      */
@@ -165,7 +169,7 @@ public class Coms implements SerialPortEventListener {
                 String inputLine=_input.readLine();
                 _comsDecoder.processMessage(inputLine.getBytes());
             } catch (Exception e) {
-                // this dose happen ocasionaly but its not known why
+                // this dose happen occasionally but its not known why
             }
         }
         // Ignore all the other eventTypes, but you should consider the other ones.

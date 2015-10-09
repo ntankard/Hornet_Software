@@ -41,7 +41,7 @@ public class ComsDecoder {
     /**
      * Called my coms when new messages are received
      * Added them to a Queue to be consumed by an external worker thread
-     * @param message The message that was recieved
+     * @param message The message that was received
      */
     public void processMessage(byte[] message)
     {
@@ -97,7 +97,17 @@ class Consumer extends Thread {
      */
     public void processMessage(byte[] message)
     {
-        ComPacket toTest = new ComPacket(message);
+        ComPacket toTest;
+
+        try{
+            toTest = new ComPacket(message);
+        }catch (Exception)
+        {
+            _virtualHornet.C_debugInfo(message);
+            return;
+        }
+
+
 
         if(!toTest.isValid())
         {
