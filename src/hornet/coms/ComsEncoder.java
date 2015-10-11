@@ -12,6 +12,8 @@ import java.util.concurrent.PriorityBlockingQueue;
 import hornet.CONFIG;
 import hornet.gui.Navigation;
 
+import javax.xml.crypto.Data;
+
 /**
  * Created by Nicholas on 4/08/2015.
  */
@@ -53,6 +55,8 @@ class Sender extends Thread {
      */
     private Coms _coms;
 
+    private int _sendCount =0;
+
     /**
      * @param toSend  The Queue of messages to send
      * @param theComs The com object to send them through
@@ -76,8 +80,8 @@ class Sender extends Thread {
                 boolean found = false;
 
                 for (int i = 0; i < _buffer.size(); i++) {
-                    if (_buffer.get(i).get_ID() == toAdd.get_ID()) {
-                        _buffer.get(i).set_packet(toAdd.getBytes());
+                    if (_buffer.get(i).getID() == toAdd.getID()) {
+                        _buffer.set(i,toAdd);
                         found = true;
                         break;
                     }
@@ -91,7 +95,7 @@ class Sender extends Thread {
             // send the packets
             for (int i = 0; i < _buffer.size(); i++) {
                 try {
-                    _coms.send(_buffer.get(i));
+                    send(_buffer.get(i));
                     wait(1);
                 } catch (Exception e) {
                     Thread.currentThread().interrupt();
@@ -99,6 +103,15 @@ class Sender extends Thread {
                 }
             }
         }
+    }
+
+    private void send(DataPacket toSend) throws IOException {
+        ComPacket packet = new ComPacket(toSend,_sendCount);
+
+        _coms.send(packet.getPacket());
+
+        _sendCount++;
+        _sendCount = _sendCount & 0xFF;
     }
 
 }

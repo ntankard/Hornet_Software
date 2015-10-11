@@ -1,5 +1,6 @@
 package hornet.coms;
 
+import javax.xml.crypto.Data;
 import java.util.Arrays;
 
 /**
@@ -11,6 +12,22 @@ public class ComPacket {
     private int _sendCount = 0;
     private int _length = 0;
     private int _checksum = 0;
+
+    public DataPacket getPayload()
+    {
+        return _payload;
+    }
+
+
+    public int getSendCount()
+    {
+        return _sendCount;
+    }
+
+    public int getLength()
+    {
+        return _length;
+    }
 
     public ComPacket(DataPacket payload, int sendCount) {
         _payload = payload;

@@ -153,13 +153,6 @@ public class Coms implements SerialPortEventListener {
         _output.write(toSend);
     }
 
-    /*public void send(DataPacket toSend) throws IOException {
-        ComPacket thePacket = new ComPacket(toSend,_sendCount);
-        _sendCount++;
-        _sendCount = _sendCount &0xff;
-        _output.write(thePacket.getPacket());
-    }
-*/
     /**
      * Handle an event on the serial port. Read the data and decode it.
      */
@@ -176,3 +169,24 @@ public class Coms implements SerialPortEventListener {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    /*public void send(DataPacket toSend) throws IOException {
+        ComPacket thePacket = new ComPacket(toSend,_sendCount);
+        _sendCount++;
+        _sendCount = _sendCount &0xff;
+        _output.write(thePacket.getPacket());
+    }
+*/

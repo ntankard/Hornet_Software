@@ -101,6 +101,10 @@ public class DataPacket {
         return toReturn;
     }
 
+    public int getID()
+    {
+        return _ID;
+    }
 
   /*  public byte[] get_packet() {
         return _packet;

@@ -2,6 +2,7 @@ package hornet;
 
 import hornet.coms.Coms;
 import hornet.coms.ComsEncoder;
+import hornet.coms.DataPacket;
 import hornet.gui.Navigation;
 import hornet.gui.rootPanels.RP_ComSettings;
 import hornet.joystrick.JoystickManager;
@@ -68,6 +69,11 @@ public class VirtualHornet {
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# COMS ##########################################################
     // -----------------------------------------------------------------------------------------------------------------
+
+    public void newData(DataPacket data)
+    {
+
+    }
 
     public void C_debugInfo(byte[] message)
     {
