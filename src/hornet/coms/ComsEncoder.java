@@ -19,10 +19,19 @@ import javax.xml.crypto.Data;
  */
 public class ComsEncoder {
 
+    /** The object used to send messages */
     private Coms _coms;
+
+    /** The thread used to send data */
     private Sender _sender;
+
+    /** An array of messages to send */
     private ArrayBlockingQueue<DataPacket> _toUpdate;
 
+    /**
+     *
+     * @param theComs
+     */
     public ComsEncoder(Coms theComs)
     {
         _toUpdate = new ArrayBlockingQueue<>(10);
@@ -32,6 +41,10 @@ public class ComsEncoder {
         _sender.start();
     }
 
+    /**
+     * Add new data to send
+     * @param toSend
+     */
     public void send_data(DataPacket toSend)
     {
         _toUpdate.add(toSend);
@@ -43,18 +56,16 @@ public class ComsEncoder {
  */
 class Sender extends Thread {
 
-    /**
-     * The messages to send
-     */
+    /** A shared, thread safe queue of new data to send */
     private ArrayBlockingQueue<DataPacket> _toAdd;
 
+    /** The current set of data to send */
     private ArrayList<DataPacket> _buffer;
 
-    /**
-     * The com object to send through
-     */
+    /** The com object to send through */
     private Coms _coms;
 
+    /** THe count of the last sent packet */
     private int _sendCount =0;
 
     /**
@@ -105,6 +116,11 @@ class Sender extends Thread {
         }
     }
 
+    /**
+     * Converts a DataPacket to a byte stream and sends it via the Com device
+     * @param toSend
+     * @throws IOException
+     */
     private void send(DataPacket toSend) throws IOException {
         ComPacket packet = new ComPacket(toSend,_sendCount);
 
@@ -113,6 +129,5 @@ class Sender extends Thread {
         _sendCount++;
         _sendCount = _sendCount & 0xFF;
     }
-
 }
 

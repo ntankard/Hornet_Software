@@ -5,8 +5,8 @@ import gnu.io.SerialPort;
 import gnu.io.SerialPortEvent;
 import gnu.io.SerialPortEventListener;
 import hornet.CONFIG;
+import hornet.VirtualHornet;
 
-import javax.xml.crypto.Data;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -35,16 +35,13 @@ public class Coms implements SerialPortEventListener {
     /** The object responsible for decoding incoming communications */
     private ComsDecoder _comsDecoder;
 
-    /** The number of bytes already sent (used for packet validation in the firmware) */
-   // private int _sendCount =0;
-
     /**
      * Default constructor
-     * @param theComsDecoder The object responsible for interpreting messages
+     * @param theVirtualHornet The object responsible for interpreting messages
      */
-    public Coms(ComsDecoder theComsDecoder)
+    public Coms(VirtualHornet theVirtualHornet)
     {
-        _comsDecoder = theComsDecoder;
+        _comsDecoder = new ComsDecoder(theVirtualHornet);
     }
 
     /**
@@ -149,6 +146,11 @@ public class Coms implements SerialPortEventListener {
         return true;
     }
 
+    /**
+     * Send a stream of bytes
+     * @param toSend
+     * @throws IOException
+     */
     public void send(byte[] toSend) throws IOException {
         _output.write(toSend);
     }

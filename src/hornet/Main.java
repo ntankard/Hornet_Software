@@ -17,12 +17,8 @@ public class Main {
         virtualHornet.attachNavigation(navigation);
 
         // setup the com systems
-        ComsDecoder comsDecoder = new ComsDecoder(virtualHornet);
-        //Coms coms = new USBSerial(comsDecoder);
-        //Coms coms = new XBee_Series1(comsDecoder);
-        Coms coms = new Coms(comsDecoder);
-
-        ComsEncoder comsEncoder = new ComsEncoder(coms,navigation);
+        Coms coms = new Coms(virtualHornet);
+        ComsEncoder comsEncoder = new ComsEncoder(coms);
         virtualHornet.attachComsEncoder(comsEncoder);
         virtualHornet.attachComs(coms);
 
@@ -34,6 +30,40 @@ public class Main {
         virtualHornet.start();
     }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
         /*JoystickManager joy;
         joy = new JoystickManager();

@@ -105,15 +105,15 @@ class JoystickMonitor extends Thread {
             toSend[1] = 0;
         }
 
-        _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_XY,toSend);
+        _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_XY,toSend);
 
         toSend = new short[1];
         toSend[0] = (short)(int)(_a.getOtherAxis().get("Slider"));
-        _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_THROTTLE,toSend);
+        _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_THROTTLE, toSend);
 
         toSend = new short[1];
         toSend[0] = (short)(int)(_a.getOtherAxis().get("Z Rotation"));
-        _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
+        _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
     }
 
     public void run() {
@@ -151,21 +151,21 @@ class JoystickMonitor extends Thread {
             toSend[0] = (short)((current.getX()/2)+25);
             toSend[1] = (short)((current.getY()/2)+25);
 
-            _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_XY, toSend);
+            _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_XY, toSend);
         }
 
         if(!current.isEqualOtherAxis(past, "Slider"))
         {
             short[] toSend = new short[1];
             toSend[0] = (short)(int)(100-current.getOtherAxis().get("Slider"));
-            _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_THROTTLE, toSend);
+            _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_THROTTLE, toSend);
         }
 
         if(!current.isEqualOtherAxis(past,"Z Rotation"))
         {
             short[] toSend = new short[1];
             toSend[0] = (short)((int)(current.getOtherAxis().get("Z Rotation")/2+25));
-            _virtualHornet.C_data(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
+            _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_Z, toSend);
         }
 
         if(!current.isEqualButton(past, "4"))

@@ -23,6 +23,8 @@ public class CONFIG {
             public static final byte ARM_DISARM = 'd';
             public static final byte NULL_PACKET = (byte)0xff;
 
+            public static final byte RECEIVE_ERROR_COUNT = 'r';
+
 
             //public static final byte CONNECTION_REQUEST = 'a';
            // public static final byte DEBUG = 'd';

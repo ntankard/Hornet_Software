@@ -25,12 +25,6 @@ public class VirtualHornet {
     /** THe Joystick Manager */
     private JoystickManager _joystickManager;
 
-    /** The state of the software system */
-    //enum State{Init,Idle,Connect,Connected}
-    //private State _state;
-
-    private boolean _joyReady = false;
-
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
     // -----------------------------------------------------------------------------------------------------------------
@@ -39,10 +33,7 @@ public class VirtualHornet {
      * Default constructor
      * Dose nothing because components are not added yet
      */
-    public VirtualHornet()
-    {
-       // _state =State.Init;
-    }
+    public VirtualHornet() {}
 
     /**
      * Attach all components that need to be constructed externally
@@ -60,51 +51,34 @@ public class VirtualHornet {
         _navigation.open();
         _navigation.setComPorts(Coms.getPorts());
 
-        //_state =State.Idle;
         _navigation.start();
-       // _navigation.updateJoystickList();
-
    }
 
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# COMS ##########################################################
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void newData(DataPacket data)
+    public void newDataIn(DataPacket data)
     {
-
+        _navigation.newDataIn(data);
     }
 
-    public void C_debugInfo(byte[] message)
+    public void newDataOut(byte key,short[] data)
+    {
+        DataPacket toSend = new DataPacket(key,data);
+        newDataOut(toSend);
+    }
+
+    public void newDataOut(DataPacket data)
+    {
+        _navigation.newDataOut(data);
+
+        _comsEncoder.send_data(data);
+    }
+
+    public void newCorruptPacket(byte[] message)
     {
         _navigation.newDebugData(message);
-    }
-
-    public void C_data(byte key,short[] data)
-    {
-        _navigation.newData(key,data);
-
-        if(CONFIG.Coms.PacketCodes.SizeMap.get(key).is_toHornet())
-        {
-            _comsEncoder.send_data(key,data);
-        }
-
-        switch(key)
-        {
-            case CONFIG.Coms.PacketCodes.STATUS:
-                _navigation.setConnectionState(RP_ComSettings.ConnectionState.Connected);
-                break;
-        }
-
-       /* if(key == 121)
-        {
-            _navigation.gyro(data);
-        }*/
-    }
-
-    public void C_message(byte key)
-    {
-
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -125,20 +99,6 @@ public class VirtualHornet {
                 _navigation.setConnectionState(RP_ComSettings.ConnectionState.Disconnected);
             }
         }
-
-
-       /* if(_state == State.Idle) {
-            _navigation.setConnectionState(RP_ComSettings.ConnectionState.Connecting);
-            _state =  State.Connect;
-            if(!_coms.open(comPort,baudRate))
-            {
-                _navigation.setConnectionState(RP_ComSettings.ConnectionState.Disconnected);
-                //@TODO add failure notification
-            }
-         }else
-         {
-             //@toDO throw
-         }*/
     }
 
     public void UI_disconnect()
@@ -152,7 +112,7 @@ public class VirtualHornet {
         if(_joystickManager.connect(theJoystick))
         {
            // _navigation.turnJoyStickConnectedOn();
-            _joyReady = false;
+           // _joyReady = false;
         }
     }
 
@@ -164,6 +124,68 @@ public class VirtualHornet {
     // -----------------------------------------------------------------------------------------------------------------
     // ########################################### JOYSTICKS EVENTS ####################################################
     // -----------------------------------------------------------------------------------------------------------------
+
+    public void J_armDisarm()
+    {
+        if(_joystickManager.isConnected())
+        {
+            if(_joystickManager.isSafe()) {
+                //_comsEncoder.send_command(CONFIG.Coms.PacketCodes.ARM_DISARM);
+            }
+        }
+    }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+   /* public void C_data(byte key,short[] data)
+    {
+        _navigation.newData(key,data);
+
+        if(CONFIG.Coms.PacketCodes.SizeMap.get(key).is_toHornet())
+        {
+            _comsEncoder.send_data(key,data);
+        }
+
+        switch(key)
+        {
+            case CONFIG.Coms.PacketCodes.STATUS:
+                _navigation.setConnectionState(RP_ComSettings.ConnectionState.Connected);
+                break;
+        }
+    }*/
+/*
+    public void C_message(byte key)
+    {
+
+    }*/
+
+
+
+   /* */
+
+
+
+
+
 
     /*public void J_newXY(int xPer, int yPer)
     {
@@ -198,25 +220,6 @@ public class VirtualHornet {
             }
         }
     }*/
-
-    public void J_armDisarm()
-    {
-        if(_joystickManager.isConnected())
-        {
-            if(_joystickManager.isSafe()) {
-                _comsEncoder.send_command(CONFIG.Coms.PacketCodes.ARM_DISARM);
-            }
-        }
-
-       /* if(_state == State.Connected && _joyReady)
-        {
-            _comsEncoder.send_armDisarm();
-        }*/
-    }
-
-}
-
-
 
 
 /**

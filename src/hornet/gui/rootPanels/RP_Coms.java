@@ -1,5 +1,7 @@
 package hornet.gui.rootPanels;
 
+import hornet.coms.DataPacket;
+
 import javax.swing.*;
 import java.nio.charset.StandardCharsets;
 import java.util.Vector;
@@ -11,35 +13,44 @@ public class RP_Coms {
     private JTabbedPane Coms_TPanel;
     private JPanel rootPanel;
     private JPanel Debug_Tab;
-    private JPanel Data_Tab;
+    private JPanel DataIn_Tab;
     private JList Debug_List;
     private JScrollPane Debug_Scroll;
-    private JScrollPane Data_Scroll;
-    private JList Data_List;
+    private JScrollPane DataIn_Scroll;
+    private JList DataIn_List;
+    private JPanel DataOut_Tab;
+    private JScrollPane DataOut_Scroll;
+    private JList DataOut_List;
+    private JCheckBox Hex_checkBox;
+    private JTextField Debug_logLengh_text;
+    private JTextField DataOut_logLength_text;
+    private JTextField DataIn_logLength_text;
 
     private Vector<String> _debugMessages = new Vector<>();
-    private Vector<String> _dataMessages = new Vector<>();
+    private Vector<String> _dataInMessages = new Vector<>();
+    private Vector<String> _dataOutMessages = new Vector<>();
 
     public void addDebugMessage(byte[] message)
     {
-        //String str = new String(message, StandardCharsets.UTF_8);
-      // /*
-        String str = "";
-
-        for(int i=0;i<message.length;i++)
+        String str;
+        if(Hex_checkBox.isSelected())
         {
-            int toConvert = 0xff&message[i];
-            str+=String.format("0x%2s", Integer.toHexString(toConvert)).replace(' ', '0');
-            str+=" ";
+            str = "";
+
+            for(int i=0;i<message.length;i++)
+            {
+                int toConvert = 0xff&message[i];
+                str+=String.format("0x%2s", Integer.toHexString(toConvert)).replace(' ', '0');
+                str+=" ";
+            }
+        }
+        else
+        {
+            str = new String(message, StandardCharsets.UTF_8);
         }
 
-        str+="C:";
-        str+=String.format("0x%2s", Integer.toHexString(getCheckSum(message))).replace(' ', '0');
-      //  */
-
-        //String str String.format("0x%8s", Integer.toHexString(n)).replace(' ', '0');
-        // prevent the buffers from exploding @TODO magic number
-        if(_debugMessages.size() >=10)
+        // prevent the buffers from exploding
+        if(_debugMessages.size() >=Integer.parseInt(Debug_logLengh_text.getText()))
         {
             _debugMessages.remove(0);
         }
@@ -53,45 +64,63 @@ public class RP_Coms {
         vertical.setValue(vertical.getMaximum());
     }
 
-    public void addData(byte key, short[] data)
+    public void addDataIn(DataPacket data)
     {
         // prevent the buffers from exploding @TODO magic number
-        if(_dataMessages.size() >=10)
+        if(_dataInMessages.size() >=Integer.parseInt(DataIn_logLength_text.getText()))
         {
-            _dataMessages.remove(0);
+            _dataInMessages.remove(0);
         }
 
         String toAdd = new String();
-        toAdd+= (char)key;
+        toAdd+= (char)data.getID();
 
-        for(int i=0;i< data.length;i++)
-        {
-            String shortString = Short.toString(data[i]);
-            String rightPadding = "   |";
-            String leftPadding = "        ".substring(shortString.length());
+        if(data.length != 1) {
+            for (int i = 0; i < (data.getShortPayload().length); i++) {
+                String shortString = Short.toString(data.getShortPayload()[i]);
+                String rightPadding = "   |";
+                String leftPadding = "        ".substring(shortString.length());
 
-            toAdd += leftPadding;
-            toAdd += shortString;
-            toAdd += rightPadding;
+                toAdd += leftPadding;
+                toAdd += shortString;
+                toAdd += rightPadding;
+            }
         }
-        _dataMessages.add(String.valueOf(toAdd));
-        Data_List.setListData(_dataMessages);
+        _dataInMessages.add(String.valueOf(toAdd));
+        DataIn_List.setListData(_dataInMessages);
 
         // set the scroll to the bottom
-        JScrollBar vertical = Data_Scroll.getVerticalScrollBar();
+        JScrollBar vertical = DataIn_Scroll.getVerticalScrollBar();
         vertical.setValue(vertical.getMaximum());
     }
 
-    private int getCheckSum(byte[] message)
+    public void addDataOut(DataPacket data)
     {
-        int toAdd;
-        int check = 0;
-        for(int i=0;i<message.length-1;i++)
+        // prevent the buffers from exploding @TODO magic number
+        if(_dataOutMessages.size() >=Integer.parseInt(DataOut_logLength_text.getText()))
         {
-            toAdd = ((int)(message[i]&0xFF));
-            check += ((toAdd * (i+1)) & 0xFF);
+            _dataOutMessages.remove(0);
         }
 
-        return check & 0xff;
+        String toAdd = new String();
+        toAdd+= (char)data.getID();
+        if(data.length != 1) {
+            for (int i = 0; i < data.getShortPayload().length; i++) {
+                String shortString = Short.toString(data.getShortPayload()[i]);
+                String rightPadding = "   |";
+                String leftPadding = "        ".substring(shortString.length());
+
+                toAdd += leftPadding;
+                toAdd += shortString;
+                toAdd += rightPadding;
+            }
+        }
+        _dataOutMessages.add(String.valueOf(toAdd));
+        DataOut_List.setListData(_dataOutMessages);
+
+        // set the scroll to the bottom
+        JScrollBar vertical = DataOut_Scroll.getVerticalScrollBar();
+        vertical.setValue(vertical.getMaximum());
     }
 }
+

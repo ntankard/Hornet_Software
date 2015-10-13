@@ -1,11 +1,13 @@
 package hornet.gui;
 
 import javax.swing.*;
+import javax.xml.crypto.Data;
 import java.util.ArrayList;
 
 import hornet.CONFIG;
 import hornet.VirtualHornet;
 
+import hornet.coms.DataPacket;
 import hornet.gui.panels.*;
 import hornet.gui.rootPanels.*;
 
@@ -68,34 +70,41 @@ public class Navigation  {
     public void newDebugData(byte[] message)
     {
         Coms_Panel.addDebugMessage(message);
+        _frame.repaint();
     }
 
-    public void newData(byte key,short[] data)
+    public void newDataIn(DataPacket data)
     {
-        Coms_Panel.addData(key, data);
+        Coms_Panel.addDataIn(data);
 
-        switch (key)
+        switch (data.getID())
         {
             case CONFIG.Coms.PacketCodes.GYRO:
-                Gyro_Panel.newSettings(data);
+                Gyro_Panel.newSettings(data.getShortPayload());
                 break;
             case CONFIG.Coms.PacketCodes.JOY_THROTTLE:
-                Joystick_Panel.updateJoystickThrottle(data[0]);
+                Joystick_Panel.updateJoystickThrottle(data.getShortPayload()[0]);
                 break;
             case CONFIG.Coms.PacketCodes.JOY_Z:
-                Joystick_Panel.updateJoystickRotation(data[0]);
+                Joystick_Panel.updateJoystickRotation(data.getShortPayload()[0]);
                 break;
             case CONFIG.Coms.PacketCodes.JOY_XY:
-                Joystick_Panel.updateJoystickXY(data[0],data[1]);
+                Joystick_Panel.updateJoystickXY(data.getShortPayload()[0],data.getShortPayload()[1]);
                 break;
             case CONFIG.Coms.PacketCodes.STATUS:
-                DroneState_Panel.setState(data[0]);
-                DroneState_Panel.setLoopCount(data[1]);
+                DroneState_Panel.setState(data.getShortPayload()[0]);
+                DroneState_Panel.setLoopCount(data.getShortPayload()[1]);
                 break;
             case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
-                EngineStatus_Panel.setStatus(data);
+                EngineStatus_Panel.setStatus(data.getShortPayload());
                 break;
         }
+        _frame.repaint();
+    }
+
+    public void newDataOut(DataPacket data)
+    {
+        Coms_Panel.addDataOut(data);
         _frame.repaint();
     }
 
@@ -114,6 +123,38 @@ public class Navigation  {
     }
 
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

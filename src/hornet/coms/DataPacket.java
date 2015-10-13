@@ -9,14 +9,32 @@ import java.util.Arrays;
  */
 public class DataPacket {
 
+    /** The ID of the message */
     private int _ID;
 
+    /** The raw payload */
     private byte[] _bytePayload;
 
+    /** A SHort version of the raw payload */
     private short[] _shortPayload;
 
+    /** The number of bytes in the payload */
     public int length;
 
+    /**
+     * Construct a packet with no payload
+     * @param ID    The ID to set
+     */
+    public DataPacket(int ID) {
+        _ID = ID;
+        length = 1;
+    }
+
+    /**
+     * Construct a packet using the raw payload
+     * @param ID        The ID of the packet
+     * @param payload   The payload
+     */
     public DataPacket(int ID, byte[] payload) {
         _bytePayload = payload;
         _ID = ID;
@@ -24,6 +42,11 @@ public class DataPacket {
         length = 1+ payload.length;
     }
 
+    /**
+     * Construct a packet from a short array
+     * @param ID        The ID of the packet
+     * @param payload   The payload
+     */
     public DataPacket(int ID, short[] payload)
     {
         _shortPayload = payload;
@@ -32,11 +55,10 @@ public class DataPacket {
         length = 1+ payload.length;
     }
 
-    public DataPacket(int ID) {
-        _ID = ID;
-        length = 1;
-    }
-
+    /**
+     * Construct a packet from a stream of bytes
+     * @param stream    The stream of bytes
+     */
     public DataPacket(byte[] stream) {
         _ID = stream[0];
         if(stream.length != 1)
@@ -47,25 +69,39 @@ public class DataPacket {
         length = stream.length;
     }
 
+    /**
+     * Convert a array of bytes to a array of short
+     * @param message   The array of bytes
+     * @return  THe array of short
+     */
     private short[] toShortArray(byte[] message)
     {
         int floats = message.length/2;
         byte[] buffer = new byte[2];
+        byte[] toConvert = new byte[message.length];
         for(int i=0;i<floats;i++)
         {
             buffer[0] = message[0+(2*i)];
             buffer[1] = message[1+(2*i)];
 
-            message[0+(2*i)] = buffer[1];
-            message[1+(2*i)] = buffer[0];
+            message[0+(2*i)] = buffer[0];
+            message[1+(2*i)] = buffer[1];
+            toConvert[0+(2*i)] = buffer[1];
+            toConvert[1+(2*i)] = buffer[0];
+
         }
 
-        final ShortBuffer fb = ByteBuffer.wrap(message).asShortBuffer();
+        final ShortBuffer fb = ByteBuffer.wrap(toConvert).asShortBuffer();
         final short[] dst = new short[fb.capacity()];
         fb.get(dst); // Copy the contents of the FloatBuffer into dst
         return dst;
     }
 
+    /**
+     * Convert a array of short to a array of byte
+     * @param message   The array of short
+     * @return  The array of bytes
+     */
     private byte[] toByteArray(short[] message)
     {
         byte[] toReturn = new byte[message.length*2];
@@ -83,7 +119,10 @@ public class DataPacket {
         return toReturn;
     }
 
-
+    /**
+     * Converts the DataPacket to an array of byte to be sent
+     * @return  The array of bytes (ID and payload)
+     */
     public byte[] getPacket()
     {
         byte[] toReturn = new byte[length];
@@ -101,25 +140,17 @@ public class DataPacket {
         return toReturn;
     }
 
+    /**
+     * Get the ID of the packet
+     * @return  The ID
+     */
     public int getID()
     {
         return _ID;
     }
 
-  /*  public byte[] get_packet() {
-        return _packet;
+    public short[] getShortPayload()
+    {
+        return _shortPayload;
     }
-
-    public void set_packet(byte[] _packet) {
-        this._packet = _packet;
-    }
-
-    public int get_ID() {
-        return _ID;
-    }
-
-    public void set_ID(int _ID) {
-        this._ID = _ID;
-    }
-*/
 }

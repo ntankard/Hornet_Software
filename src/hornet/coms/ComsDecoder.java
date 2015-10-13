@@ -60,8 +60,10 @@ class Consumer extends Thread {
     /** The object that manages all incoming messages */
     private final VirtualHornet _virtualHornet;
 
+    /** The number of missing packets */
     private int _E_errorCount =0;
 
+    /** The send count of the last valid packet */
     private int _E_lastCount =0;
 
     /**
@@ -103,7 +105,7 @@ class Consumer extends Thread {
             toTest = new ComPacket(message);
         }catch (Exception e)
         {
-            _virtualHornet.C_debugInfo(message);
+            _virtualHornet.newCorruptPacket(message);
             return;
         }
 
@@ -115,14 +117,16 @@ class Consumer extends Thread {
         }
         if(packetCount < _E_lastCount)
         {
-            // rollover reset
-            System.out.println(_E_errorCount);
-            _E_errorCount = packetCount;
+            // rollover reset, package and send the data
+            short[] errorData = new short[1];
+            errorData[0] = (short)_E_errorCount;
+            DataPacket errorReport  = new DataPacket(CONFIG.Coms.PacketCodes.RECEIVE_ERROR_COUNT,errorData);
+            _virtualHornet.newDataIn(errorReport);
         }
         _E_lastCount = packetCount;
 
         // get the packet
-        _virtualHornet.newData(toTest.getPayload());
+        _virtualHornet.newDataIn(toTest.getPayload());
     }
 }
 
