@@ -25,6 +25,8 @@ public class VirtualHornet {
     /** THe Joystick Manager */
     private JoystickManager _joystickManager;
 
+    private boolean _isArmed;
+
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
     // -----------------------------------------------------------------------------------------------------------------
@@ -52,6 +54,8 @@ public class VirtualHornet {
         _navigation.setComPorts(Coms.getPorts());
 
         _navigation.start();
+
+        J_disarm();
    }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -71,8 +75,18 @@ public class VirtualHornet {
 
     public void newDataOut(DataPacket data)
     {
-        _navigation.newDataOut(data);
+        // prevent joystick commands going through if the system is disarmed
+        if(!_isArmed)
+        {
+            if(     data.getID() == CONFIG.Coms.PacketCodes.JOY_THROTTLE ||
+                    data.getID() == CONFIG.Coms.PacketCodes.JOY_XY ||
+                    data.getID() == CONFIG.Coms.PacketCodes.JOY_Z)
+            {
+                return;
+            }
+        }
 
+        _navigation.newDataOut(data);
         _comsEncoder.send_data(data);
     }
 
@@ -125,7 +139,7 @@ public class VirtualHornet {
     // ########################################### JOYSTICKS EVENTS ####################################################
     // -----------------------------------------------------------------------------------------------------------------
 
-    public void J_armDisarm()
+    /*public void J_armDisarm()
     {
         if(_joystickManager.isConnected())
         {
@@ -133,6 +147,58 @@ public class VirtualHornet {
                 //_comsEncoder.send_command(CONFIG.Coms.PacketCodes.ARM_DISARM);
             }
         }
+    }*/
+
+    public void J_arm()
+    {
+        if(_joystickManager.isConnected())
+        {
+            if(_joystickManager.isSafe()) {
+
+                _navigation.setArmDisarm(true);
+                _isArmed = true;
+
+                // set the arm state to disarm
+                short[] toSendData = new short[1];
+                toSendData[0] =1;
+                DataPacket toSend = new DataPacket(CONFIG.Coms.PacketCodes.ARM_DISARM,toSendData);
+                newDataOut(toSend);
+            }
+        }
+    }
+
+    public void J_disarm()
+    {
+        // allow the current joystick commands through
+        _isArmed = true;
+
+        // set XY to 50
+        short[] toSendData = new short[2];
+        toSendData[0] =50;
+        toSendData[1] = 50;
+        DataPacket toSend = new DataPacket(CONFIG.Coms.PacketCodes.JOY_XY,toSendData);
+        newDataOut(toSend);
+
+        // set z to 50
+        toSendData = new short[1];
+        toSendData[0] =50;
+        toSend = new DataPacket(CONFIG.Coms.PacketCodes.JOY_Z,toSendData);
+        newDataOut(toSend);
+
+        // set throttle to 0
+        toSendData = new short[1];
+        toSendData[0] =0;
+        toSend = new DataPacket(CONFIG.Coms.PacketCodes.JOY_THROTTLE,toSendData);
+        newDataOut(toSend);
+
+        // set the arm state to disarm
+        toSendData = new short[1];
+        toSendData[0] =0;
+        toSend = new DataPacket(CONFIG.Coms.PacketCodes.ARM_DISARM,toSendData);
+        newDataOut(toSend);
+
+        _navigation.setArmDisarm(false);
+        _isArmed = false;
     }
 }
 

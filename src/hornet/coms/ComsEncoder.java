@@ -34,7 +34,7 @@ public class ComsEncoder {
      */
     public ComsEncoder(Coms theComs)
     {
-        _toUpdate = new ArrayBlockingQueue<>(10);
+        _toUpdate = new ArrayBlockingQueue<>(1000);
 
         _coms = theComs;
         _sender = new Sender(_toUpdate,_coms);
@@ -48,6 +48,7 @@ public class ComsEncoder {
     public void send_data(DataPacket toSend)
     {
         _toUpdate.add(toSend);
+        System.out.println("Add");
     }
 }
 
@@ -78,6 +79,8 @@ class Sender extends Thread {
         _buffer = new ArrayList<>();
     }
 
+    int sendI =0;
+
     /**
      * Pulls messages from the queue
      */
@@ -103,16 +106,37 @@ class Sender extends Thread {
                 }
             }
 
+            sendI++;
+            if(sendI >= _buffer.size())
+            {
+                sendI=0;
+            }
+
             // send the packets
-            for (int i = 0; i < _buffer.size(); i++) {
+            //for (int i = 0; i < _buffer.size(); i++) {
+            if(_buffer.size() !=0) {
                 try {
-                    send(_buffer.get(i));
-                    wait(1);
-                } catch (Exception e) {
-                    Thread.currentThread().interrupt();
-                    return;
+                    send(_buffer.get(sendI));
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
+
+            try {
+                sleep(100);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+                /*try {
+                    if(_buffer.size() !=0) {
+                        send(_buffer.get(sendI));
+                    }
+                   // wait(1);
+                } catch (Exception e) {
+                    Thread.currentThread().interrupt();
+                   // return;
+                }*/
+            //}
         }
     }
 
@@ -122,12 +146,14 @@ class Sender extends Thread {
      * @throws IOException
      */
     private void send(DataPacket toSend) throws IOException {
-        ComPacket packet = new ComPacket(toSend,_sendCount);
+        if(_coms.isConnected()) {
+            ComPacket packet = new ComPacket(toSend, _sendCount);
 
-        _coms.send(packet.getPacket());
+            _coms.send(packet.getPacket());
 
-        _sendCount++;
-        _sendCount = _sendCount & 0xFF;
+            _sendCount++;
+            _sendCount = _sendCount & 0xFF;
+        }
     }
 }
 

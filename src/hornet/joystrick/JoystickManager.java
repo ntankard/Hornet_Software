@@ -172,7 +172,17 @@ class JoystickMonitor extends Thread {
         {
             if(current.getButtons().get("4"))
             {
-                _virtualHornet.J_armDisarm();
+               _virtualHornet.J_arm();
+                System.out.println("4");
+            }
+        }
+
+        if(!current.isEqualButton(past, "2"))
+        {
+            if(current.getButtons().get("2"))
+            {
+                _virtualHornet.J_disarm();
+                System.out.println("2");
             }
         }
 

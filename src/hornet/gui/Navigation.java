@@ -29,6 +29,7 @@ public class Navigation  {
             private JPanel DroneState;
                 private P_DroneState DroneState_Panel;
     private RP_EngineStatus EngineStatus_Panel;
+    private P_TargetState TargetState_Panel;
 
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
@@ -95,9 +96,9 @@ public class Navigation  {
                 DroneState_Panel.setState(data.getShortPayload()[0]);
                 DroneState_Panel.setLoopCount(data.getShortPayload()[1]);
                 break;
-            case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
-                EngineStatus_Panel.setStatus(data.getShortPayload());
-                break;
+            //case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
+            ///    EngineStatus_Panel.setStatus(data.getShortPayload());
+            //    break;
         }
         _frame.repaint();
     }
@@ -122,6 +123,10 @@ public class Navigation  {
         ComSettings_Panel.setComPorts(ports);
     }
 
+    public void setArmDisarm(boolean isArmed)
+    {
+        TargetState_Panel.setIsArmed(isArmed);
+    }
 }
 
 

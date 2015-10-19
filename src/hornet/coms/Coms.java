@@ -132,7 +132,7 @@ public class Coms implements SerialPortEventListener {
      */
     public boolean isConnected()
     {
-        if(_serialPort == null)
+        if(_serialPort == null || _output == null || _input == null)
         {
             return false;
         }

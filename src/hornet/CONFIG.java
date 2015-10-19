@@ -12,15 +12,15 @@ public class CONFIG {
 
         public static class PacketCodes
         {
-            public static final byte GYRO = 0;
-            public static final byte STATUS = 1;
-            public static final byte MOTOR_STATUS = 2;
+            public static final byte GYRO = 1;
+            public static final byte STATUS = 2;
+            //public static final byte MOTOR_STATUS = 2;
 
-            public static final byte JOY_XY = 'j';
-            public static final byte JOY_THROTTLE = 't';
-            public static final byte JOY_Z = 'z';
+            public static final byte JOY_XY = 100;
+            public static final byte JOY_THROTTLE = 101;
+            public static final byte JOY_Z = 102;
 
-            public static final byte ARM_DISARM = 'd';
+            public static final byte ARM_DISARM = 103;
             public static final byte NULL_PACKET = (byte)0xff;
 
             public static final byte RECEIVE_ERROR_COUNT = 'r';
@@ -43,7 +43,7 @@ public class CONFIG {
                 SizeMap.put(JOY_THROTTLE,new PacketInfo(3,true,CONTROL_PRI));
                 SizeMap.put(JOY_Z,new PacketInfo(3,true,CONTROL_PRI));
                 SizeMap.put(STATUS,new PacketInfo(5,false,-1));
-                SizeMap.put(MOTOR_STATUS,new PacketInfo(9,false,-1));
+               // SizeMap.put(MOTOR_STATUS,new PacketInfo(9,false,-1));
                 SizeMap.put(ARM_DISARM,new PacketInfo(1,true,0));
                 SizeMap.put(NULL_PACKET,new PacketInfo(1,false,0));
             }

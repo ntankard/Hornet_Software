@@ -1,5 +1,6 @@
 package hornet.coms;
 
+import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.ShortBuffer;
 import java.util.Arrays;
@@ -39,7 +40,7 @@ public class DataPacket {
         _bytePayload = payload;
         _ID = ID;
         _shortPayload = toShortArray(payload);
-        length = 1+ payload.length;
+        length = 1+ _bytePayload.length;
     }
 
     /**
@@ -52,7 +53,7 @@ public class DataPacket {
         _shortPayload = payload;
         _ID = ID;
         _bytePayload = toByteArray(payload);
-        length = 1+ payload.length;
+        length = 1+ _bytePayload.length;
     }
 
     /**
@@ -129,14 +130,11 @@ public class DataPacket {
 
         toReturn[0] = (byte)_ID;
 
-        if(_bytePayload != null)
-        {
-            for(int i=0;i<_bytePayload.length;i++)
-            {
-                toReturn[i+1] = _bytePayload[i];
+        if (_bytePayload != null) {
+            for (int i = 0; i < _bytePayload.length; i++) {
+                toReturn[i + 1] = _bytePayload[i];
             }
         }
-
         return toReturn;
     }
 

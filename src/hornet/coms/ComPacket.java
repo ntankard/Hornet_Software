@@ -39,6 +39,7 @@ public class ComPacket {
     {
         if(message.length <= 3)
         {
+            System.out.println("1");
             throw new IllegalArgumentException("Stream is to short to contain a full packet");
         }
 
@@ -51,11 +52,13 @@ public class ComPacket {
 
         if(length != _payload.length)
         {
+            System.out.println("2");
             throw new IllegalArgumentException("Length mismatch");
         }
 
         if(_checksum != generateCheckSum())
         {
+            System.out.println("3");
             throw new IllegalArgumentException("Checksum mismatch");
         }
     }
