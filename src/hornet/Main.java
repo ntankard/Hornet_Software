@@ -3,6 +3,9 @@ package hornet;
 import hornet.coms.*;
 import hornet.gui.Navigation;
 import hornet.joystrick.JoystickManager;
+import hornet.lidar.LidarManager;
+import hornet.lidar.SweepPoint;
+import hornet.lidar.XYPoint;
 
 /**
  * Created by Nicholas on 19/07/2015.
@@ -25,6 +28,10 @@ public class Main {
         // create the Joystick
         JoystickManager joystickManager = new JoystickManager(virtualHornet);
         virtualHornet.attachJoystickManager(joystickManager);
+
+        // crease the Lidar Manager
+        LidarManager lidarManager = new LidarManager(virtualHornet);
+        virtualHornet.attachLidar(lidarManager);
 
         // setup all systems
         virtualHornet.start();

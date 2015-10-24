@@ -2,6 +2,7 @@ package hornet.gui.panels;
 
 import javax.swing.*;
 import java.awt.*;
+import java.awt.geom.Arc2D;
 
 /**
  * Created by Nicholas on 18/09/2015.
@@ -17,6 +18,7 @@ public class P_DroneState {
         private JPanel Emergency_Panel;
         private JPanel Crash_Panel;
     private JTextField Loops_Text;
+    private JTextField Loss_Text;
 
     private JPanel[] _panels = new JPanel[8];
 
@@ -37,16 +39,26 @@ public class P_DroneState {
         }
 
         Loops_Text.setText("0");
+        Loss_Text.setText("0");
     }
 
     public void setState(int state)
     {
+        if(state < 0 || state >8)
+        {
+            return;
+        }
         for(int i=0;i<8;i++)
         {
             _panels[i].setBackground(Color.GRAY);
         }
 
         _panels[state].setBackground(Color.GREEN);
+    }
+
+    public void setLoss(double loss)
+    {
+        Loss_Text.setText(Double.toString(loss));
     }
 
     public void setLoopCount(int c)

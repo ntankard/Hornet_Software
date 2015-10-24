@@ -61,10 +61,12 @@ class Consumer extends Thread {
     private final VirtualHornet _virtualHornet;
 
     /** The number of missing packets */
-    private int _E_errorCount =0;
+   // private int _E_errorCount =0;
 
     /** The send count of the last valid packet */
     private int _E_lastCount =0;
+
+    private BinaryAverage _Error = new BinaryAverage(100);
 
     /**
      *
@@ -111,19 +113,25 @@ class Consumer extends Thread {
 
         // monitor packet loss
         int packetCount = toTest.getSendCount();
-        if(_E_lastCount != packetCount +1)
+        int missing;
+        if(_E_lastCount < packetCount)
         {
-            _E_errorCount += ((packetCount - _E_lastCount)-1)&0xff;
+            missing = (packetCount - _E_lastCount -1);
         }
-        if(packetCount < _E_lastCount)
+        else
         {
-            // rollover reset, package and send the data
-            short[] errorData = new short[1];
-            errorData[0] = (short)_E_errorCount;
-            DataPacket errorReport  = new DataPacket(CONFIG.Coms.PacketCodes.RECEIVE_ERROR_COUNT,errorData);
-            _virtualHornet.newDataIn(errorReport);
+            missing = (255 - _E_lastCount) -1;
         }
         _E_lastCount = packetCount;
+
+        // calculate rolling average of packet loss
+        _Error.newData(true);
+        for(int i=0;i< missing;i++)
+        {
+            _Error.newData(false);
+        }
+
+        _virtualHornet.newPacketLoss(_Error.getOnPercentage());
 
         // get the packet
         _virtualHornet.newDataIn(toTest.getPayload());

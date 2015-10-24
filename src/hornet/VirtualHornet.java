@@ -6,6 +6,8 @@ import hornet.coms.DataPacket;
 import hornet.gui.Navigation;
 import hornet.gui.rootPanels.RP_ComSettings;
 import hornet.joystrick.JoystickManager;
+import hornet.lidar.LidarManager;
+import hornet.lidar.XYPoint;
 
 
 /**
@@ -24,6 +26,8 @@ public class VirtualHornet {
 
     /** THe Joystick Manager */
     private JoystickManager _joystickManager;
+
+    private LidarManager _lidarManager;
 
     private boolean _isArmed;
 
@@ -44,6 +48,8 @@ public class VirtualHornet {
     public void attachComs(Coms theComs){_coms = theComs;}
     public void attachComsEncoder(ComsEncoder theComsEncoder){_comsEncoder = theComsEncoder;}
     public void attachJoystickManager(JoystickManager theJoystickManager){_joystickManager = theJoystickManager;}
+    public void attachLidar(LidarManager theLidarManager) { _lidarManager = theLidarManager;}
+
 
     /**
      * Start the system (equivalent to a constructor, call after all components are attached)
@@ -65,6 +71,12 @@ public class VirtualHornet {
     public void newDataIn(DataPacket data)
     {
         _navigation.newDataIn(data);
+        switch (data.getID())
+        {
+            case CONFIG.Coms.PacketCodes.LIDAR_POINT:
+                _lidarManager.newPoint(data);
+                break;
+        }
     }
 
     public void newDataOut(byte key,short[] data)
@@ -93,6 +105,11 @@ public class VirtualHornet {
     public void newCorruptPacket(byte[] message)
     {
         _navigation.newDebugData(message);
+    }
+
+    public void newPacketLoss(double loss)
+    {
+        _navigation.newPacketLoss(loss);
     }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -200,6 +217,13 @@ public class VirtualHornet {
         _navigation.setArmDisarm(false);
         _isArmed = false;
     }
+
+    public void newSweepData(XYPoint[] data)
+    {
+        _navigation.newSweep(data);
+    }
+
+
 }
 
 

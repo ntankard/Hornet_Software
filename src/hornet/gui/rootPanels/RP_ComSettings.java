@@ -41,7 +41,7 @@ public class RP_ComSettings {
             switch (_state)
             {
                 case Disconnected:
-                    _virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(), 9600);
+                    _virtualHornet.UI_connect(SerialPort_Combo.getSelectedItem().toString(), 115200);
                     break;
                 case Connecting:
                     _virtualHornet.UI_disconnect();

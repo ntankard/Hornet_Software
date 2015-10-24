@@ -110,7 +110,6 @@ public class DataPacket {
         bb.asShortBuffer().put(message);
         byte[] b= bb.array();
 
-        byte[] buffer = new byte[2];
         for(int i=0;i<message.length;i++)
         {
             toReturn[(i*2)] = b[(i*2)+1];

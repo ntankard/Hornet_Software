@@ -17,7 +17,7 @@ public class ComPacket {
     private int _checksum = 0;
 
     /** The number of bytes in the payload */
-    public int length = 0;
+    public int _length = 0;
 
     /**
      * Encompass a data packet for communications
@@ -27,7 +27,7 @@ public class ComPacket {
     public ComPacket(DataPacket payload, int sendCount) {
         _payload = payload;
         _sendCount = sendCount;
-        length = _payload.length;
+        _length = _payload.length;
         _checksum = generateCheckSum();
     }
 
@@ -39,26 +39,23 @@ public class ComPacket {
     {
         if(message.length <= 3)
         {
-            System.out.println("1");
             throw new IllegalArgumentException("Stream is to short to contain a full packet");
         }
 
-        length = (message[0]&0xFF);
+        _length = (message[0]&0xFF);
         _sendCount = (message[1]&0xFF);
 
         _payload = new DataPacket(Arrays.copyOfRange(message, 2, message.length-1));
 
         _checksum = (message[message.length-1]&0xFF);
 
-        if(length != _payload.length)
+        if(_length != _payload.length)
         {
-            System.out.println("2");
             throw new IllegalArgumentException("Length mismatch");
         }
 
         if(_checksum != generateCheckSum())
         {
-            System.out.println("3");
             throw new IllegalArgumentException("Checksum mismatch");
         }
     }
@@ -87,7 +84,7 @@ public class ComPacket {
      */
     public byte[] getPacket()
     {
-        byte[] toSend = new byte[length+4];
+        byte[] toSend = new byte[_length +4];
 
         // add the packet
         for(int i=0;i<_payload.length;i++)
@@ -96,12 +93,12 @@ public class ComPacket {
         }
 
         // add header
-        toSend[0] = (byte)length;
+        toSend[0] = (byte) _length;
         toSend[1] = (byte)_sendCount;
 
         // add footer
-        toSend[length+3] = '\n';
-        toSend[length+2] = (byte)_checksum;
+        toSend[_length +3] = '\n';
+        toSend[_length +2] = (byte)_checksum;
 
         return toSend;
     }
@@ -115,7 +112,7 @@ public class ComPacket {
         int toAdd;
         int check = 0;
 
-        toAdd = (length&0xFF);
+        toAdd = (_length &0xFF);
         check += ((toAdd * (1)) & 0xFF);
 
         toAdd = ((_sendCount&0xFF));

@@ -48,7 +48,6 @@ public class ComsEncoder {
     public void send_data(DataPacket toSend)
     {
         _toUpdate.add(toSend);
-        System.out.println("Add");
     }
 }
 
@@ -123,7 +122,7 @@ class Sender extends Thread {
             }
 
             try {
-                sleep(100);
+                sleep(1);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

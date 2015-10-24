@@ -73,7 +73,7 @@ public class RP_Coms {
         }
 
         String toAdd = new String();
-        toAdd+= (char)data.getID();
+        toAdd+= Short.toString((short) data.getID());
 
         if(data.length != 1) {
             for (int i = 0; i < (data.getShortPayload().length); i++) {
@@ -103,7 +103,7 @@ public class RP_Coms {
         }
 
         String toAdd = new String();
-        toAdd+= (char)data.getID();
+        toAdd+= Short.toString((short)data.getID());
         if(data.length != 1) {
             for (int i = 0; i < data.getShortPayload().length; i++) {
                 String shortString = Short.toString(data.getShortPayload()[i]);

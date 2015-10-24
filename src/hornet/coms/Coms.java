@@ -91,7 +91,7 @@ public class Coms implements SerialPortEventListener {
 
         try {
             // open serial port, and use class name for the appName.
-            _serialPort = (SerialPort) portId.open(this.getClass().getName(), CONFIG.Coms.USBSerial.TIME_OUT);
+            _serialPort = (SerialPort) portId.open(this.getClass().getName(), 1000);
 
             // set port parameters
             _serialPort.setSerialPortParams( baudRate,
@@ -167,6 +167,7 @@ public class Coms implements SerialPortEventListener {
                 // this dose happen occasionally but its not known why
             }
         }
+
         // Ignore all the other eventTypes, but you should consider the other ones.
     }
 

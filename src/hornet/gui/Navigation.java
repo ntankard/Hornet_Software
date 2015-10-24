@@ -10,6 +10,7 @@ import hornet.VirtualHornet;
 import hornet.coms.DataPacket;
 import hornet.gui.panels.*;
 import hornet.gui.rootPanels.*;
+import hornet.lidar.XYPoint;
 
 
 /**
@@ -28,8 +29,8 @@ public class Navigation  {
                 private RP_Orientation Gyro_Panel;
             private JPanel DroneState;
                 private P_DroneState DroneState_Panel;
-    private RP_EngineStatus EngineStatus_Panel;
     private P_TargetState TargetState_Panel;
+    private RP_LidarTopDown LidarTopDown_Panel;
 
     // -----------------------------------------------------------------------------------------------------------------
     // ################################################# SETUP #########################################################
@@ -126,6 +127,17 @@ public class Navigation  {
     public void setArmDisarm(boolean isArmed)
     {
         TargetState_Panel.setIsArmed(isArmed);
+    }
+
+    public void newPacketLoss(double loss)
+    {
+        DroneState_Panel.setLoss(loss);
+    }
+
+    public void newSweep(XYPoint[] points)
+    {
+        LidarTopDown_Panel.setPoint(points);
+        _frame.repaint();
     }
 }
 

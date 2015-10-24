@@ -1,4 +1,4 @@
-package hornet.coms;
+package hornet.lidar;
 
 import com.digi.xbee.api.RemoteXBeeDevice;
 import com.digi.xbee.api.XBeeDevice;

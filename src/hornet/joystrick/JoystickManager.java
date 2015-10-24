@@ -159,6 +159,7 @@ class JoystickMonitor extends Thread {
             short[] toSend = new short[1];
             toSend[0] = (short)(int)(100-current.getOtherAxis().get("Slider"));
             _virtualHornet.newDataOut(CONFIG.Coms.PacketCodes.JOY_THROTTLE, toSend);
+            System.out.println(toSend[0]);
         }
 
         if(!current.isEqualOtherAxis(past,"Z Rotation"))
