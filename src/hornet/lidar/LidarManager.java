@@ -45,10 +45,8 @@ public class LidarManager {
                 XYPoint[] toSend = new XYPoint[_sweepPoints[_sweep].size()];
 
                 for (int i = 0; i < _sweepPoints[_sweep].size(); i++) {
-                    toSend[i] = new XYPoint(_sweepPoints[_sweep].get(i), 1500, 0);
+                    toSend[i] = new XYPoint(_sweepPoints[_sweep].get(i), 6000, 0);
                 }
-
-                System.out.println(_sweepPoints[_sweep].size());
 
                 _virtualHornet.newSweepData(toSend);
 

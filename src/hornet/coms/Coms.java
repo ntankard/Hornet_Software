@@ -7,11 +7,9 @@ import gnu.io.SerialPortEventListener;
 import hornet.CONFIG;
 import hornet.VirtualHornet;
 
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
+import java.io.*;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Enumeration;
 
 /**
@@ -25,6 +23,8 @@ public class Coms implements SerialPortEventListener {
      * making the displayed results codepage independent
      */
     private BufferedReader _input;
+
+    private InputStream _in;
 
     /** The output stream to the port */
     private OutputStream _output;
@@ -100,7 +100,8 @@ public class Coms implements SerialPortEventListener {
                     SerialPort.PARITY_NONE);
 
             // open the streams
-            _input = new BufferedReader(new InputStreamReader(_serialPort.getInputStream()));
+            _in = _serialPort.getInputStream();
+           // _input = new BufferedReader(new InputStreamReader(_serialPort.getInputStream()));
             _output = _serialPort.getOutputStream();
 
             // add event listeners
@@ -155,14 +156,42 @@ public class Coms implements SerialPortEventListener {
         _output.write(toSend);
     }
 
+    //ArrayList<Byte> _read = new ArrayList<>();
+
+
+    byte[] _readBuffer = new byte[100];
+    int _readCount;
+
     /**
      * Handle an event on the serial port. Read the data and decode it.
      */
     public synchronized void serialEvent(SerialPortEvent oEvent) {
         if (oEvent.getEventType() == SerialPortEvent.DATA_AVAILABLE) {
             try {
-                String inputLine=_input.readLine();
-                _comsDecoder.processMessage(inputLine.getBytes());
+                while(_in.available() !=0)
+                {
+                    int read = _in.read();
+
+                    if(read == '\n')
+                    {
+                        byte[] toSend = Arrays.copyOfRange(_readBuffer, 0, _readCount);
+                        _comsDecoder.processMessage(toSend);
+                        _readCount =0;
+                    }
+                    else
+                    {
+                        _readBuffer[_readCount] = (byte)(read & 0xFF);
+                        _readCount++;
+                    }
+                }
+
+                //String inputLine=_input.readLine();
+                //_comsDecoder.processMessage(inputLine.getBytes());
+                //System.out.println(_in.available());
+
+                //char[] dump = new char[100];
+                //System.out.println(_input.read(dump));
+
             } catch (Exception e) {
                 // this dose happen occasionally but its not known why
             }

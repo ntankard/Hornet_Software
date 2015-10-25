@@ -19,6 +19,7 @@ public class P_DroneState {
         private JPanel Crash_Panel;
     private JTextField Loops_Text;
     private JTextField Loss_Text;
+    private JTextField Sent_Text;
 
     private JPanel[] _panels = new JPanel[8];
 
@@ -64,5 +65,10 @@ public class P_DroneState {
     public void setLoopCount(int c)
     {
         Loops_Text.setText(Integer.toString(c));
+    }
+
+    public void setSendCount(int c)
+    {
+        Sent_Text.setText(Integer.toString(c));
     }
 }
