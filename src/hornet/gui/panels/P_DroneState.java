@@ -20,6 +20,9 @@ public class P_DroneState {
     private JTextField Loops_Text;
     private JTextField Loss_Text;
     private JTextField Sent_Text;
+    private JTextField LidarReceived_Text;
+    private JTextField LidarLoss_Text;
+    private JTextField LidarPer_Text;
 
     private JPanel[] _panels = new JPanel[8];
 
@@ -70,5 +73,13 @@ public class P_DroneState {
     public void setSendCount(int c)
     {
         Sent_Text.setText(Integer.toString(c));
+    }
+
+    public void setLidar(int r,int l)
+    {
+        double per = ((double)l/(double)(r+l)) * 100.0;
+        LidarLoss_Text.setText(Integer.toString(l));
+        LidarReceived_Text.setText(Integer.toString(r));
+        LidarPer_Text.setText(Integer.toString((int)per));
     }
 }

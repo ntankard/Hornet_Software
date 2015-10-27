@@ -12,6 +12,7 @@ public class CONFIG {
             public static final byte GYRO = 1;
             public static final byte STATUS = 2;
             public static final byte LIDAR_POINT = 3;
+            public static final byte COMPENSATOR_VECTOR =4;
             //public static final byte MOTOR_STATUS = 2;
 
             public static final byte JOY_XY = 100;

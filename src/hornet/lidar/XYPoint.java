@@ -13,7 +13,7 @@ public class XYPoint {
         double x = p.get_distance() * Math.cos((Math.toRadians((double) p.get_angle() + 90)));
         double y = p.get_distance() * Math.sin((Math.toRadians((double) p.get_angle() + 90)));
 
-        _xP = ((x/(max*2)) * 100)+50;
+        _xP = ((-x/(max*2)) * 100)+50;
         _yP = ((-y/(max*2)) * 100)+50;
     }
 

@@ -97,6 +97,10 @@ public class Navigation  {
                 DroneState_Panel.setState(data.getShortPayload()[0]);
                 DroneState_Panel.setLoopCount(data.getShortPayload()[1]);
                 DroneState_Panel.setSendCount(data.getShortPayload()[2]);
+                DroneState_Panel.setLidar(data.getShortPayload()[3],data.getShortPayload()[4]);
+                break;
+            case CONFIG.Coms.PacketCodes.COMPENSATOR_VECTOR:
+                Gyro_Panel.setCompensationVector(data.getShortPayload()[0]/300.0,data.getShortPayload()[1]/300.0);
                 break;
             //case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
             ///    EngineStatus_Panel.setStatus(data.getShortPayload());
