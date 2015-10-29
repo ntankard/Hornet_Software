@@ -62,6 +62,7 @@ public class VirtualHornet {
         _navigation.start();
 
         J_disarm();
+        J_avoidOff();
    }
 
     // -----------------------------------------------------------------------------------------------------------------
@@ -182,6 +183,22 @@ public class VirtualHornet {
                 newDataOut(toSend);
             }
         }
+    }
+
+    public void J_avoidOn()
+    {
+        short[] toSendData = new short[1];
+        toSendData[0] =1;
+        DataPacket toSend = new DataPacket(CONFIG.Coms.PacketCodes.AVOID_ONOFF,toSendData);
+        newDataOut(toSend);
+    }
+
+    public void J_avoidOff()
+    {
+        short[] toSendData = new short[1];
+        toSendData[0] =0;
+        DataPacket toSend = new DataPacket(CONFIG.Coms.PacketCodes.AVOID_ONOFF,toSendData);
+        newDataOut(toSend);
     }
 
     public void J_disarm()

@@ -35,6 +35,16 @@ public class RP_Orientation {
 
     public void setCompensationVector(double xPer, double yPer)
     {
-        ((P_ForceVector)ForceVector_Panel).setCompensationVector(xPer,yPer);
+        ((P_ForceVector)ForceVector_Panel).setCompensationVector(xPer, yPer);
     }
+
+    public void setJoyVector(double xPer, double yPer)
+    {
+        ((P_ForceVector)ForceVector_Panel).setJoyVector(xPer,yPer);
+    }
+
+    public void setTotalVector(double xPer, double yPer) {
+        ((P_ForceVector)ForceVector_Panel).setTotalVector(xPer,yPer);
+    }
+
 }

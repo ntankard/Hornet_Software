@@ -101,6 +101,7 @@ public class Coms implements SerialPortEventListener {
 
             // open the streams
             _in = _serialPort.getInputStream();
+
            // _input = new BufferedReader(new InputStreamReader(_serialPort.getInputStream()));
             _output = _serialPort.getOutputStream();
 
@@ -133,7 +134,7 @@ public class Coms implements SerialPortEventListener {
      */
     public boolean isConnected()
     {
-        if(_serialPort == null || _output == null || _input == null)
+        if(_serialPort == null || _output == null || _in == null)
         {
             return false;
         }
@@ -153,7 +154,11 @@ public class Coms implements SerialPortEventListener {
      * @throws IOException
      */
     public void send(byte[] toSend) throws IOException {
-        _output.write(toSend);
+        if(_output != null)
+        {
+            _output.write(toSend);
+        }
+
     }
 
     //ArrayList<Byte> _read = new ArrayList<>();
@@ -185,10 +190,8 @@ public class Coms implements SerialPortEventListener {
                     }
                 }
 
-                //String inputLine=_input.readLine();
-                //_comsDecoder.processMessage(inputLine.getBytes());
-                //System.out.println(_in.available());
-
+               /* String inputLine=_input.readLine();
+                _comsDecoder.processMessage(inputLine.getBytes());*/
                 //char[] dump = new char[100];
                 //System.out.println(_input.read(dump));
 

@@ -50,6 +50,13 @@ public class P_Radar extends JPanel {
             {
                 int x = (int)((double)r*2.0*(_points[i].get_xP()/100.0f));
                 int y = (int)((double)r*2.0*(_points[i].get_yP()/100.0f));
+
+              //  int shift = y-r;
+             //   y=r-shift;
+
+                int shift = x-r;
+                x=r-shift;
+
                 g2d.fillOval(x-2,y-2,4,4);
             }
         }

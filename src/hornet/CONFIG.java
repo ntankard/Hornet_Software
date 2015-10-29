@@ -13,12 +13,14 @@ public class CONFIG {
             public static final byte STATUS = 2;
             public static final byte LIDAR_POINT = 3;
             public static final byte COMPENSATOR_VECTOR =4;
-            //public static final byte MOTOR_STATUS = 2;
+            public static final byte JOY_VECTOR = 5;
+            public static final byte TOTAL_VECTOR = 6;
 
             public static final byte JOY_XY = 100;
             public static final byte JOY_THROTTLE = 101;
             public static final byte JOY_Z = 102;
             public static final byte ARM_DISARM = 103;
+            public static final byte AVOID_ONOFF = 104;
 
             public static final byte LOCAL_PACKET_LOSS = (byte)255;
 

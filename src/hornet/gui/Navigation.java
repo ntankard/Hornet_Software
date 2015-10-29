@@ -100,7 +100,13 @@ public class Navigation  {
                 DroneState_Panel.setLidar(data.getShortPayload()[3],data.getShortPayload()[4]);
                 break;
             case CONFIG.Coms.PacketCodes.COMPENSATOR_VECTOR:
-                Gyro_Panel.setCompensationVector(data.getShortPayload()[0]/300.0,data.getShortPayload()[1]/300.0);
+                Gyro_Panel.setCompensationVector(data.getShortPayload()[0], data.getShortPayload()[1]);
+                break;
+            case CONFIG.Coms.PacketCodes.JOY_VECTOR:
+                Gyro_Panel.setJoyVector(data.getShortPayload()[0],data.getShortPayload()[1]);
+                break;
+            case CONFIG.Coms.PacketCodes.TOTAL_VECTOR:
+                Gyro_Panel.setTotalVector(data.getShortPayload()[0],data.getShortPayload()[1]);
                 break;
             //case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
             ///    EngineStatus_Panel.setStatus(data.getShortPayload());
@@ -112,6 +118,22 @@ public class Navigation  {
     public void newDataOut(DataPacket data)
     {
         Coms_Panel.addDataOut(data);
+
+        switch (data.getID())
+        {
+            case CONFIG.Coms.PacketCodes.JOY_THROTTLE:
+                Joystick_Panel.updateJoystickThrottle(data.getShortPayload()[0]);
+                break;
+            case CONFIG.Coms.PacketCodes.JOY_Z:
+                Joystick_Panel.updateJoystickRotation(data.getShortPayload()[0]);
+                break;
+            case CONFIG.Coms.PacketCodes.JOY_XY:
+                Joystick_Panel.updateJoystickXY(data.getShortPayload()[0],data.getShortPayload()[1]);
+                break;
+            case CONFIG.Coms.PacketCodes.AVOID_ONOFF:
+                TargetState_Panel.setAvoid(data.getShortPayload()[0] == 1);
+        }
+
         _frame.repaint();
     }
 

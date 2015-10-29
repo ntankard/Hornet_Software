@@ -162,7 +162,7 @@ class JoystickMonitor extends Thread {
             System.out.println(toSend[0]);
         }
 
-        if(!current.isEqualOtherAxis(past,"Z Rotation"))
+        if(!current.isEqualOtherAxis(past, "Z Rotation"))
         {
             short[] toSend = new short[1];
             toSend[0] = (short)((int)(current.getOtherAxis().get("Z Rotation")/2+25));
@@ -174,7 +174,6 @@ class JoystickMonitor extends Thread {
             if(current.getButtons().get("4"))
             {
                _virtualHornet.J_arm();
-                System.out.println("4");
             }
         }
 
@@ -183,7 +182,23 @@ class JoystickMonitor extends Thread {
             if(current.getButtons().get("2"))
             {
                 _virtualHornet.J_disarm();
-                System.out.println("2");
+            }
+        }
+
+
+        if(!current.isEqualButton(past, "3"))
+        {
+            if(current.getButtons().get("3"))
+            {
+                _virtualHornet.J_avoidOn();
+            }
+        }
+
+        if(!current.isEqualButton(past, "1"))
+        {
+            if(current.getButtons().get("1"))
+            {
+                _virtualHornet.J_avoidOff();
             }
         }
 
