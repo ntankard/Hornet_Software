@@ -108,6 +108,9 @@ public class Navigation  {
             case CONFIG.Coms.PacketCodes.TOTAL_VECTOR:
                 Gyro_Panel.setTotalVector(data.getShortPayload()[0],data.getShortPayload()[1]);
                 break;
+            case CONFIG.Coms.PacketCodes.SCHEDULAR_MONITOR:
+                DroneState_Panel.setCompLoop(data.getShortPayload()[1],data.getShortPayload()[2],data.getShortPayload()[3],data.getShortPayload()[4]);
+                break;
             //case CONFIG.Coms.PacketCodes.MOTOR_STATUS:
             ///    EngineStatus_Panel.setStatus(data.getShortPayload());
             //    break;

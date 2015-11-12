@@ -23,6 +23,10 @@ public class P_DroneState {
     private JTextField LidarReceived_Text;
     private JTextField LidarLoss_Text;
     private JTextField LidarPer_Text;
+    private JTextField GyroLoop_Text;
+    private JTextField ComsLoop_Text;
+    private JTextField FlightLoop_Text;
+    private JTextField LidarLoop_Text;
 
     private JPanel[] _panels = new JPanel[8];
 
@@ -81,5 +85,13 @@ public class P_DroneState {
         LidarLoss_Text.setText(Integer.toString(l));
         LidarReceived_Text.setText(Integer.toString(r));
         LidarPer_Text.setText(Integer.toString((int)per));
+    }
+
+    public void setCompLoop(int coms,int gyro,int flight,int lidar)
+    {
+        GyroLoop_Text.setText(Integer.toString(gyro));
+        ComsLoop_Text.setText(Integer.toString(coms));
+        FlightLoop_Text.setText(Integer.toString(flight));
+        LidarLoop_Text.setText(Integer.toString(lidar));
     }
 }

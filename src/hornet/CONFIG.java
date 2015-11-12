@@ -15,6 +15,7 @@ public class CONFIG {
             public static final byte COMPENSATOR_VECTOR =4;
             public static final byte JOY_VECTOR = 5;
             public static final byte TOTAL_VECTOR = 6;
+            public static final byte SCHEDULAR_MONITOR = 7;
 
             public static final byte JOY_XY = 100;
             public static final byte JOY_THROTTLE = 101;
