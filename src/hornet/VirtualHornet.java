@@ -77,6 +77,18 @@ public class VirtualHornet {
             case CONFIG.Coms.PacketCodes.LIDAR_POINT:
                 _lidarManager.newPoint(data);
                 break;
+            case CONFIG.Coms.PacketCodes.ANCHOR_1:
+                _lidarManager.newAnchor(data, 0);
+                break;
+            case CONFIG.Coms.PacketCodes.ANCHOR_2:
+                _lidarManager.newAnchor(data,1);
+                break;
+            case CONFIG.Coms.PacketCodes.ANCHOR_3:
+                _lidarManager.newAnchor(data,2);
+                break;
+            case CONFIG.Coms.PacketCodes.ANCHOR_4:
+                _lidarManager.newAnchor(data,3);
+                break;
         }
     }
 
@@ -238,6 +250,11 @@ public class VirtualHornet {
     public void newSweepData(XYPoint[] data)
     {
         _navigation.newSweep(data);
+    }
+
+    public void newAnchor(XYPoint point, int i)
+    {
+        _navigation.newAnchor(point,i);
     }
 
 

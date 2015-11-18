@@ -27,6 +27,17 @@ public class LidarManager {
         _sweepPoints[1] = new ArrayList<>();
     }
 
+    public void newAnchor(DataPacket data,int i)
+    {
+        float angle = data.getShortPayload()[0]/90;
+        float distance = data.getShortPayload()[1];
+
+
+        XYPoint toAdd = new XYPoint( new SweepPoint(angle,distance), 6000, 0);
+
+        _virtualHornet.newAnchor(toAdd,i);
+    }
+
     public void newPoint(DataPacket data)
     {
         float angle = data.getShortPayload()[0]/90;

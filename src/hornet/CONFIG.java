@@ -9,13 +9,17 @@ public class CONFIG {
 
         public static class PacketCodes
         {
-            public static final byte GYRO = 1;
-            public static final byte STATUS = 2;
-            public static final byte LIDAR_POINT = 3;
-            public static final byte COMPENSATOR_VECTOR =4;
-            public static final byte JOY_VECTOR = 5;
-            public static final byte TOTAL_VECTOR = 6;
-            public static final byte SCHEDULAR_MONITOR = 7;
+            public static final byte GYRO = 11;
+            public static final byte STATUS = 12;
+            public static final byte LIDAR_POINT = 13;
+            public static final byte COMPENSATOR_VECTOR =14;
+            public static final byte JOY_VECTOR = 15;
+            public static final byte TOTAL_VECTOR = 16;
+            public static final byte SCHEDULAR_MONITOR = 17;
+            public static final byte ANCHOR_1 = 18;
+            public static final byte ANCHOR_2 = 19;
+            public static final byte ANCHOR_3 = 20;
+            public static final byte ANCHOR_4 = 21;
 
             public static final byte JOY_XY = 100;
             public static final byte JOY_THROTTLE = 101;

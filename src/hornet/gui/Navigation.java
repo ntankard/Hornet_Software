@@ -169,6 +169,12 @@ public class Navigation  {
         LidarTopDown_Panel.setPoint(points);
         _frame.repaint();
     }
+
+    public void newAnchor(XYPoint point, int i)
+    {
+        LidarTopDown_Panel.setAnchor(point,i);
+        _frame.repaint();
+    }
 }
 
 

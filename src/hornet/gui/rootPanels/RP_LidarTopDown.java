@@ -23,4 +23,9 @@ public class RP_LidarTopDown {
     {
         ((P_Radar)TopDown_Panel).setPoint(points);
     }
+
+    public void setAnchor(XYPoint point, int i)
+    {
+        ((P_Radar)TopDown_Panel).setAnchor(point,i);
+    }
 }
