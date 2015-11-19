@@ -10,7 +10,7 @@ import java.awt.*;
 public class P_ForceVector extends JPanel {
 
     //private double _angle = 0;
-    private int _boarder = 0;
+    private int _boarder = 10;
 
     private double _XComensator =0;
     private double _YCompensator =0;
@@ -22,7 +22,10 @@ public class P_ForceVector extends JPanel {
     private double _YTotal =0;
 
     public P_ForceVector()
-    {}
+    {
+
+            setBorder(new TitledBorder("Control vector"));
+        }
 
 
     public void setCompensationVector(double xPer, double yPer)

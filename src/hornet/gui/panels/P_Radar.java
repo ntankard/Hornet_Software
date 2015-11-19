@@ -54,7 +54,7 @@ public class P_Radar extends JPanel {
         int step = r/6;
 
         // draw the distance indicators
-        for(int i=0;i<6;i++)
+        for(int i=1;i<6;i++)
         {
 
             g2d.drawOval(step*i,step*i,r*2 - ((step*i)*2),r*2 - ((step*i)*2));
