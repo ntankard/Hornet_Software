@@ -1,18 +1,8 @@
-package hornet.joystrick;
+package hornet.joystick;
 
-import com.digi.xbee.api.RemoteXBeeDevice;
-import com.digi.xbee.api.XBeeDevice;
-import com.digi.xbee.api.exceptions.XBeeException;
-import com.digi.xbee.api.models.XBee64BitAddress;
-import com.sun.jmx.snmp.internal.SnmpSubSystem;
 import hornet.CONFIG;
 import hornet.VirtualHornet;
 import net.java.games.input.Controller;
-
-import java.nio.ByteBuffer;
-import java.nio.FloatBuffer;
-import java.util.Arrays;
-import java.util.concurrent.BlockingQueue;
 
 /**
  * Created by Nicholas on 11/08/2015.
@@ -95,7 +85,7 @@ class JoystickMonitor extends Thread {
         toSend[0] = (short)((_a.getX()));
         toSend[1] = (short)((_a.getY()));
 
-        // fillter to prevent noise
+        // filter to prevent noise
         if(toSend[0] > -4 && toSend[0] <4)
         {
             toSend[0] = 0;

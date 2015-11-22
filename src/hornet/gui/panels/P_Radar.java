@@ -78,7 +78,7 @@ public class P_Radar extends JPanel {
             }
         }
 
-        // draw the a
+        // draw the anchor
         g2d.setColor(Color.GREEN);
         for(int i=0;i<_anchors.length;i++)
         {

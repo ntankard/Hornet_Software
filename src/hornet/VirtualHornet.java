@@ -5,7 +5,7 @@ import hornet.coms.ComsEncoder;
 import hornet.coms.DataPacket;
 import hornet.gui.Navigation;
 import hornet.gui.rootPanels.RP_ComSettings;
-import hornet.joystrick.JoystickManager;
+import hornet.joystick.JoystickManager;
 import hornet.lidar.LidarManager;
 import hornet.lidar.XYPoint;
 
@@ -37,7 +37,7 @@ public class VirtualHornet {
 
     /**
      * Default constructor
-     * Dose nothing because components are not added yet
+     * Does nothing because components are not added yet
      */
     public VirtualHornet() {}
 

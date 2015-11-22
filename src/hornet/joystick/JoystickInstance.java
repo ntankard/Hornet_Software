@@ -1,9 +1,6 @@
-package hornet.joystrick;
+package hornet.joystick;
 
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.Iterator;
-import java.util.Map;
 
 /**
  * Created by Nicholas on 20/07/2015.

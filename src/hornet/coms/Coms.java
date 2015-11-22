@@ -65,7 +65,7 @@ public class Coms implements SerialPortEventListener {
     }
 
     /**
-     * Connects to the communication device (dose not directly establish a link with the drone.
+     * Connects to the communication device (does not directly establish a link with the drone)
      * @param port The com port to connect via
      * @param baudRate The baud rate of the communications
      * @return Was the connection successful? (close is automatically called if not)
@@ -77,7 +77,7 @@ public class Coms implements SerialPortEventListener {
         CommPortIdentifier portId = null;
         Enumeration portEnum = CommPortIdentifier.getPortIdentifiers();
 
-        //First, Find the serial port @TODO make this less stupid
+        //First, Find the serial port @TODO make this better
         while (portEnum.hasMoreElements()) {
             CommPortIdentifier currPortId = (CommPortIdentifier) portEnum.nextElement();
             if (currPortId.getName().equals(port)) {
@@ -196,7 +196,7 @@ public class Coms implements SerialPortEventListener {
                 //System.out.println(_input.read(dump));
 
             } catch (Exception e) {
-                // this dose happen occasionally but its not known why
+                // this does happen occasionally but it's not known why
             }
         }
 

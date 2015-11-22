@@ -1,4 +1,4 @@
-package hornet.joystrick;
+package hornet.joystick;
 
 import net.java.games.input.Component;
 import net.java.games.input.Controller;
@@ -166,7 +166,7 @@ public class JoystickUtility {
         float hatSwitchPosition =0;
         HashMap<String,Integer> otherAxis = new HashMap<>();
 
-        // Go trough all components of the controller.
+        // Go through all components of the controller.
         controller.poll();
 
         Component[] components = controller.getComponents();

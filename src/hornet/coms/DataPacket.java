@@ -16,7 +16,7 @@ public class DataPacket {
     /** The raw payload */
     private byte[] _bytePayload;
 
-    /** A SHort version of the raw payload */
+    /** A Short version of the raw payload */
     private short[] _shortPayload;
 
     /** The number of bytes in the payload */
@@ -99,7 +99,7 @@ public class DataPacket {
     }
 
     /**
-     * Convert a array of short to a array of byte
+     * Convert an array of short to an array of byte
      * @param message   The array of short
      * @return  The array of bytes
      */

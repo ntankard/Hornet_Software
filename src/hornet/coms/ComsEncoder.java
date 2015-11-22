@@ -65,7 +65,7 @@ class Sender extends Thread {
     /** The com object to send through */
     private Coms _coms;
 
-    /** THe count of the last sent packet */
+    /** The count of the last sent packet */
     private int _sendCount =0;
 
     /**

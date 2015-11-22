@@ -2,7 +2,7 @@ package hornet.gui.rootPanels;
 
 import hornet.VirtualHornet;
 import hornet.gui.panels.P_JoystickPos;
-import hornet.joystrick.JoystickUtility;
+import hornet.joystick.JoystickUtility;
 
 import javax.swing.*;
 import java.util.ArrayList;
